@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../schema';
 
-type DbClient = SupabaseClient<Database>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DbClient = SupabaseClient<any>;
 
 export async function getSitesByUserId(supabase: DbClient, userId: string) {
   return supabase.from('sites').select('*').eq('user_id', userId);

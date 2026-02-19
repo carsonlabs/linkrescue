@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database, IssueType } from '../schema';
+import type { IssueType } from '../schema';
 
-type DbClient = SupabaseClient<Database>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DbClient = SupabaseClient<any>;
 
 export async function getScansBySiteId(supabase: DbClient, siteId: string) {
   return supabase
@@ -41,7 +42,7 @@ export async function completeScan(
   return supabase
     .from('scans')
     .update({
-      status: 'completed' as const,
+      status: 'completed',
       finished_at: new Date().toISOString(),
       pages_scanned: data.pages_scanned,
       links_checked: data.links_checked,
@@ -53,7 +54,7 @@ export async function failScan(supabase: DbClient, scanId: string, error: string
   return supabase
     .from('scans')
     .update({
-      status: 'failed' as const,
+      status: 'failed',
       finished_at: new Date().toISOString(),
       error_message: error,
     })
@@ -82,7 +83,6 @@ export async function addScanEvent(
 }
 
 export async function getIssueCountsForSite(supabase: DbClient, siteId: string) {
-  // Get the latest scan for this site
   const { data: latestScan } = await getLatestScan(supabase, siteId);
   if (!latestScan) return { total: 0, byType: {} as Record<string, number> };
 

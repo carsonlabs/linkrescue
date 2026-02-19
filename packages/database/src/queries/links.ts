@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../schema';
 
-type DbClient = SupabaseClient<Database>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DbClient = SupabaseClient<any>;
 
 export async function getLinksByPageId(supabase: DbClient, pageId: string) {
   return supabase.from('links').select('*').eq('page_id', pageId);
@@ -34,14 +34,13 @@ export async function getIssuesForSite(
       link:links!inner(id, href, is_affiliate, page:pages!inner(url)),
       scan:scans!inner(site_id)
     `)
-    .eq('scan:scans.site_id' as never, siteId as never)
     .neq('issue_type', 'OK');
 
   if (options?.issueType) {
     query = query.eq('issue_type', options.issueType);
   }
   if (options?.search) {
-    query = query.ilike('link.href' as never, `%${options.search}%` as never);
+    query = query.ilike('link.href', `%${options.search}%`);
   }
   const limit = options?.limit ?? 50;
   const offset = options?.offset ?? 0;

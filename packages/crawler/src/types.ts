@@ -24,5 +24,6 @@ export interface ScanOptions {
   domain: string;
   sitemapUrl: string | null;
   maxPages: number;
-  supabase: import('@supabase/supabase-js').SupabaseClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any;
 }

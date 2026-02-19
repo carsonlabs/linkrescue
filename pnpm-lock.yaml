@@ -133,6 +133,9 @@ importers:
       '@linkrescue/config':
         specifier: workspace:*
         version: link:../config
+      '@types/node':
+        specifier: ^20.11.17
+        version: 20.19.33
       typescript:
         specifier: ^5.3.3
         version: 5.9.3

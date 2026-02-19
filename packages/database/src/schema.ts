@@ -40,6 +40,7 @@ export interface Database {
           stripe_price_id?: string | null;
           stripe_current_period_end?: string | null;
         };
+        Relationships: [];
       };
       sites: {
         Row: {
@@ -69,6 +70,15 @@ export interface Database {
           verified_at?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'sites_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       pages: {
         Row: {
@@ -92,6 +102,15 @@ export interface Database {
           last_fetched_at?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'pages_site_id_fkey';
+            columns: ['site_id'];
+            isOneToOne: false;
+            referencedRelation: 'sites';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       links: {
         Row: {
@@ -118,6 +137,22 @@ export interface Database {
           is_affiliate?: boolean;
           first_seen_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'links_site_id_fkey';
+            columns: ['site_id'];
+            isOneToOne: false;
+            referencedRelation: 'sites';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'links_page_id_fkey';
+            columns: ['page_id'];
+            isOneToOne: false;
+            referencedRelation: 'pages';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       scans: {
         Row: {
@@ -153,6 +188,15 @@ export interface Database {
           error_message?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'scans_site_id_fkey';
+            columns: ['site_id'];
+            isOneToOne: false;
+            referencedRelation: 'sites';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       scan_results: {
         Row: {
@@ -185,6 +229,22 @@ export interface Database {
           issue_type?: IssueType;
           checked_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'scan_results_scan_id_fkey';
+            columns: ['scan_id'];
+            isOneToOne: false;
+            referencedRelation: 'scans';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'scan_results_link_id_fkey';
+            columns: ['link_id'];
+            isOneToOne: false;
+            referencedRelation: 'links';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       scan_events: {
         Row: {
@@ -208,6 +268,15 @@ export interface Database {
           message?: string;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'scan_events_scan_id_fkey';
+            columns: ['scan_id'];
+            isOneToOne: false;
+            referencedRelation: 'scans';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
     Views: Record<string, never>;

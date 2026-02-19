@@ -17,11 +17,26 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient();
 
-  // Get all verified sites with their user info
-  const { data: sites, error } = await supabase
+  // Get all verified sites with their user info.
+  // Supabase-js cannot infer !inner join shapes without Relationships in the
+  // generated schema type, so we cast to the known runtime shape here.
+  type SiteWithUser = {
+    id: string;
+    user_id: string;
+    domain: string;
+    sitemap_url: string | null;
+    verified_at: string | null;
+    created_at: string;
+    verify_token: string;
+    users: { id: string; stripe_price_id: string | null };
+  };
+  const { data: sites, error } = (await supabase
     .from('sites')
     .select('*, users!inner(id, stripe_price_id)')
-    .not('verified_at', 'is', null);
+    .not('verified_at', 'is', null)) as unknown as {
+    data: SiteWithUser[] | null;
+    error: { message: string } | null;
+  };
 
   if (error) {
     console.error('Error fetching sites:', error);
@@ -40,7 +55,7 @@ export async function GET(request: Request) {
 
     const batchResults = await Promise.allSettled(
       batch.map(async (site) => {
-        const userProfile = site.users as unknown as { id: string; stripe_price_id: string | null };
+        const userProfile = site.users;
         const plan = getUserPlan(userProfile?.stripe_price_id ?? null);
         const limits = getPlanLimits(plan);
 

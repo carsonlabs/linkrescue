@@ -1,8 +1,7 @@
-// This file should be auto-generated from Supabase CLI
-// Run: npx supabase gen types typescript --project-id <your-project-id> > src/schema.ts
-// For now, this is a stub.
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+export type IssueType = 'OK' | 'BROKEN_4XX' | 'SERVER_5XX' | 'TIMEOUT' | 'REDIRECT_TO_HOME' | 'LOST_PARAMS';
+export type ScanStatus = 'pending' | 'running' | 'completed' | 'failed';
 
 export interface Database {
   public: {
@@ -47,28 +46,28 @@ export interface Database {
           id: string;
           user_id: string;
           domain: string;
-          ownership_verified: boolean;
-          verification_token: string | null;
+          sitemap_url: string | null;
+          verify_token: string;
+          verified_at: string | null;
           created_at: string;
-          updated_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
           domain: string;
-          ownership_verified?: boolean;
-          verification_token?: string | null;
+          sitemap_url?: string | null;
+          verify_token?: string;
+          verified_at?: string | null;
           created_at?: string;
-          updated_at?: string;
         };
         Update: {
           id?: string;
           user_id?: string;
           domain?: string;
-          ownership_verified?: boolean;
-          verification_token?: string | null;
+          sitemap_url?: string | null;
+          verify_token?: string;
+          verified_at?: string | null;
           created_at?: string;
-          updated_at?: string;
         };
       };
       pages: {
@@ -76,83 +75,115 @@ export interface Database {
           id: string;
           site_id: string;
           url: string;
-          last_crawled_at: string | null;
+          last_fetched_at: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           site_id: string;
           url: string;
-          last_crawled_at?: string | null;
+          last_fetched_at?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           site_id?: string;
           url?: string;
-          last_crawled_at?: string | null;
+          last_fetched_at?: string | null;
           created_at?: string;
         };
       };
       links: {
         Row: {
           id: string;
+          site_id: string;
           page_id: string;
-          url: string;
-          status: 'ok' | 'broken' | 'redirected' | 'unknown';
-          http_code: number | null;
-          redirect_url: string | null;
-          last_checked_at: string | null;
-          created_at: string;
+          href: string;
+          is_affiliate: boolean;
+          first_seen_at: string;
         };
         Insert: {
           id?: string;
+          site_id: string;
           page_id: string;
-          url: string;
-          status?: 'ok' | 'broken' | 'redirected' | 'unknown';
-          http_code?: number | null;
-          redirect_url?: string | null;
-          last_checked_at?: string | null;
-          created_at?: string;
+          href: string;
+          is_affiliate?: boolean;
+          first_seen_at?: string;
         };
         Update: {
           id?: string;
+          site_id?: string;
           page_id?: string;
-          url?: string;
-          status?: 'ok' | 'broken' | 'redirected' | 'unknown';
-          http_code?: number | null;
-          redirect_url?: string | null;
-          last_checked_at?: string | null;
-          created_at?: string;
+          href?: string;
+          is_affiliate?: boolean;
+          first_seen_at?: string;
         };
       };
       scans: {
         Row: {
           id: string;
           site_id: string;
-          status: 'pending' | 'running' | 'completed' | 'failed';
+          status: ScanStatus;
           started_at: string | null;
-          completed_at: string | null;
+          finished_at: string | null;
+          pages_scanned: number;
+          links_checked: number;
           error_message: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           site_id: string;
-          status?: 'pending' | 'running' | 'completed' | 'failed';
+          status?: ScanStatus;
           started_at?: string | null;
-          completed_at?: string | null;
+          finished_at?: string | null;
+          pages_scanned?: number;
+          links_checked?: number;
           error_message?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           site_id?: string;
-          status?: 'pending' | 'running' | 'completed' | 'failed';
+          status?: ScanStatus;
           started_at?: string | null;
-          completed_at?: string | null;
+          finished_at?: string | null;
+          pages_scanned?: number;
+          links_checked?: number;
           error_message?: string | null;
           created_at?: string;
+        };
+      };
+      scan_results: {
+        Row: {
+          id: string;
+          scan_id: string;
+          link_id: string;
+          status_code: number | null;
+          final_url: string | null;
+          redirect_hops: number;
+          issue_type: IssueType;
+          checked_at: string;
+        };
+        Insert: {
+          id?: string;
+          scan_id: string;
+          link_id: string;
+          status_code?: number | null;
+          final_url?: string | null;
+          redirect_hops?: number;
+          issue_type?: IssueType;
+          checked_at?: string;
+        };
+        Update: {
+          id?: string;
+          scan_id?: string;
+          link_id?: string;
+          status_code?: number | null;
+          final_url?: string | null;
+          redirect_hops?: number;
+          issue_type?: IssueType;
+          checked_at?: string;
         };
       };
       scan_events: {
@@ -179,11 +210,11 @@ export interface Database {
         };
       };
     };
-    Views: {};
-    Functions: {};
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
     Enums: {
-      link_status: 'ok' | 'broken' | 'redirected' | 'unknown';
-      scan_status: 'pending' | 'running' | 'completed' | 'failed';
+      issue_type: IssueType;
+      scan_status: ScanStatus;
     };
   };
 }

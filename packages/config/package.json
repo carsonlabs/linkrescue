@@ -1,0 +1,6 @@
+{
+  "name": "@linkrescue/config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./typescript/base.json"
+}

@@ -1,11 +1,26 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../schema';
 
-export async function getPagesBySiteId(
-  supabase: SupabaseClient<Database>,
-  siteId: string
-) {
+type DbClient = SupabaseClient<Database>;
+
+export async function getPagesBySiteId(supabase: DbClient, siteId: string) {
   return supabase.from('pages').select('*').eq('site_id', siteId);
 }
 
-// TODO: Add more query functions as needed
+export async function upsertPage(
+  supabase: DbClient,
+  data: { site_id: string; url: string }
+) {
+  return supabase
+    .from('pages')
+    .upsert(data, { onConflict: 'site_id,url' })
+    .select()
+    .single();
+}
+
+export async function updatePageFetchedAt(supabase: DbClient, pageId: string) {
+  return supabase
+    .from('pages')
+    .update({ last_fetched_at: new Date().toISOString() })
+    .eq('id', pageId);
+}

@@ -1,9 +1,9 @@
 export interface Site {
   id: string;
-  userId: string;
+  user_id: string;
   domain: string;
-  ownershipVerified: boolean;
-  verificationToken: string | null;
-  createdAt: string;
-  updatedAt: string;
+  sitemap_url: string | null;
+  verify_token: string;
+  verified_at: string | null;
+  created_at: string;
 }

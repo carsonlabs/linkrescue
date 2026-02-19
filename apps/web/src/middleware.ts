@@ -1,6 +1,9 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+const protectedPaths = ['/sites', '/settings'];
+const authPaths = ['/login', '/signup'];
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -17,51 +20,44 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          request.cookies.set({ name, value, ...options });
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          request.cookies.set({ name, value: '', ...options });
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          response.cookies.set({ name, value: '', ...options });
         },
       },
     }
   );
 
-  // TODO: Implement auth check for protected routes
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const path = request.nextUrl.pathname;
+
+  // Redirect to dashboard if logged in user visits root
+  if (path === '/' && user) {
+    return NextResponse.redirect(new URL('/sites', request.url));
+  }
+
   // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith('/sites') && !user) {
+  const isProtected = protectedPaths.some((p) => path.startsWith(p));
+  if (isProtected && !user) {
     return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  // Redirect authenticated users away from auth pages
+  const isAuth = authPaths.some((p) => path.startsWith(p));
+  if (isAuth && user) {
+    return NextResponse.redirect(new URL('/sites', request.url));
   }
 
   return response;
@@ -69,6 +65,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

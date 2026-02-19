@@ -1,0 +1,22 @@
+{
+  "name": "@linkrescue/email",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@linkrescue/types": "workspace:*",
+    "@react-email/components": "^0.0.15",
+    "react": "^18.2.0",
+    "resend": "^3.2.0"
+  },
+  "devDependencies": {
+    "@linkrescue/config": "workspace:*",
+    "@types/node": "^20.11.17",
+    "@types/react": "^18.2.55",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@linkrescue/crawler",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@linkrescue/types": "workspace:*",
+    "cheerio": "^1.0.0-rc.12",
+    "fast-xml-parser": "^4.3.5"
+  },
+  "devDependencies": {
+    "@linkrescue/config": "workspace:*",
+    "@types/node": "^20.11.17",
+    "typescript": "^5.3.3"
+  }
+}

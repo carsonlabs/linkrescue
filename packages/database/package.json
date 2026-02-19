@@ -1,0 +1,18 @@
+{
+  "name": "@linkrescue/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@linkrescue/types": "workspace:*",
+    "@supabase/supabase-js": "^2.39.7"
+  },
+  "devDependencies": {
+    "@linkrescue/config": "workspace:*",
+    "typescript": "^5.3.3"
+  }
+}

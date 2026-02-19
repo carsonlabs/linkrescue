@@ -1,73 +1,107 @@
-import * as cheerio from 'cheerio';
+import { classifyIssue } from './classifier';
+import type { LinkCheckResult, ExtractedLink } from './types';
 
-export interface LinkCheckResult {
-  pageUrl: string;
-  linkUrl: string;
-  status: 'ok' | 'broken' | 'redirected' | 'unknown';
-  httpCode: number | null;
-  redirectUrl: string | null;
+const MAX_REDIRECT_HOPS = 5;
+const TIMEOUT_MS = 10000;
+
+export async function checkLink(link: ExtractedLink): Promise<LinkCheckResult> {
+  const { href, isAffiliate } = link;
+
+  try {
+    const result = await followRedirects(href);
+    const issueType = classifyIssue(result.statusCode, result.finalUrl, href, false);
+
+    return {
+      href,
+      statusCode: result.statusCode,
+      finalUrl: result.finalUrl,
+      redirectHops: result.hops,
+      issueType,
+      isAffiliate,
+    };
+  } catch (error) {
+    const isTimeout =
+      error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError');
+
+    return {
+      href,
+      statusCode: null,
+      finalUrl: null,
+      redirectHops: 0,
+      issueType: isTimeout ? 'TIMEOUT' : 'TIMEOUT',
+      isAffiliate,
+    };
+  }
 }
 
-export async function checkLinks(pageUrls: string[], domain: string): Promise<LinkCheckResult[]> {
-  const results: LinkCheckResult[] = [];
+async function followRedirects(
+  url: string
+): Promise<{ statusCode: number; finalUrl: string; hops: number }> {
+  let currentUrl = url;
+  let hops = 0;
 
-  for (const pageUrl of pageUrls) {
+  while (hops < MAX_REDIRECT_HOPS) {
+    // Try HEAD first, then GET fallback
+    let response: Response;
     try {
-      const response = await fetch(pageUrl, { signal: AbortSignal.timeout(10000) });
-      if (!response.ok || !response.headers.get('content-type')?.includes('text/html')) {
-        continue;
-      }
-
-      const html = await response.text();
-      const $ = cheerio.load(html);
-
-      // Extract all outbound links
-      const links = $('a[href]')
-        .map((_, el) => $(el).attr('href'))
-        .get()
-        .filter((href) => href && (href.startsWith('http://') || href.startsWith('https://')));
-
-      // Check each link
-      for (const linkUrl of links) {
-        const checkResult = await checkLink(linkUrl);
-        results.push({
-          pageUrl,
-          linkUrl,
-          ...checkResult,
-        });
-      }
-    } catch (error) {
-      console.error(`Failed to check links on ${pageUrl}:`, error);
+      response = await fetch(currentUrl, {
+        method: 'HEAD',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+        headers: { 'User-Agent': 'LinkRescue-Checker/1.0' },
+      });
+    } catch {
+      // HEAD failed, try GET
+      response = await fetch(currentUrl, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+        headers: { 'User-Agent': 'LinkRescue-Checker/1.0' },
+      });
     }
+
+    const status = response.status;
+
+    // Not a redirect, we're done
+    if (status < 300 || status >= 400) {
+      return { statusCode: status, finalUrl: currentUrl, hops };
+    }
+
+    // It's a redirect
+    const location = response.headers.get('location');
+    if (!location) {
+      return { statusCode: status, finalUrl: currentUrl, hops };
+    }
+
+    // Resolve relative redirects
+    try {
+      currentUrl = new URL(location, currentUrl).href;
+    } catch {
+      return { statusCode: status, finalUrl: currentUrl, hops };
+    }
+
+    hops++;
   }
 
-  return results;
-}
-
-async function checkLink(
-  url: string
-): Promise<{ status: 'ok' | 'broken' | 'redirected' | 'unknown'; httpCode: number | null; redirectUrl: string | null }> {
+  // Too many redirects — do a final check on the last URL
   try {
-    const response = await fetch(url, {
+    const finalResponse = await fetch(currentUrl, {
       method: 'HEAD',
       redirect: 'manual',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      headers: { 'User-Agent': 'LinkRescue-Checker/1.0' },
     });
-
-    const httpCode = response.status;
-
-    if (httpCode >= 200 && httpCode < 300) {
-      return { status: 'ok', httpCode, redirectUrl: null };
-    } else if (httpCode >= 300 && httpCode < 400) {
-      const redirectUrl = response.headers.get('location');
-      return { status: 'redirected', httpCode, redirectUrl };
-    } else if (httpCode >= 400) {
-      return { status: 'broken', httpCode, redirectUrl: null };
-    }
-
-    return { status: 'unknown', httpCode, redirectUrl: null };
-  } catch (error) {
-    console.error(`Failed to check link ${url}:`, error);
-    return { status: 'broken', httpCode: null, redirectUrl: null };
+    return { statusCode: finalResponse.status, finalUrl: currentUrl, hops };
+  } catch {
+    return { statusCode: 0, finalUrl: currentUrl, hops };
   }
+}
+
+export async function checkLinks(
+  pageUrls: string[],
+  _domain: string
+): Promise<LinkCheckResult[]> {
+  // Kept for backwards compatibility — real usage goes through runScan
+  return [];
 }

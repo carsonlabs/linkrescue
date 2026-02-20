@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from 'cheerio/slim';
 import { isAffiliateLink } from './classifier';
 import type { ExtractedLink } from './types';
 

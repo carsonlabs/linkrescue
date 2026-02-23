@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
 import { SiteCard } from '@/components/dashboard/site-card';
+import { Globe, Plus } from 'lucide-react';
 
 export default async function SitesListPage() {
   const supabase = createClient();
@@ -24,21 +25,30 @@ export default async function SitesListPage() {
       const { data: latestScan } = await getLatestScan(supabase, site.id);
       const issueCounts = await getIssueCountsForSite(supabase, site.id);
       return { site, latestScan, issueCounts };
-    })
+    }),
   );
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Your Sites</h1>
+        <div>
+          <h1 className="text-2xl font-bold">Your Sites</h1>
+          <p className="text-muted-foreground text-sm mt-0.5">
+            {siteData.length === 0
+              ? 'Add your first site to start monitoring.'
+              : `Monitoring ${siteData.length} site${siteData.length !== 1 ? 's' : ''}`}
+          </p>
+        </div>
         <Link
           href="/sites/new"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold hover:opacity-90"
+          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
         >
+          <Plus className="w-4 h-4" />
           Add Site
         </Link>
       </div>
-      <div className="grid gap-4">
+
+      <div className="grid gap-3">
         {siteData.map(({ site, latestScan, issueCounts }) => (
           <SiteCard
             key={site.id}
@@ -47,16 +57,23 @@ export default async function SitesListPage() {
             issueCount={issueCounts.total}
           />
         ))}
+
         {sites?.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              No sites yet. Add your first site to get started!
+          <div className="border-2 border-dashed rounded-xl p-12 text-center">
+            <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <h2 className="font-semibold text-lg mb-2">No sites yet</h2>
+            <p className="text-muted-foreground text-sm mb-6 max-w-sm mx-auto">
+              Add your first site to start monitoring affiliate links. Verification takes less than a
+              minute.
             </p>
             <Link
               href="/sites/new"
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold hover:opacity-90"
+              className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-opacity"
             >
-              Add Site
+              <Plus className="w-4 h-4" />
+              Add your first site
             </Link>
           </div>
         )}

@@ -1,4 +1,4 @@
-import type { OrgRole } from '@linkrescue/database';
+import type { OrgRole, Database } from '@linkrescue/database';
 
 const ROLE_HIERARCHY: Record<OrgRole, number> = {
   viewer: 0,
@@ -26,12 +26,14 @@ export async function requireOrgRole(
 
   if (org?.owner_id === userId) return true;
 
-  const { data: member } = await supabase
+  const { data: memberData } = await supabase
     .from('org_members')
     .select('role')
     .eq('org_id', orgId)
     .eq('user_id', userId)
     .single();
+
+  const member = memberData as Database['public']['Tables']['org_members']['Row'] | null;
 
   if (!member) return false;
   return ROLE_HIERARCHY[member.role] >= ROLE_HIERARCHY[minRole];

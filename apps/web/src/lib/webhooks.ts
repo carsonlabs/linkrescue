@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { createAdminClient, getWebhooksForEvent, touchWebhook } from '@linkrescue/database';
+import { createAdminClient, getWebhooksForEvent, touchWebhook, type Database } from '@linkrescue/database';
 import type { WebhookEvent, WebhookPayload } from '@linkrescue/types';
 
 export async function dispatchWebhook(
@@ -18,7 +18,7 @@ export async function dispatchWebhook(
   const body = JSON.stringify(payload);
 
   await Promise.allSettled(
-    hooks.map(async (hook) => {
+    hooks.map(async (hook: Database['public']['Tables']['webhooks']['Row']) => {
       const sig = crypto
         .createHmac('sha256', hook.secret)
         .update(body)

@@ -9,8 +9,28 @@ export interface User {
 }
 
 export const PLAN_LIMITS = {
-  free: { sites: 1, pagesPerScan: 50 },
-  pro: { sites: 5, pagesPerScan: 500 },
+  free: {
+    sites: 1,
+    pagesPerScan: 50,
+    guardianLinks: 3,
+    offers: 10,
+    redirectRules: 5,
+    orgsOwned: 0,
+    logSources: 0,
+    webhooks: 0,
+    aiMatchesPerScan: 0,
+  },
+  pro: {
+    sites: 5,
+    pagesPerScan: 500,
+    guardianLinks: 100,
+    offers: 500,
+    redirectRules: 200,
+    orgsOwned: 3,
+    logSources: 5,
+    webhooks: 10,
+    aiMatchesPerScan: 50,
+  },
 } as const;
 
 export type PlanType = 'free' | 'pro';

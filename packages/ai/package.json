@@ -1,0 +1,19 @@
+{
+  "name": "@linkrescue/ai",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@linkrescue/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@linkrescue/config": "workspace:*",
+    "@types/node": "^20.11.17",
+    "typescript": "^5.3.3"
+  }
+}

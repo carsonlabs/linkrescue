@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { runScan } from '@linkrescue/crawler';
-import { createAdminClient } from '@linkrescue/database';
+import { createAdminClient, computeNextRunAt } from '@linkrescue/database';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
 import { sendWeeklyDigest } from '@linkrescue/email';
+import type { ScanFrequency } from '@linkrescue/types';
 
 export const maxDuration = 300; // 5 minutes for Vercel Pro
 
@@ -117,7 +118,59 @@ export async function GET(request: Request) {
     }
   }
 
-  const succeeded = results.filter((r) => r.status === 'completed').length;
+  // --- Schedule-based scans ---
+  type ScheduleRow = {
+    id: string;
+    site_id: string;
+    frequency: ScanFrequency;
+    next_run_at: string;
+    sites: {
+      id: string;
+      user_id: string;
+      domain: string;
+      sitemap_url: string | null;
+      verified_at: string | null;
+      users: { id: string; stripe_price_id: string | null };
+    };
+  };
+
+  const { data: dueSchedules } = (await supabase
+    .from('scan_schedules')
+    .select('*, sites!inner(id, user_id, domain, sitemap_url, verified_at, users!inner(id, stripe_price_id))')
+    .lte('next_run_at', new Date().toISOString())) as unknown as {
+    data: ScheduleRow[] | null;
+  };
+
+  for (const schedule of dueSchedules ?? []) {
+    const site = schedule.sites;
+    if (!site.verified_at) continue;
+
+    const plan = getUserPlan(site.users?.stripe_price_id ?? null);
+    const limits = getPlanLimits(plan);
+
+    try {
+      await runScan({
+        siteId: site.id,
+        domain: site.domain,
+        sitemapUrl: site.sitemap_url,
+        maxPages: limits.pagesPerScan,
+        supabase,
+      });
+      results.push({ domain: site.domain, status: 'completed (scheduled)' });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      results.push({ domain: site.domain, status: 'failed', error: message });
+    }
+
+    // Update next_run_at regardless of outcome
+    const nextRunAt = computeNextRunAt(schedule.frequency);
+    await supabase
+      .from('scan_schedules')
+      .update({ next_run_at: nextRunAt, updated_at: new Date().toISOString() })
+      .eq('id', schedule.id);
+  }
+
+  const succeeded = results.filter((r) => r.status.startsWith('completed')).length;
   const failed = results.filter((r) => r.status === 'failed').length;
 
   return NextResponse.json({

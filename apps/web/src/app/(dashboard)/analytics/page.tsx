@@ -85,9 +85,9 @@ export default async function AnalyticsPage() {
             </thead>
             <tbody>
               {summary.byLink
-                .sort((a, b) => b.valueCents - a.valueCents)
+                .sort((a: { valueCents: number }, b: { valueCents: number }) => b.valueCents - a.valueCents)
                 .slice(0, 10)
-                .map((link) => (
+                .map((link: { id: string; slug: string; rescues: number; valueCents: number }) => (
                   <tr key={link.id} className="border-b last:border-0">
                     <td className="px-4 py-3 font-mono text-xs">{link.slug}</td>
                     <td className="px-4 py-3">{link.rescues}</td>

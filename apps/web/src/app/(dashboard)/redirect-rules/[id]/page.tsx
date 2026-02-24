@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
-import type { RedirectStatus } from '@linkrescue/database';
+import type { RedirectStatus, Database } from '@linkrescue/database';
 
 const statusColors: Record<RedirectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700',
@@ -15,8 +15,10 @@ export default async function RedirectRuleDetailPage({ params }: { params: { id:
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: rule } = await supabase
+  const { data: ruleData } = await supabase
     .from('redirect_rules').select('*').eq('id', params.id).single();
+  
+  const rule: Database['public']['Tables']['redirect_rules']['Row'] | null = ruleData;
   if (!rule || rule.user_id !== user.id) notFound();
 
   const [{ data: versions }, { data: approvalLog }] = await Promise.all([

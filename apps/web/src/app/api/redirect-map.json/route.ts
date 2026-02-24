@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const adminDb = createAdminClient();
 

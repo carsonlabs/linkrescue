@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getRevenueHistory, getRevenueTotals, getFinancialSummary } from '@linkrescue/database';
+import type { Database } from '@linkrescue/database';
 import RevenueChart from './RevenueChart';
 
 export default async function AnalyticsPage() {
@@ -8,11 +9,13 @@ export default async function AnalyticsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const [{ data: history }, totals, summary] = await Promise.all([
+  const [{ data: historyData }, totals, summary] = await Promise.all([
     getRevenueHistory(supabase, user.id, 90),
     getRevenueTotals(supabase, user.id),
     getFinancialSummary(supabase, user.id),
   ]);
+
+  const history: Database['public']['Tables']['revenue_history']['Row'][] = historyData ?? [];
 
   const { count: brokenCount } = await supabase
     .from('scan_results')

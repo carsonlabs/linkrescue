@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeftRight, Plus } from 'lucide-react';
-import type { RedirectStatus } from '@linkrescue/database';
+import type { RedirectStatus, Database } from '@linkrescue/database';
 
 const statusColors: Record<RedirectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700',
@@ -17,11 +17,13 @@ export default async function RedirectRulesPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: rules } = await supabase
+  const { data: rulesData } = await supabase
     .from('redirect_rules')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
+
+  const rules: Database['public']['Tables']['redirect_rules']['Row'][] | null = rulesData;
 
   return (
     <div>

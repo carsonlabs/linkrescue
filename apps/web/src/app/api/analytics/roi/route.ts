@@ -7,6 +7,22 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  // Get site IDs for the user
+  const { data: sites } = await supabase
+    .from('sites')
+    .select('id')
+    .eq('user_id', user.id);
+
+  const siteIds = sites?.map((s) => s.id) ?? [];
+
+  // Get scan IDs for those sites
+  const { data: scans } = await supabase
+    .from('scans')
+    .select('id')
+    .in('site_id', siteIds);
+
+  const scanIds = scans?.map((s) => s.id) ?? [];
+
   const [totals, { count: brokenLinks }, { count: activeGuardian }, { count: deployedRules }] =
     await Promise.all([
       getRevenueTotals(supabase, user.id),
@@ -14,7 +30,7 @@ export async function GET() {
         .from('scan_results')
         .select('*', { count: 'exact', head: true })
         .not('issue_type', 'eq', 'OK')
-        .in('scan_id', supabase.from('scans').select('id').in('site_id', supabase.from('sites').select('id').eq('user_id', user.id))),
+        .in('scan_id', scanIds),
       supabase
         .from('guardian_links')
         .select('*', { count: 'exact', head: true })

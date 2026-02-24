@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAdminClient } from '@linkrescue/database';
+import { createAdminClient, type Database } from '@linkrescue/database';
 import { runScan } from '@linkrescue/crawler';
 import { z } from 'zod';
 
@@ -17,11 +17,13 @@ export async function POST(request: Request) {
   const adminDb = createAdminClient();
 
   // Upsert email lead
-  const { data: lead, error: leadError } = await adminDb
+  const { data: leadData, error: leadError } = await adminDb
     .from('email_leads')
     .upsert({ email, wizard_progress: 0 }, { onConflict: 'email' })
     .select()
     .single();
+
+  const lead = leadData as Database['public']['Tables']['email_leads']['Row'] | null;
 
   if (leadError || !lead) {
     return NextResponse.json({ error: 'Failed to create lead' }, { status: 500 });
@@ -31,10 +33,10 @@ export async function POST(request: Request) {
   const domain = new URL(url).hostname;
 
   // Create a temporary site record (no user, admin-owned)
-  const { data: site, error: siteError } = await adminDb
+  const { data: siteData, error: siteError } = await adminDb
     .from('sites')
     .insert({
-      user_id: process.env.SUPABASE_SERVICE_ROLE_KEY ? lead.id : lead.id, // temporary placeholder
+      user_id: lead.id,
       domain,
       sitemap_url: null,
       verify_token: crypto.randomUUID(),
@@ -42,6 +44,8 @@ export async function POST(request: Request) {
     })
     .select()
     .single();
+
+  const site = siteData as Database['public']['Tables']['sites']['Row'] | null;
 
   if (siteError || !site) {
     return NextResponse.json({ error: 'Failed to create site' }, { status: 500 });

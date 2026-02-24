@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import type { Database } from '@linkrescue/database';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
 import { listLogSources, createLogSource, countLogSources } from '@linkrescue/database';
 import bcrypt from 'bcryptjs';
@@ -18,7 +19,7 @@ export async function GET() {
   const { data, error } = await listLogSources(supabase, user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   // Strip api_key_hash from response
-  return NextResponse.json((data ?? []).map(({ api_key_hash: _, ...rest }) => rest));
+  return NextResponse.json((data ?? []).map(({ api_key_hash: _, ...rest }: Database['public']['Tables']['log_sources']['Row']) => rest));
 }
 
 export async function POST(request: Request) {

@@ -59,7 +59,7 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
   let matchesCreated = 0;
 
   for (const result of brokenResults) {
-    const link = result.links as { href: string };
+    const link = result.links as unknown as { href: string };
     try {
       const analysis = await analyzeDeadLink(link.href);
       const matches = await matchOffers(analysis, offers);

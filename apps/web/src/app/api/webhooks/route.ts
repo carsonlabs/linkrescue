@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
+import type { Database } from '@linkrescue/database';
 import { listWebhooks, createWebhook, countWebhooks } from '@linkrescue/database';
 import { z } from 'zod';
 
@@ -19,7 +20,7 @@ export async function GET() {
   const { data, error } = await listWebhooks(supabase, user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   // Strip secret
-  return NextResponse.json((data ?? []).map(({ secret: _, ...rest }) => rest));
+  return NextResponse.json((data ?? []).map(({ secret: _, ...rest }: Database['public']['Tables']['webhooks']['Row']) => rest));
 }
 
 export async function POST(request: Request) {

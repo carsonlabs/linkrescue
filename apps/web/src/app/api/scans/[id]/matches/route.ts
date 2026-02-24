@@ -13,7 +13,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     .eq('id', params.id)
     .single();
 
-  if (!scan || (scan.sites as { user_id: string }).user_id !== user.id) {
+  if (!scan || (scan.sites as unknown as { user_id: string }).user_id !== user.id) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 

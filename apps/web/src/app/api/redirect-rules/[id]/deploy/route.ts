@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import type { Database } from '@linkrescue/database';
 import {
   getRedirectRule,
   updateRedirectRule,
@@ -21,8 +22,8 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
   // Re-run chain detection at deploy time (excluding this rule)
   const { data: deployed } = await getDeployedRules(supabase, user.id);
   const existingEdges = (deployed ?? [])
-    .filter((r) => r.from_url !== rule.from_url)
-    .map((r) => ({ from_url: r.from_url, to_url: r.to_url }));
+    .filter((r: { from_url: string; to_url: string }) => r.from_url !== rule.from_url)
+    .map((r: { from_url: string; to_url: string }) => ({ from_url: r.from_url, to_url: r.to_url }));
   const hasCycle = detectChain(existingEdges, { from_url: rule.from_url, to_url: rule.to_url });
   if (hasCycle) {
     return NextResponse.json({ error: 'Would create a redirect cycle' }, { status: 422 });

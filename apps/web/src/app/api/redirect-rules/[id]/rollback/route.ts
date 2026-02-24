@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import type { Database } from '@linkrescue/database';
 import {
   getRedirectRule,
   updateRedirectRule,
@@ -19,7 +20,7 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
 
   // Load previous version (version - 1)
   const { data: versions } = await listRuleVersions(supabase, params.id);
-  const previousVersion = (versions ?? []).find((v) => v.version === rule.version - 1);
+  const previousVersion = (versions ?? []).find((v: Database['public']['Tables']['redirect_rule_versions']['Row']) => v.version === rule.version - 1);
 
   try {
     const fsm = new RedirectFSM(rule.status);

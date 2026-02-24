@@ -95,7 +95,7 @@ export default async function RedirectRuleDetailPage({ params }: { params: { id:
               </tr>
             </thead>
             <tbody>
-              {(versions ?? []).map((v) => (
+              {(versions ?? []).map((v: Database['public']['Tables']['redirect_rule_versions']['Row']) => (
                 <tr key={v.id} className="border-b last:border-0">
                   <td className="px-4 py-3">v{v.version}</td>
                   <td className="px-4 py-3">

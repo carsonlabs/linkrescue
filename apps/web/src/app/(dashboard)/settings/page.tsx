@@ -4,6 +4,8 @@ import { TestEmailButton } from '@/components/dashboard/test-email-button';
 import Link from 'next/link';
 import { User, CreditCard, Bell, Crown } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SettingsPage() {
   const supabase = createClient();
   const {

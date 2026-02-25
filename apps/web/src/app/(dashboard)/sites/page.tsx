@@ -4,6 +4,8 @@ import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
 import { SiteCard } from '@/components/dashboard/site-card';
 import { Globe, Plus } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SitesListPage() {
   const supabase = createClient();
 

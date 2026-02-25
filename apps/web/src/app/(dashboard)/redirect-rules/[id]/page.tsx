@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import type { RedirectStatus, Database } from '@linkrescue/database';
 
+export const dynamic = 'force-dynamic';
+
 const statusColors: Record<RedirectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700',
   pending_approval: 'bg-yellow-100 text-yellow-800',

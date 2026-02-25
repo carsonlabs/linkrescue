@@ -6,6 +6,8 @@ import { IssuesTable } from '@/components/dashboard/issues-table';
 import { VerifyButton, ScanButton } from '@/components/dashboard/scan-status';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, Copy } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SiteDetailsPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
 

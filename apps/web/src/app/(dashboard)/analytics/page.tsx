@@ -4,6 +4,8 @@ import { getRevenueHistory, getRevenueTotals, getFinancialSummary } from '@linkr
 import type { Database } from '@linkrescue/database';
 import RevenueChart from './RevenueChart';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

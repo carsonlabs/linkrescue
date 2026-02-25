@@ -60,15 +60,131 @@ create table if not exists public.scans (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Scan issues table
-create table if not exists public.scan_issues (
+-- Pages table (stores crawled pages)
+create table if not exists public.pages (
+  id uuid default gen_random_uuid() primary key,
+  site_id uuid references public.sites(id) on delete cascade not null,
+  url text not null,
+  last_fetched_at timestamp with time zone,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(site_id, url)
+);
+
+-- Links table (stores outbound links found on pages)
+create table if not exists public.links (
+  id uuid default gen_random_uuid() primary key,
+  page_id uuid references public.pages(id) on delete cascade not null,
+  site_id uuid references public.sites(id) on delete cascade not null,
+  href text not null,
+  is_affiliate boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(page_id, href)
+);
+
+-- Scan results table (detailed results for each link checked)
+create table if not exists public.scan_results (
   id uuid default gen_random_uuid() primary key,
   scan_id uuid references public.scans(id) on delete cascade not null,
-  page_url text not null,
-  link_url text not null,
-  issue_type text not null check (issue_type in ('broken', 'redirect', 'timeout', 'lost_params')),
-  http_status integer,
+  link_id uuid references public.links(id) on delete cascade not null,
+  issue_type text check (issue_type in ('OK', 'BROKEN', 'TIMEOUT', 'REDIRECT', 'LOST_PARAMS')),
+  status_code integer,
+  final_url text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Matches table (AI-generated replacement offers for broken links)
+create table if not exists public.matches (
+  id uuid default gen_random_uuid() primary key,
+  scan_result_id uuid references public.scan_results(id) on delete cascade not null,
+  offer_id uuid references public.offers(id) on delete cascade not null,
+  match_score integer,
+  match_reason text,
+  status text default 'pending' check (status in ('pending', 'approved', 'rejected', 'applied')),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(scan_result_id, offer_id)
+);
+
+-- Offers table (affiliate offers for replacement suggestions)
+create table if not exists public.offers (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.users(id) on delete cascade not null,
+  title text not null,
+  url text not null,
+  topic text,
+  tags text[],
   affiliate_network text,
+  commission_rate decimal(5,2),
+  active boolean default true,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Redirect rules table (user-defined redirect mappings)
+create table if not exists public.redirect_rules (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.users(id) on delete cascade not null,
+  from_url text not null,
+  to_url text not null,
+  status text default 'draft' check (status in ('draft', 'pending_approval', 'approved', 'deployed', 'archived')),
+  http_status integer default 301,
+  notes text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Guardian settings table (monitoring configuration)
+create table if not exists public.guardian_settings (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.users(id) on delete cascade not null,
+  enabled boolean default true,
+  notify_email boolean default true,
+  notify_webhook boolean default false,
+  webhook_url text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(user_id)
+);
+
+-- Monitoring sources table (external monitoring integrations)
+create table if not exists public.monitoring_sources (
+  id uuid default gen_random_uuid() primary key,
+  site_id uuid references public.sites(id) on delete cascade not null,
+  type text not null check (type in ('ga4', 'search_console', 'amazon_api')),
+  name text not null,
+  credentials jsonb,
+  connected boolean default false,
+  last_sync_at timestamp with time zone,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Scan schedules table (for custom scan frequencies)
+create table if not exists public.scan_schedules (
+  id uuid default gen_random_uuid() primary key,
+  site_id uuid references public.sites(id) on delete cascade not null,
+  frequency text not null check (frequency in ('hourly', 'daily', 'weekly', 'monthly')),
+  next_run_at timestamp with time zone not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(site_id)
+);
+
+-- Stripe events table (for webhook idempotency)
+create table if not exists public.stripe_events (
+  id uuid default gen_random_uuid() primary key,
+  stripe_event_id text unique not null,
+  event_type text not null,
+  processed_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Scan events table (for logging scan progress)
+create table if not exists public.scan_events (
+  id uuid default gen_random_uuid() primary key,
+  scan_id uuid references public.scans(id) on delete cascade not null,
+  level text not null check (level in ('info', 'warn', 'error')),
+  message text not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -104,6 +220,56 @@ create table if not exists public.revenue_history (
 );
 ```
 
+### Create Indexes for Performance
+
+```sql
+-- User lookups
+CREATE INDEX idx_users_stripe_customer ON users(stripe_customer_id);
+
+-- Site queries
+CREATE INDEX idx_sites_user_id ON sites(user_id);
+CREATE INDEX idx_sites_verified ON sites(verified_at) WHERE verified_at IS NOT NULL;
+
+-- Page queries
+CREATE INDEX idx_pages_site_id ON pages(site_id);
+CREATE INDEX idx_pages_last_fetched ON pages(last_fetched_at);
+
+-- Link queries
+CREATE INDEX idx_links_page_id ON links(page_id);
+CREATE INDEX idx_links_affiliate ON links(is_affiliate) WHERE is_affiliate = true;
+
+-- Scan queries
+CREATE INDEX idx_scans_site_id ON scans(site_id);
+CREATE INDEX idx_scans_status ON scans(status);
+CREATE INDEX idx_scans_created ON scans(created_at DESC);
+
+-- Scan results queries
+CREATE INDEX idx_scan_results_scan_id ON scan_results(scan_id);
+CREATE INDEX idx_scan_results_issue ON scan_results(issue_type) WHERE issue_type != 'OK';
+CREATE INDEX idx_scan_results_link ON scan_results(link_id);
+
+-- Offer queries
+CREATE INDEX idx_offers_user_id ON offers(user_id);
+CREATE INDEX idx_offers_active ON offers(active) WHERE active = true;
+
+-- Match queries
+CREATE INDEX idx_matches_scan_result ON matches(scan_result_id);
+CREATE INDEX idx_matches_offer ON matches(offer_id);
+CREATE INDEX idx_matches_status ON matches(status);
+
+-- Redirect rule queries
+CREATE INDEX idx_redirect_rules_user ON redirect_rules(user_id);
+CREATE INDEX idx_redirect_rules_status ON redirect_rules(status);
+
+-- Organization queries
+CREATE INDEX idx_org_members_user ON organization_members(user_id);
+CREATE INDEX idx_org_members_org ON organization_members(organization_id);
+
+-- Monitoring queries
+CREATE INDEX idx_monitoring_sources_site ON monitoring_sources(site_id);
+CREATE INDEX idx_scan_schedules_next_run ON scan_schedules(next_run_at);
+```
+
 ## 4. Set Up Row Level Security (RLS)
 
 Enable RLS on all tables:
@@ -112,11 +278,20 @@ Enable RLS on all tables:
 -- Enable RLS
 alter table public.users enable row level security;
 alter table public.sites enable row level security;
+alter table public.pages enable row level security;
+alter table public.links enable row level security;
 alter table public.scans enable row level security;
-alter table public.scan_issues enable row level security;
+alter table public.scan_results enable row level security;
+alter table public.offers enable row level security;
+alter table public.matches enable row level security;
+alter table public.redirect_rules enable row level security;
+alter table public.guardian_settings enable row level security;
+alter table public.monitoring_sources enable row level security;
+alter table public.scan_schedules enable row level security;
 alter table public.organizations enable row level security;
 alter table public.organization_members enable row level security;
 alter table public.revenue_history enable row level security;
+alter table public.stripe_events enable row level security;
 ```
 
 ## 5. Create RLS Policies
@@ -194,6 +369,134 @@ create policy "Users can view org memberships"
 create policy "Users can view own revenue"
   on public.revenue_history for select
   using (user_id = auth.uid());
+
+-- Pages: Users can CRUD pages for their sites
+create policy "Users can view pages for own sites"
+  on public.pages for select
+  using (site_id in (select id from public.sites where user_id = auth.uid()));
+
+create policy "Users can create pages for own sites"
+  on public.pages for insert
+  with check (site_id in (select id from public.sites where user_id = auth.uid()));
+
+-- Links: Users can CRUD links for their pages
+create policy "Users can view links for own sites"
+  on public.links for select
+  using (page_id in (select p.id from public.pages p join public.sites s on p.site_id = s.id where s.user_id = auth.uid()));
+
+create policy "Users can create links for own sites"
+  on public.links for insert
+  with check (page_id in (select p.id from public.pages p join public.sites s on p.site_id = s.id where s.user_id = auth.uid()));
+
+-- Scan results: Users can view results for their scans
+create policy "Users can view scan results for own sites"
+  on public.scan_results for select
+  using (scan_id in (select sc.id from public.scans sc join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+create policy "Users can create scan results for own sites"
+  on public.scan_results for insert
+  with check (scan_id in (select sc.id from public.scans sc join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+-- Offers: Users can CRUD their own offers
+create policy "Users can view own offers"
+  on public.offers for select
+  using (user_id = auth.uid());
+
+create policy "Users can create offers"
+  on public.offers for insert
+  with check (user_id = auth.uid());
+
+create policy "Users can update own offers"
+  on public.offers for update
+  using (user_id = auth.uid());
+
+create policy "Users can delete own offers"
+  on public.offers for delete
+  using (user_id = auth.uid());
+
+-- Matches: Users can view matches for their scan results
+create policy "Users can view matches for own sites"
+  on public.matches for select
+  using (scan_result_id in (select sr.id from public.scan_results sr join public.scans sc on sr.scan_id = sc.id join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+create policy "Users can create matches for own sites"
+  on public.matches for insert
+  with check (scan_result_id in (select sr.id from public.scan_results sr join public.scans sc on sr.scan_id = sc.id join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+create policy "Users can update matches for own sites"
+  on public.matches for update
+  using (scan_result_id in (select sr.id from public.scan_results sr join public.scans sc on sr.scan_id = sc.id join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+-- Redirect rules: Users can CRUD their own redirect rules
+create policy "Users can view own redirect rules"
+  on public.redirect_rules for select
+  using (user_id = auth.uid());
+
+create policy "Users can create redirect rules"
+  on public.redirect_rules for insert
+  with check (user_id = auth.uid());
+
+create policy "Users can update own redirect rules"
+  on public.redirect_rules for update
+  using (user_id = auth.uid());
+
+create policy "Users can delete own redirect rules"
+  on public.redirect_rules for delete
+  using (user_id = auth.uid());
+
+-- Guardian settings: Users can CRUD their own settings
+create policy "Users can view own guardian settings"
+  on public.guardian_settings for select
+  using (user_id = auth.uid());
+
+create policy "Users can create guardian settings"
+  on public.guardian_settings for insert
+  with check (user_id = auth.uid());
+
+create policy "Users can update own guardian settings"
+  on public.guardian_settings for update
+  using (user_id = auth.uid());
+
+-- Monitoring sources: Users can CRUD sources for their sites
+create policy "Users can view monitoring sources for own sites"
+  on public.monitoring_sources for select
+  using (site_id in (select id from public.sites where user_id = auth.uid()));
+
+create policy "Users can create monitoring sources"
+  on public.monitoring_sources for insert
+  with check (site_id in (select id from public.sites where user_id = auth.uid()));
+
+create policy "Users can update monitoring sources for own sites"
+  on public.monitoring_sources for update
+  using (site_id in (select id from public.sites where user_id = auth.uid()));
+
+-- Scan schedules: Users can CRUD schedules for their sites
+create policy "Users can view scan schedules for own sites"
+  on public.scan_schedules for select
+  using (site_id in (select id from public.sites where user_id = auth.uid()));
+
+create policy "Users can create scan schedules"
+  on public.scan_schedules for insert
+  with check (site_id in (select id from public.sites where user_id = auth.uid()));
+
+create policy "Users can update scan schedules for own sites"
+  on public.scan_schedules for update
+  using (site_id in (select id from public.sites where user_id = auth.uid()));
+
+-- Stripe events: Service role only (users can't access)
+create policy "Service role can manage stripe events"
+  on public.stripe_events for all
+  using (false)
+  with check (false);
+
+-- Scan events: Users can view events for their scans
+create policy "Users can view scan events for own sites"
+  on public.scan_events for select
+  using (scan_id in (select sc.id from public.scans sc join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
+
+create policy "Users can create scan events for own sites"
+  on public.scan_events for insert
+  with check (scan_id in (select sc.id from public.scans sc join public.sites s on sc.site_id = s.id where s.user_id = auth.uid()));
 ```
 
 ## 6. Create Database Function for New Users

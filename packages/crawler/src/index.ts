@@ -119,7 +119,7 @@ export async function runScan(options: ScanOptions) {
       }
     }
 
-    // Mark scan as completed
+      // Mark scan as completed successfully
     await supabase
       .from('scans')
       .update({
@@ -138,6 +138,9 @@ export async function runScan(options: ScanOptions) {
     );
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Unknown error';
+    
+    // IMPORTANT: Always update scan status to 'failed' on error
+    // This ensures scans don't get stuck in 'running' state
     await supabase
       .from('scans')
       .update({

@@ -4,6 +4,8 @@ import { getUserPlan, PLAN_LIMITS } from '@linkrescue/types';
 import { CheckoutButton } from '@/components/checkout-button';
 import { CheckCircle2, ExternalLink } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PricingPage() {
   const supabase = createClient();
   const {

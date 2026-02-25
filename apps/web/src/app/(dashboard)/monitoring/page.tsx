@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Activity } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function MonitoringPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

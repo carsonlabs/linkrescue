@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ArrowLeftRight, Plus } from 'lucide-react';
 import type { RedirectStatus, Database } from '@linkrescue/database';
 
+export const dynamic = 'force-dynamic';
+
 const statusColors: Record<RedirectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700',
   pending_approval: 'bg-yellow-100 text-yellow-800',

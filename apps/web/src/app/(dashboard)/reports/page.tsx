@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { FileText, Download } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const reports = [
   {
     title: 'Broken Links Report',

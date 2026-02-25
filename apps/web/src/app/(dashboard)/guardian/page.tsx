@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, Plus, ExternalLink } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const statusColors: Record<string, string> = {
   active: 'bg-green-100 text-green-800',
   paused: 'bg-yellow-100 text-yellow-800',

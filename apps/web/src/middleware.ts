@@ -13,6 +13,7 @@ const protectedPaths = [
   '/monitoring',
   '/orgs',
   '/scans',
+  '/dashboard',
 ];
 const authPaths = ['/login', '/signup'];
 
@@ -60,6 +61,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/sites', request.url));
   }
 
+  // Redirect /dashboard to /dashboard/sites
+  if (path === '/dashboard' && user) {
+    return NextResponse.redirect(new URL('/dashboard/sites', request.url));
+  }
+
   // Protect dashboard routes
   const isProtected = protectedPaths.some((p) => path.startsWith(p));
   if (isProtected && !user) {
@@ -77,6 +83,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

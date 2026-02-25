@@ -15,6 +15,7 @@ import {
   Activity,
   Users,
 } from 'lucide-react';
+import { NavLink } from '@/components/ui';
 
 const navGroups = [
   {
@@ -79,14 +80,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 {group.label}
               </p>
               {group.items.map(({ href, label, icon: Icon }) => (
-                <Link
+                <NavLink
                   key={href}
                   href={href}
-                  className="flex items-center gap-2.5 px-3 py-2 text-sm rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  variant="sidebar"
+                  className="flex items-center gap-2.5"
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   {label}
-                </Link>
+                </NavLink>
               ))}
             </div>
           ))}
@@ -94,13 +96,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Bottom actions */}
         <div className="border-t px-2 py-3 space-y-0.5">
-          <Link
+          <NavLink
             href="/settings"
-            className="flex items-center gap-2.5 px-3 py-2 text-sm rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            variant="sidebar"
+            className="flex items-center gap-2.5"
           >
             <Settings className="w-4 h-4" />
             Settings
-          </Link>
+          </NavLink>
           <form action="/api/auth/signout" method="POST">
             <button
               type="submit"
@@ -114,7 +117,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto px-8 py-8">{children}</main>
+      <main className="flex-1 overflow-auto">
+        <div className="px-8 py-8 max-w-7xl mx-auto">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

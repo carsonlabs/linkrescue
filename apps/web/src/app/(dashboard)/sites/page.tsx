@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
 import { SiteCard } from '@/components/dashboard/site-card';
 import { Globe, Plus } from 'lucide-react';
+import { Button, Card } from '@/components/ui';
 
 export default async function SitesListPage() {
   const supabase = createClient();
@@ -39,13 +40,12 @@ export default async function SitesListPage() {
               : `Monitoring ${siteData.length} site${siteData.length !== 1 ? 's' : ''}`}
           </p>
         </div>
-        <Link
-          href="/sites/new"
-          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
-        >
-          <Plus className="w-4 h-4" />
-          Add Site
-        </Link>
+        <Button size="md" asChild>
+          <Link href="/sites/new">
+            <Plus className="w-4 h-4" />
+            Add Site
+          </Link>
+        </Button>
       </div>
 
       <div className="grid gap-3">
@@ -68,13 +68,12 @@ export default async function SitesListPage() {
               Add your first site to start monitoring affiliate links. Verification takes less than a
               minute.
             </p>
-            <Link
-              href="/sites/new"
-              className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            >
-              <Plus className="w-4 h-4" />
-              Add your first site
-            </Link>
+            <Button size="lg" asChild>
+              <Link href="/sites/new">
+                <Plus className="w-4 h-4" />
+                Add your first site
+              </Link>
+            </Button>
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CheckCircle2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
 import type { Database } from '@linkrescue/database';
+import { Badge } from '@/components/ui';
 
 type Site = Database['public']['Tables']['sites']['Row'];
 type Scan = Database['public']['Tables']['scans']['Row'];
@@ -39,15 +40,15 @@ export function SiteCard({
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="font-semibold text-base truncate">{site.domain}</h2>
             {site.verified_at ? (
-              <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex-shrink-0">
+              <Badge variant="success" size="sm">
                 <CheckCircle2 className="w-3 h-3" />
                 Verified
-              </span>
+              </Badge>
             ) : (
-              <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex-shrink-0">
+              <Badge variant="warning" size="sm">
                 <AlertCircle className="w-3 h-3" />
                 Not verified
-              </span>
+              </Badge>
             )}
           </div>
 

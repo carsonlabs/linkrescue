@@ -12,6 +12,7 @@ import {
   Clock,
   ExternalLink,
 } from 'lucide-react';
+import { Button, Badge } from '@/components/ui';
 
 const features = [
   {
@@ -129,19 +130,17 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
-            <Link
-              href="/signup"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            >
-              Start monitoring free
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/pricing"
-              className="inline-flex items-center justify-center bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            >
-              View pricing
-            </Link>
+            <Button size="lg" asChild>
+              <Link href="/signup">
+                Start monitoring free
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
+            <Button variant="secondary" size="lg" asChild>
+              <Link href="/pricing">
+                View pricing
+              </Link>
+            </Button>
           </div>
 
           {/* Dashboard Mockup */}
@@ -211,13 +210,9 @@ export default function HomePage() {
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">{site.domain}</span>
                             {site.verified ? (
-                              <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
-                                Verified
-                              </span>
+                              <Badge variant="success" size="sm">Verified</Badge>
                             ) : (
-                              <span className="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded-full">
-                                Unverified
-                              </span>
+                              <Badge variant="warning" size="sm">Unverified</Badge>
                             )}
                           </div>
                           <p className="text-xs text-muted-foreground mt-0.5">

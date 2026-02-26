@@ -3,7 +3,7 @@
   "buildCommand": "cd ../.. && pnpm build",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "framework": "nextjs",
-  "packageManager": "pnpm@8.15.4",
+  
   "crons": [
     {
       "path": "/api/cron/scan",

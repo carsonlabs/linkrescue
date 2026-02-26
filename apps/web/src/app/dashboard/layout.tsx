@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ExternalLink, LayoutDashboard, Globe, Mail, Settings, LogOut, User } from 'lucide-react';
+import { ExternalLink, LayoutDashboard, Globe, Bell, Settings, LogOut, User } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -19,15 +19,12 @@ export default function DashboardLayout({
             <span className="font-display font-bold text-lg tracking-tight">LinkRescue</span>
           </Link>
 
-          {/* Navigation */}
+          {/* Navigation - MVP: Simplified nav */}
           <nav className="space-y-1">
-            <NavLink href="/dashboard" icon={LayoutDashboard}>
-              Dashboard
-            </NavLink>
-            <NavLink href="/dashboard/sites" icon={Globe} active>
+            <NavLink href="/sites" icon={Globe}>
               Sites
             </NavLink>
-            <NavLink href="/dashboard/alerts" icon={Mail}>
+            <NavLink href="/dashboard/alerts" icon={Bell}>
               Alerts
             </NavLink>
             <NavLink href="/dashboard/settings" icon={Settings}>
@@ -44,10 +41,10 @@ export default function DashboardLayout({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">Account</p>
-              <p className="text-xs text-slate-500 truncate">Free plan</p>
+              <p className="text-xs text-slate-500 truncate">Solo plan</p>
             </div>
           </div>
-          <form action="/auth/signout" method="post">
+          <form action="/api/auth/signout" method="post">
             <button
               type="submit"
               className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
@@ -69,8 +66,11 @@ export default function DashboardLayout({
             <span className="font-display font-bold">LinkRescue</span>
           </Link>
           <nav className="flex items-center gap-4 text-sm">
-            <Link href="/dashboard/sites" className="text-slate-400 hover:text-white">
+            <Link href="/sites" className="text-slate-400 hover:text-white">
               Sites
+            </Link>
+            <Link href="/dashboard/alerts" className="text-slate-400 hover:text-white">
+              Alerts
             </Link>
             <Link href="/dashboard/settings" className="text-slate-400 hover:text-white">
               Settings

@@ -136,6 +136,25 @@ export async function runScan(options: ScanOptions) {
       'info',
       `Scan completed: ${pagesScanned} pages, ${linksChecked} links checked`
     );
+
+    // Trigger immediate alert for broken affiliate links
+    // This runs async - we don't await it to not block the scan completion
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://linkrescue.io';
+    import('@linkrescue/email').then(({ triggerImmediateAlert }) => {
+      triggerImmediateAlert({
+        scanId,
+        siteId: options.siteId,
+        supabase,
+        appUrl,
+      }).then((result) => {
+        if (result?.sent) {
+          logEvent(supabase, scanId, 'info', `Immediate alert sent for ${result.brokenLinkCount} broken links`);
+        }
+      }).catch((err) => {
+        logEvent(supabase, scanId, 'warn', `Failed to send immediate alert: ${err.message}`);
+      });
+    });
+  }
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Unknown error';
     await supabase

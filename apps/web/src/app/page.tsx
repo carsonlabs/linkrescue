@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -11,8 +13,10 @@ import {
   TrendingDown,
   Clock,
   ExternalLink,
+  Plus,
+  ChevronRight,
 } from 'lucide-react';
-import { Button, Badge } from '@/components/ui';
+import { useEffect, useRef, useState } from 'react';
 
 const features = [
   {
@@ -20,36 +24,42 @@ const features = [
     title: 'Deep Link Scanning',
     description:
       'Crawls every page of your site and checks every outbound link — not just your sitemap.',
+    color: 'green',
   },
   {
     icon: AlertTriangle,
     title: 'Broken Link Detection',
     description:
       'Catches 4xx errors, 5xx server failures, timeouts, and unexpected redirects before readers hit them.',
+    color: 'purple',
   },
   {
     icon: TrendingDown,
     title: 'Affiliate-Aware',
     description:
       'Detects when affiliate tracking parameters are stripped by redirects, protecting your commissions.',
+    color: 'green',
   },
   {
     icon: Mail,
     title: 'Email Digests',
     description:
       'Get a weekly summary of all new issues with direct links to the affected pages so you can fix fast.',
+    color: 'purple',
   },
   {
     icon: Shield,
     title: 'Site Verification',
     description:
       'Ownership verification via meta tag keeps your account secure and prevents unauthorized scans.',
+    color: 'green',
   },
   {
     icon: Zap,
     title: 'Daily Automatic Scans',
     description:
       'Set it and forget it. LinkRescue scans your sites every night and only notifies you when something breaks.',
+    color: 'purple',
   },
 ];
 
@@ -73,264 +83,321 @@ const steps = [
 ];
 
 export default function HomePage() {
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Parallax effect for floating elements
+  const parallaxOffset = scrollY * 0.2;
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      {/* Navigation - Glassmorphism */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
-              <ExternalLink className="w-4 h-4 text-primary-foreground" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
+              <ExternalLink className="w-4 h-4 text-slate-900" />
             </div>
-            <span className="font-bold text-lg">LinkRescue</span>
+            <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
           </Link>
-          <div className="hidden md:flex items-center gap-6 text-sm">
-            <Link href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+          <div className="hidden md:flex items-center gap-8 text-sm">
+            <Link href="#features" className="text-slate-400 hover:text-white transition-colors">
               Features
             </Link>
-            <Link href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#how-it-works" className="text-slate-400 hover:text-white transition-colors">
               How it works
             </Link>
-            <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#pricing" className="text-slate-400 hover:text-white transition-colors">
               Pricing
             </Link>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden sm:block text-sm text-slate-400 hover:text-white transition-colors"
             >
               Sign in
             </Link>
-            <Link
-              href="/signup"
-              className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity"
-            >
-              Get started free
+            <Link href="/signup" className="btn-primary text-sm">
+              Get started
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-accent/30 to-background pt-20 pb-16 md:pt-28 md:pb-24">
-        <div className="container mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-accent text-accent-foreground text-xs font-medium px-3 py-1.5 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-            Built for affiliate bloggers & content creators
-          </div>
+      {/* Hero Section - Asymmetric Layout */}
+      <section ref={heroRef} className="relative min-h-screen pt-24 pb-20 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+        <div 
+          className="absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full opacity-20"
+          style={{
+            background: 'radial-gradient(circle, hsl(145 100% 55%) 0%, transparent 70%)',
+            transform: `translateY(${parallaxOffset}px)`,
+          }}
+        />
+        <div 
+          className="absolute bottom-1/4 -left-40 w-[500px] h-[500px] rounded-full opacity-15"
+          style={{
+            background: 'radial-gradient(circle, hsl(265 60% 50%) 0%, transparent 70%)',
+            transform: `translateY(${-parallaxOffset * 0.5}px)`,
+          }}
+        />
 
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-3xl mx-auto leading-tight">
-            Stop losing revenue to{' '}
-            <span className="text-primary">broken affiliate links</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            LinkRescue scans your entire site daily and alerts you the moment an affiliate link
-            breaks, expires, or redirects incorrectly. Fix issues before they cost you commissions.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
-            <Button size="lg" asChild>
-              <Link href="/signup">
-                Start monitoring free
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Button>
-            <Button variant="secondary" size="lg" asChild>
-              <Link href="/pricing">
-                View pricing
-              </Link>
-            </Button>
-          </div>
-
-          {/* Dashboard Mockup */}
-          <div className="relative mx-auto max-w-4xl">
-            <div className="rounded-xl border shadow-2xl bg-card overflow-hidden">
-              {/* Mockup header bar */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/40">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
-                </div>
-                <div className="flex-1 mx-4">
-                  <div className="bg-background border rounded-md px-3 py-1 text-xs text-muted-foreground max-w-xs mx-auto text-center">
-                    link-rescue.vercel.app/sites
-                  </div>
-                </div>
+        <div className="container mx-auto px-6 relative">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center min-h-[calc(100vh-8rem)]">
+            {/* Left Column - Text */}
+            <div className="space-y-8 lg:pr-8">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 badge-green">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                Built for affiliate marketers
               </div>
 
-              {/* Mockup content */}
-              <div className="flex text-left">
-                {/* Sidebar */}
-                <div className="w-48 border-r bg-muted/20 p-4 hidden md:block">
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
-                      <ExternalLink className="w-3 h-3 text-primary-foreground" />
-                    </div>
-                    <span className="font-bold text-sm">LinkRescue</span>
-                  </div>
-                  <nav className="space-y-1 text-sm">
-                    <div className="flex items-center gap-2 px-2 py-1.5 bg-accent text-accent-foreground rounded-md font-medium">
-                      <Globe className="w-4 h-4" />
-                      Sites
-                    </div>
-                    <div className="flex items-center gap-2 px-2 py-1.5 text-muted-foreground rounded-md">
-                      <Mail className="w-4 h-4" />
-                      Alerts
-                    </div>
-                    <div className="flex items-center gap-2 px-2 py-1.5 text-muted-foreground rounded-md">
-                      <Shield className="w-4 h-4" />
-                      Settings
-                    </div>
-                  </nav>
+              {/* Headline */}
+              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
+                Stop losing revenue to{' '}
+                <span className="text-gradient">broken links</span>
+              </h1>
+
+              {/* Subhead */}
+              <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed">
+                LinkRescue scans your entire site daily and alerts you the moment an affiliate link
+                breaks, expires, or redirects incorrectly. Fix issues before they cost you commissions.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/signup" className="btn-primary justify-center">
+                  Start monitoring free
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link href="#features" className="btn-secondary justify-center">
+                  See how it works
+                </Link>
+              </div>
+
+              {/* Social Proof */}
+              <div className="flex items-center gap-6 pt-4">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="w-10 h-10 rounded-full border-2 border-slate-900 bg-gradient-to-br from-slate-700 to-slate-600"
+                    />
+                  ))}
                 </div>
-
-                {/* Main content */}
-                <div className="flex-1 p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-sm">Your Sites</h2>
-                    <div className="text-xs bg-primary text-primary-foreground px-3 py-1 rounded-md font-medium">
-                      + Add Site
-                    </div>
-                  </div>
-
-                  {/* Site cards */}
-                  <div className="space-y-2">
-                    {[
-                      { domain: 'my-affiliate-blog.com', issues: 12, pages: 847, verified: true },
-                      { domain: 'deals.example.com', issues: 3, pages: 234, verified: true },
-                      { domain: 'review-site.io', issues: 0, pages: 156, verified: false },
-                    ].map((site) => (
-                      <div
-                        key={site.domain}
-                        className="border rounded-lg p-3 flex items-center justify-between hover:bg-muted/30 cursor-pointer"
-                      >
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium">{site.domain}</span>
-                            {site.verified ? (
-                              <Badge variant="success" size="sm">Verified</Badge>
-                            ) : (
-                              <Badge variant="warning" size="sm">Unverified</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {site.pages} pages · Last scanned today
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          {site.issues > 0 ? (
-                            <>
-                              <span className="text-base font-bold text-destructive">
-                                {site.issues}
-                              </span>
-                              <p className="text-xs text-muted-foreground">issues</p>
-                            </>
-                          ) : (
-                            <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              All good
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Issues table preview */}
-                  <div className="mt-4 border rounded-lg overflow-hidden">
-                    <div className="bg-muted/40 px-3 py-2 text-xs font-medium text-muted-foreground flex gap-4">
-                      <span className="flex-1">Broken Link</span>
-                      <span className="w-24">Type</span>
-                      <span className="w-16">Code</span>
-                    </div>
-                    {[
-                      {
-                        url: 'amzn.to/3abc123',
-                        type: '4xx Broken',
-                        code: '404',
-                        color: 'bg-red-100 text-red-700',
-                      },
-                      {
-                        url: 'shareasale.com/r/xyz...',
-                        type: 'Lost Params',
-                        code: '301',
-                        color: 'bg-blue-100 text-blue-700',
-                      },
-                      {
-                        url: 'partner.shop/deal-...',
-                        type: 'Redirect →Home',
-                        code: '302',
-                        color: 'bg-purple-100 text-purple-700',
-                      },
-                    ].map((row, i) => (
-                      <div
-                        key={i}
-                        className="px-3 py-2 text-xs border-t flex gap-4 items-center hover:bg-muted/20"
-                      >
-                        <span className="flex-1 text-blue-600 truncate font-mono">{row.url}</span>
-                        <span className={`w-24 px-1.5 py-0.5 rounded-full text-center ${row.color}`}>
-                          {row.type}
-                        </span>
-                        <span className="w-16 text-muted-foreground">{row.code}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="text-sm">
+                  <span className="text-white font-semibold">1,000+</span>
+                  <span className="text-slate-500"> sites protected</span>
                 </div>
               </div>
             </div>
-            {/* Glow effect */}
-            <div className="absolute -inset-4 bg-primary/5 rounded-2xl -z-10 blur-2xl" />
+
+            {/* Right Column - Dashboard Mockup */}
+            <div className="relative lg:pl-8">
+              <div 
+                className="relative float"
+                style={{ transform: `translateY(${parallaxOffset * 0.3}px)` }}
+              >
+                {/* Glow Behind */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
+                
+                {/* Dashboard Card */}
+                <div className="relative glass-card overflow-hidden">
+                  {/* Header Bar */}
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/5">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    </div>
+                    <div className="flex-1 mx-4">
+                      <div className="bg-slate-800/50 border border-white/10 rounded-md px-3 py-1 text-xs text-slate-500 text-center max-w-xs mx-auto">
+                        linkrescue.io/dashboard
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex text-left">
+                    {/* Sidebar */}
+                    <div className="w-44 border-r border-white/5 bg-white/5 p-4 hidden md:block">
+                      <div className="flex items-center gap-2 mb-6">
+                        <div className="w-5 h-5 rounded bg-green-500 flex items-center justify-center">
+                          <ExternalLink className="w-3 h-3 text-slate-900" />
+                        </div>
+                        <span className="font-semibold text-sm">LinkRescue</span>
+                      </div>
+                      <nav className="space-y-1 text-sm">
+                        <div className="flex items-center gap-2 px-2 py-1.5 bg-green-500/10 text-green-400 rounded-md font-medium border border-green-500/20">
+                          <Globe className="w-4 h-4" />
+                          Sites
+                        </div>
+                        <div className="flex items-center gap-2 px-2 py-1.5 text-slate-500 rounded-md">
+                          <Mail className="w-4 h-4" />
+                          Alerts
+                        </div>
+                        <div className="flex items-center gap-2 px-2 py-1.5 text-slate-500 rounded-md">
+                          <Shield className="w-4 h-4" />
+                          Settings
+                        </div>
+                      </nav>
+                    </div>
+
+                    {/* Main */}
+                    <div className="flex-1 p-5">
+                      <div className="flex items-center justify-between mb-5">
+                        <h2 className="font-semibold text-sm">Your Sites</h2>
+                        <div className="text-xs bg-green-500 text-slate-900 px-3 py-1.5 rounded-md font-semibold flex items-center gap-1">
+                          <Plus className="w-3.5 h-3.5" />
+                          Add Site
+                        </div>
+                      </div>
+
+                      {/* Site Cards */}
+                      <div className="space-y-2.5">
+                        {[
+                          { domain: 'my-affiliate-blog.com', issues: 12, pages: 847, verified: true },
+                          { domain: 'deals.example.com', issues: 3, pages: 234, verified: true },
+                          { domain: 'review-site.io', issues: 0, pages: 156, verified: false },
+                        ].map((site) => (
+                          <div
+                            key={site.domain}
+                            className="border border-white/10 rounded-lg p-3.5 flex items-center justify-between hover:border-green-500/30 hover:bg-green-500/5 cursor-pointer transition-all"
+                          >
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium">{site.domain}</span>
+                                {site.verified ? (
+                                  <span className="badge-green text-[10px] px-2 py-0.5">Verified</span>
+                                ) : (
+                                  <span className="badge-amber text-[10px] px-2 py-0.5">Unverified</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-500 mt-1">
+                                {site.pages} pages · Last scanned today
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              {site.issues > 0 ? (
+                                <>
+                                  <span className="text-lg font-bold text-red-400">
+                                    {site.issues}
+                                  </span>
+                                  <p className="text-xs text-slate-500">issues</p>
+                                </>
+                              ) : (
+                                <span className="text-xs text-green-400 font-medium flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  All good
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Issues Table */}
+                      <div className="mt-4 border border-white/10 rounded-lg overflow-hidden">
+                        <div className="bg-white/5 px-3 py-2 text-xs font-medium text-slate-500 flex gap-4">
+                          <span className="flex-1">Broken Link</span>
+                          <span className="w-24">Type</span>
+                          <span className="w-16">Code</span>
+                        </div>
+                        {[
+                          { url: 'amzn.to/3abc123', type: '4xx Broken', code: '404', color: 'text-red-400 bg-red-500/10' },
+                          { url: 'shareasale.com/r/xyz...', type: 'Lost Params', code: '301', color: 'text-blue-400 bg-blue-500/10' },
+                          { url: 'partner.shop/deal-...', type: 'Redirect', code: '302', color: 'text-purple-400 bg-purple-500/10' },
+                        ].map((row, i) => (
+                          <div
+                            key={i}
+                            className="px-3 py-2 text-xs border-t border-white/5 flex gap-4 items-center hover:bg-white/5"
+                          >
+                            <span className="flex-1 text-green-400/80 truncate font-mono">{row.url}</span>
+                            <span className={`w-24 px-1.5 py-0.5 rounded text-center ${row.color}`}>
+                              {row.type}
+                            </span>
+                            <span className="w-16 text-slate-500">{row.code}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scanning Animation */}
+                  <div className="scan-line" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="border-y bg-muted/30 py-12">
+      {/* Stats Section */}
+      <section className="relative py-16 border-y border-white/5 bg-white/[0.02]">
         <div className="container mx-auto px-6">
-          <p className="text-center text-sm text-muted-foreground mb-8 font-medium uppercase tracking-wider">
-            Built to solve real affiliate revenue loss
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
             {[
-              { stat: '1M+', label: 'Links checked per month' },
-              { stat: '< 24h', label: 'Time to detect broken links' },
-              { stat: '$0', label: 'To get started — free forever' },
-            ].map((item) => (
-              <div key={item.stat}>
-                <div className="text-3xl font-bold text-primary">{item.stat}</div>
-                <div className="text-sm text-muted-foreground mt-1">{item.label}</div>
+              { stat: '1M+', label: 'Links monitored' },
+              { stat: '< 24h', label: 'Detection time' },
+              { stat: '$50K+', label: 'Revenue saved' },
+              { stat: '99.9%', label: 'Uptime' },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
+                  {item.stat}
+                </div>
+                <div className="text-sm text-slate-500">{item.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-20 md:py-28">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Everything you need to keep links healthy
+      {/* Features Section */}
+      <section id="features" className="relative py-24 md:py-32">
+        <div className="absolute inset-0 bg-dot-pattern opacity-30" />
+        
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              Everything you need to{' '}
+              <span className="text-gradient-purple">protect your revenue</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-lg text-slate-400">
               A complete monitoring solution purpose-built for affiliate marketers and content creators.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {features.map((feature) => {
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto stagger-children">
+            {features.map((feature, i) => {
               const Icon = feature.icon;
               return (
                 <div
                   key={feature.title}
-                  className="border rounded-xl p-6 hover:border-primary/50 hover:shadow-sm transition-all group"
+                  className="feature-card group"
                 >
-                  <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-                    <Icon className="w-5 h-5 text-primary" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-colors ${
+                    feature.color === 'green' 
+                      ? 'bg-green-500/10 group-hover:bg-green-500/20' 
+                      : 'bg-purple-500/10 group-hover:bg-purple-500/20'
+                  }`}>
+                    <Icon className={`w-6 h-6 ${
+                      feature.color === 'green' ? 'text-green-400' : 'text-purple-400'
+                    }`} />
                   </div>
-                  <h3 className="font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <h3 className="font-display font-semibold text-lg mb-3">{feature.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -341,80 +408,93 @@ export default function HomePage() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="py-20 md:py-28 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Get started in minutes</h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+      <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
+        
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              Get started in <span className="text-gradient">minutes</span>
+            </h2>
+            <p className="text-lg text-slate-400">
               No complex setup. No code to deploy. Just add your site and we handle the rest.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto relative">
-            {/* Connector line */}
-            <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-border" />
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Connector line for desktop */}
+            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-px">
+              <div className="h-full bg-gradient-to-r from-transparent via-green-500/30 to-transparent" />
+            </div>
+
             {steps.map((step, index) => (
-              <div key={step.number} className="text-center relative">
-                <div className="w-16 h-16 bg-background border-2 border-primary rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
-                  <span className="text-lg font-bold text-primary">{index + 1}</span>
+              <div key={step.number} className="relative text-center group">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center mx-auto mb-6 relative z-10 group-hover:border-green-500/30 transition-colors">
+                  <span className="font-display text-2xl font-bold text-gradient">
+                    {index + 1}
+                  </span>
                 </div>
-                <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                <h3 className="font-display font-semibold text-xl mb-3">{step.title}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed max-w-xs mx-auto">
+                  {step.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing Preview */}
-      <section className="py-20 md:py-28">
+      {/* Pricing Section */}
+      <section id="pricing" className="relative py-24 md:py-32">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, transparent pricing</h2>
-            <p className="text-muted-foreground text-lg">Start free. Upgrade when you need more.</p>
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              Simple, transparent <span className="text-gradient-purple">pricing</span>
+            </h2>
+            <p className="text-lg text-slate-400">Start free. Upgrade when you need more.</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {/* Free */}
-            <div className="border rounded-xl p-8 space-y-5">
-              <div>
-                <h3 className="text-xl font-bold">Free</h3>
-                <p className="text-muted-foreground text-sm mt-1">Perfect for getting started</p>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Free Plan */}
+            <div className="glass-card p-8">
+              <div className="mb-6">
+                <h3 className="font-display text-xl font-bold mb-2">Free</h3>
+                <p className="text-slate-400 text-sm">Perfect for getting started</p>
               </div>
-              <div className="text-4xl font-bold">
-                $0
-                <span className="text-base font-normal text-muted-foreground">/month</span>
+              <div className="mb-8">
+                <span className="font-display text-5xl font-bold">$0</span>
+                <span className="text-slate-500">/month</span>
               </div>
-              <ul className="space-y-2.5 text-sm">
+              <ul className="space-y-4 mb-8">
                 {['1 site', '50 pages per scan', 'Weekly email digests', 'All issue types'].map(
                   (item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <li key={item} className="flex items-center gap-3 text-sm">
+                      <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
                       {item}
                     </li>
                   ),
                 )}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full text-center bg-secondary text-secondary-foreground py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
+              <Link href="/signup" className="btn-secondary w-full justify-center">
                 Get started free
               </Link>
             </div>
 
-            {/* Pro */}
-            <div className="border-2 border-primary rounded-xl p-8 space-y-5 relative">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                Most popular
+            {/* Pro Plan */}
+            <div className="relative gradient-border p-8">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="badge-green text-xs">Most popular</span>
               </div>
-              <div>
-                <h3 className="text-xl font-bold">Pro</h3>
-                <p className="text-muted-foreground text-sm mt-1">For serious affiliate sites</p>
+              <div className="mb-6">
+                <h3 className="font-display text-xl font-bold mb-2">Pro</h3>
+                <p className="text-slate-400 text-sm">For serious affiliate sites</p>
               </div>
-              <div className="text-4xl font-bold">
-                $29
-                <span className="text-base font-normal text-muted-foreground">/month</span>
+              <div className="mb-8">
+                <span className="font-display text-5xl font-bold text-gradient">$29</span>
+                <span className="text-slate-500">/month</span>
               </div>
-              <ul className="space-y-2.5 text-sm">
+              <ul className="space-y-4 mb-8">
                 {[
                   '5 sites',
                   '500 pages per scan',
@@ -422,17 +502,15 @@ export default function HomePage() {
                   'All issue types',
                   'Priority support',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
+                  <li key={item} className="flex items-center gap-3 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full text-center bg-primary text-primary-foreground py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
+              <Link href="/signup" className="btn-primary w-full justify-center">
                 Start free trial
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -440,47 +518,49 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 md:py-28 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Start monitoring your affiliate links today
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-purple-500/10 to-transparent" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-20" />
+        
+        <div className="container mx-auto px-6 relative text-center">
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 max-w-3xl mx-auto">
+            Start monitoring your{' '}
+            <span className="text-gradient">affiliate links</span> today
           </h2>
-          <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
+          <p className="text-lg text-slate-400 mb-10 max-w-xl mx-auto">
             Free forever for one site. No credit card required. Takes less than 5 minutes to set up.
           </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-lg font-semibold hover:bg-white/90 transition-colors"
-          >
+          <Link href="/signup" className="btn-primary text-base px-8 py-4">
             Get started free
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-10 bg-background">
+      <footer className="border-t border-white/5 py-12">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-                <ExternalLink className="w-3.5 h-3.5 text-primary-foreground" />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
+                <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
               </div>
-              <span className="font-bold">LinkRescue</span>
+              <span className="font-display font-bold">LinkRescue</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/pricing" className="hover:text-foreground transition-colors">
+            <div className="flex items-center gap-8 text-sm text-slate-500">
+              <Link href="#pricing" className="hover:text-white transition-colors">
                 Pricing
               </Link>
-              <Link href="/login" className="hover:text-foreground transition-colors">
+              <Link href="/login" className="hover:text-white transition-colors">
                 Sign in
               </Link>
-              <Link href="/signup" className="hover:text-foreground transition-colors">
+              <Link href="/signup" className="hover:text-white transition-colors">
                 Sign up
               </Link>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} LinkRescue. All rights reserved.
+            <p className="text-sm text-slate-600">
+              © {new Date().getFullYear()} LinkRescue
             </p>
           </div>
         </div>

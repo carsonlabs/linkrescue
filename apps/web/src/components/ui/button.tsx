@@ -10,22 +10,21 @@ export function Button({
   className, 
   variant = 'primary', 
   size = 'md',
-  asChild,
   children, 
   ...props 
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400/50';
   
   const variantClasses = {
-    primary: 'bg-primary text-primary-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:opacity-95 active:translate-y-0',
-    secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:opacity-95 active:translate-y-0',
-    ghost: 'bg-transparent border border-border text-foreground hover:bg-muted/50 hover:border-border/70'
+    primary: 'bg-gradient-to-r from-green-400 to-green-500 text-slate-900 shadow-lg shadow-green-500/25 hover:shadow-green-500/40 hover:-translate-y-0.5',
+    secondary: 'bg-slate-800/80 border border-white/10 text-white hover:bg-slate-700/80 hover:border-green-500/30',
+    ghost: 'bg-transparent text-slate-400 hover:text-white hover:bg-white/5',
   };
   
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-2.5 text-sm',
+    lg: 'px-8 py-3 text-base',
   };
 
   return (

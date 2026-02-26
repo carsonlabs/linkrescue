@@ -1,17 +1,19 @@
 import * as React from 'react';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated';
+  variant?: 'default' | 'elevated' | 'glass';
 }
 
 export function Card({ className, variant = 'default', children, ...props }: CardProps) {
-  const baseClasses = 'bg-card border border-border rounded-xl';
-  const variantClasses = variant === 'elevated' 
-    ? 'shadow-lg hover:shadow-xl transition-shadow duration-200' 
-    : 'shadow-sm';
+  const baseClasses = 'rounded-xl overflow-hidden';
+  const variantClasses = {
+    default: 'bg-slate-800/50 border border-white/10',
+    elevated: 'bg-slate-800/80 border border-white/10 shadow-xl',
+    glass: 'glass-card',
+  };
 
   return (
-    <div className={`${baseClasses} ${variantClasses} ${className}`} {...props}>
+    <div className={`${baseClasses} ${variantClasses[variant]} ${className}`} {...props}>
       {children}
     </div>
   );
@@ -19,7 +21,7 @@ export function Card({ className, variant = 'default', children, ...props }: Car
 
 export function CardHeader({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`p-6 border-b border-border ${className}`} {...props}>
+    <div className={`p-6 border-b border-white/10 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -35,7 +37,7 @@ export function CardContent({ className, children, ...props }: React.HTMLAttribu
 
 export function CardFooter({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`p-6 border-t border-border ${className}`} {...props}>
+    <div className={`p-6 border-t border-white/10 ${className}`} {...props}>
       {children}
     </div>
   );

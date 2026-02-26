@@ -11,7 +11,7 @@ export interface User {
 export const PLAN_LIMITS = {
   free: {
     sites: 1,
-    pagesPerScan: 50,
+    pagesPerScan: 200,
     guardianLinks: 3,
     offers: 10,
     redirectRules: 5,
@@ -31,12 +31,30 @@ export const PLAN_LIMITS = {
     webhooks: 10,
     aiMatchesPerScan: 50,
   },
+  agency: {
+    sites: 25,
+    pagesPerScan: 10000, // Effectively unlimited for most sites
+    guardianLinks: 500,
+    offers: 5000,
+    redirectRules: 1000,
+    orgsOwned: 10,
+    logSources: 25,
+    webhooks: 50,
+    aiMatchesPerScan: 200,
+  },
 } as const;
 
-export type PlanType = 'free' | 'pro';
+export type PlanType = 'free' | 'pro' | 'agency';
+
+// Stripe Price IDs - update these with your actual Stripe price IDs
+export const STRIPE_PRICE_IDS = {
+  pro: process.env.STRIPE_PRO_PRICE_ID || '',
+  agency: process.env.STRIPE_AGENCY_PRICE_ID || '',
+};
 
 export function getUserPlan(stripePriceId: string | null): PlanType {
   if (!stripePriceId) return 'free';
+  if (stripePriceId === STRIPE_PRICE_IDS.agency) return 'agency';
   return 'pro';
 }
 

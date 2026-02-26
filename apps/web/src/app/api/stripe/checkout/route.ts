@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe';
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = createClient();
   const {
     data: { user },
@@ -10,6 +10,15 @@ export async function POST() {
 
   if (!user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Parse plan from request body
+  let plan: 'pro' | 'agency' = 'pro';
+  try {
+    const body = await request.json();
+    plan = body.plan === 'agency' ? 'agency' : 'pro';
+  } catch {
+    // Default to pro if no body or invalid JSON
   }
 
   // Get or create Stripe customer
@@ -34,9 +43,15 @@ export async function POST() {
       .eq('id', user.id);
   }
 
-  const priceId = process.env.STRIPE_PRO_PRICE_ID;
+  // Get the correct price ID based on plan
+  const priceId = plan === 'agency' 
+    ? process.env.STRIPE_AGENCY_PRICE_ID 
+    : process.env.STRIPE_PRO_PRICE_ID;
+    
   if (!priceId) {
-    return NextResponse.json({ error: 'Stripe price not configured' }, { status: 500 });
+    return NextResponse.json({ 
+      error: `Stripe price not configured for ${plan} plan` 
+    }, { status: 500 });
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -45,7 +60,10 @@ export async function POST() {
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?checkout=success`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?checkout=cancelled`,
-    metadata: { supabase_user_id: user.id },
+    metadata: { 
+      supabase_user_id: user.id,
+      plan: plan,
+    },
   });
 
   return NextResponse.json({ url: session.url });

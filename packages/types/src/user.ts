@@ -19,6 +19,9 @@ export const PLAN_LIMITS = {
     logSources: 0,
     webhooks: 0,
     aiMatchesPerScan: 0,
+    apiReadRequestsPerHour: 0,
+    apiScanRequestsPerDay: 0,
+    monthlyCrawlPages: 0,
   },
   pro: {
     sites: 5,
@@ -30,6 +33,9 @@ export const PLAN_LIMITS = {
     logSources: 5,
     webhooks: 10,
     aiMatchesPerScan: 50,
+    apiReadRequestsPerHour: 100,
+    apiScanRequestsPerDay: 2,
+    monthlyCrawlPages: 10000,
   },
   agency: {
     sites: 25,
@@ -41,6 +47,9 @@ export const PLAN_LIMITS = {
     logSources: 25,
     webhooks: 50,
     aiMatchesPerScan: 200,
+    apiReadRequestsPerHour: 1000,
+    apiScanRequestsPerDay: 10,
+    monthlyCrawlPages: 100000,
   },
 } as const;
 

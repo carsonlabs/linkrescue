@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { BRAND } from '@/config/brand';
 
 const features = [
   {
@@ -58,7 +59,7 @@ const features = [
     icon: Zap,
     title: 'Daily Automatic Scans',
     description:
-      'Set it and forget it. LinkRescue scans your sites every night and only notifies you when something breaks.',
+      `Set it and forget it. ${BRAND.name} scans your sites every night and only notifies you when something breaks.`,
     color: 'purple',
   },
 ];
@@ -106,7 +107,7 @@ export default function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
               <ExternalLink className="w-4 h-4 text-slate-900" />
             </div>
-            <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
+            <span className="font-display font-bold text-xl tracking-tight">{BRAND.name}</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <Link href="#features" className="text-slate-400 hover:text-white transition-colors">
@@ -171,7 +172,7 @@ export default function HomePage() {
 
               {/* Subhead */}
               <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed">
-                LinkRescue scans your entire site daily and alerts you the moment an affiliate link
+                {BRAND.name} scans your entire site daily and alerts you the moment an affiliate link
                 breaks, expires, or redirects incorrectly. Fix issues before they cost you commissions.
               </p>
 
@@ -236,7 +237,7 @@ export default function HomePage() {
                         <div className="w-5 h-5 rounded bg-green-500 flex items-center justify-center">
                           <ExternalLink className="w-3 h-3 text-slate-900" />
                         </div>
-                        <span className="font-semibold text-sm">LinkRescue</span>
+                        <span className="font-semibold text-sm">{BRAND.name}</span>
                       </div>
                       <nav className="space-y-1 text-sm">
                         <div className="flex items-center gap-2 px-2 py-1.5 bg-green-500/10 text-green-400 rounded-md font-medium border border-green-500/20">
@@ -546,7 +547,7 @@ export default function HomePage() {
               <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
                 <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
               </div>
-              <span className="font-display font-bold">LinkRescue</span>
+              <span className="font-display font-bold">{BRAND.name}</span>
             </div>
             <div className="flex items-center gap-8 text-sm text-slate-500">
               <Link href="#pricing" className="hover:text-white transition-colors">
@@ -560,7 +561,7 @@ export default function HomePage() {
               </Link>
             </div>
             <p className="text-sm text-slate-600">
-              © {new Date().getFullYear()} LinkRescue
+              © {new Date().getFullYear()} {BRAND.name}
             </p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { createClient } from '@/lib/supabase/client';
 
 export function SignupForm() {
@@ -25,8 +26,10 @@ export function SignupForm() {
 
     if (authError) {
       setError(authError.message);
+      toast.error(authError.message);
     } else {
       setMessage('Check your email for a magic link to get started.');
+      toast.success('Check your email for a magic link!');
     }
     setLoading(false);
   };

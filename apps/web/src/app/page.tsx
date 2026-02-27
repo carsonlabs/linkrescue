@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { CalculatorTeaser } from '@/components/CalculatorTeaser';
 
 const features = [
   {
@@ -117,6 +118,18 @@ export default function HomePage() {
             </Link>
             <Link href="#pricing" className="text-slate-400 hover:text-white transition-colors">
               Pricing
+            </Link>
+            <Link
+              href="/affiliate-link-revenue-calculator"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Calculator
+            </Link>
+            <Link
+              href="/link-checker"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Link Checker
             </Link>
           </div>
           <div className="flex items-center gap-4">
@@ -364,6 +377,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Calculator Teaser */}
+      <section className="py-10">
+        <div className="container mx-auto px-6">
+          <CalculatorTeaser />
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="relative py-24 md:py-32">
         <div className="absolute inset-0 bg-dot-pattern opacity-30" />
@@ -552,11 +572,17 @@ export default function HomePage() {
               <Link href="#pricing" className="hover:text-white transition-colors">
                 Pricing
               </Link>
-              <Link href="/login" className="hover:text-white transition-colors">
-                Sign in
+              <Link href="/link-checker" className="hover:text-white transition-colors">
+                Link Checker
               </Link>
-              <Link href="/signup" className="hover:text-white transition-colors">
-                Sign up
+              <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">
+                Calculator
+              </Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Terms
               </Link>
             </div>
             <p className="text-sm text-slate-600">

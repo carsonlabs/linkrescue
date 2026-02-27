@@ -72,11 +72,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/sites', request.url));
     }
 
-    // Redirect /dashboard to /dashboard/sites
-    if (path === '/dashboard' && user) {
-      return NextResponse.redirect(new URL('/dashboard/sites', request.url));
-    }
-
     // Protect dashboard routes
     const isProtected = protectedPaths.some((p) => path.startsWith(p));
     if (isProtected && !user) {

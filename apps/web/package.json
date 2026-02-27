@@ -17,6 +17,8 @@
     "@linkrescue/email": "workspace:*",
     "@linkrescue/governance": "workspace:*",
     "@linkrescue/types": "workspace:*",
+    "@sentry/nextjs": "^10.40.0",
+    "@sentry/react": "^10.40.0",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.7",
     "bcryptjs": "^2.4.3",

@@ -17,7 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { BRAND } from '@/config/brand';
+import { CalculatorTeaser } from '@/components/CalculatorTeaser';
 
 const features = [
   {
@@ -59,7 +59,7 @@ const features = [
     icon: Zap,
     title: 'Daily Automatic Scans',
     description:
-      `Set it and forget it. ${BRAND.name} scans your sites every night and only notifies you when something breaks.`,
+      'Set it and forget it. LinkRescue scans your sites every night and only notifies you when something breaks.',
     color: 'purple',
   },
 ];
@@ -107,7 +107,7 @@ export default function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
               <ExternalLink className="w-4 h-4 text-slate-900" />
             </div>
-            <span className="font-display font-bold text-xl tracking-tight">{BRAND.name}</span>
+            <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <Link href="#features" className="text-slate-400 hover:text-white transition-colors">
@@ -118,6 +118,18 @@ export default function HomePage() {
             </Link>
             <Link href="#pricing" className="text-slate-400 hover:text-white transition-colors">
               Pricing
+            </Link>
+            <Link
+              href="/affiliate-link-revenue-calculator"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Calculator
+            </Link>
+            <Link
+              href="/link-checker"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Link Checker
             </Link>
           </div>
           <div className="flex items-center gap-4">
@@ -172,7 +184,7 @@ export default function HomePage() {
 
               {/* Subhead */}
               <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed">
-                {BRAND.name} scans your entire site daily and alerts you the moment an affiliate link
+                LinkRescue scans your entire site daily and alerts you the moment an affiliate link
                 breaks, expires, or redirects incorrectly. Fix issues before they cost you commissions.
               </p>
 
@@ -237,7 +249,7 @@ export default function HomePage() {
                         <div className="w-5 h-5 rounded bg-green-500 flex items-center justify-center">
                           <ExternalLink className="w-3 h-3 text-slate-900" />
                         </div>
-                        <span className="font-semibold text-sm">{BRAND.name}</span>
+                        <span className="font-semibold text-sm">LinkRescue</span>
                       </div>
                       <nav className="space-y-1 text-sm">
                         <div className="flex items-center gap-2 px-2 py-1.5 bg-green-500/10 text-green-400 rounded-md font-medium border border-green-500/20">
@@ -365,6 +377,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Calculator Teaser */}
+      <section className="py-10">
+        <div className="container mx-auto px-6">
+          <CalculatorTeaser />
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="relative py-24 md:py-32">
         <div className="absolute inset-0 bg-dot-pattern opacity-30" />
@@ -456,7 +475,7 @@ export default function HomePage() {
             <p className="text-lg text-slate-400">Start free. Upgrade when you need more.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Free Plan */}
             <div className="glass-card p-8">
               <div className="mb-6">
@@ -468,7 +487,7 @@ export default function HomePage() {
                 <span className="text-slate-500">/month</span>
               </div>
               <ul className="space-y-4 mb-8">
-                {['1 site', '200 pages per scan', 'Weekly email digests', 'All issue types'].map(
+                {['1 site', '50 pages per scan', 'Weekly email digests', 'All issue types'].map(
                   (item) => (
                     <li key={item} className="flex items-center gap-3 text-sm">
                       <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -499,7 +518,7 @@ export default function HomePage() {
                 {[
                   '5 sites',
                   '500 pages per scan',
-                  'Daily email digests',
+                  'Weekly email digests',
                   'All issue types',
                   'Priority support',
                 ].map((item) => (
@@ -512,36 +531,6 @@ export default function HomePage() {
               <Link href="/signup" className="btn-primary w-full justify-center">
                 Start free trial
                 <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {/* Agency Plan */}
-            <div className="glass-card p-8">
-              <div className="mb-6">
-                <h3 className="font-display text-xl font-bold mb-2">Agency</h3>
-                <p className="text-slate-400 text-sm">For agencies & power users</p>
-              </div>
-              <div className="mb-8">
-                <span className="font-display text-5xl font-bold">$99</span>
-                <span className="text-slate-500">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                {[
-                  '25 sites',
-                  '10,000 pages per scan',
-                  'Daily email digests',
-                  'All issue types',
-                  'Full API access',
-                  'Priority support',
-                ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/signup" className="btn-secondary w-full justify-center">
-                Get started
               </Link>
             </div>
           </div>
@@ -577,17 +566,17 @@ export default function HomePage() {
               <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
                 <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
               </div>
-              <span className="font-display font-bold">{BRAND.name}</span>
+              <span className="font-display font-bold">LinkRescue</span>
             </div>
             <div className="flex items-center gap-8 text-sm text-slate-500">
-              <Link href="/pricing" className="hover:text-white transition-colors">
+              <Link href="#pricing" className="hover:text-white transition-colors">
                 Pricing
               </Link>
-              <Link href="/login" className="hover:text-white transition-colors">
-                Sign in
+              <Link href="/link-checker" className="hover:text-white transition-colors">
+                Link Checker
               </Link>
-              <Link href="/signup" className="hover:text-white transition-colors">
-                Sign up
+              <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">
+                Calculator
               </Link>
               <Link href="/privacy" className="hover:text-white transition-colors">
                 Privacy
@@ -597,7 +586,7 @@ export default function HomePage() {
               </Link>
             </div>
             <p className="text-sm text-slate-600">
-              © {new Date().getFullYear()} {BRAND.name}
+              © {new Date().getFullYear()} LinkRescue
             </p>
           </div>
         </div>

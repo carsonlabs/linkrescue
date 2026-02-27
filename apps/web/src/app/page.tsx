@@ -456,7 +456,7 @@ export default function HomePage() {
             <p className="text-lg text-slate-400">Start free. Upgrade when you need more.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Free Plan */}
             <div className="glass-card p-8">
               <div className="mb-6">
@@ -468,7 +468,7 @@ export default function HomePage() {
                 <span className="text-slate-500">/month</span>
               </div>
               <ul className="space-y-4 mb-8">
-                {['1 site', '50 pages per scan', 'Weekly email digests', 'All issue types'].map(
+                {['1 site', '200 pages per scan', 'Weekly email digests', 'All issue types'].map(
                   (item) => (
                     <li key={item} className="flex items-center gap-3 text-sm">
                       <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -499,7 +499,7 @@ export default function HomePage() {
                 {[
                   '5 sites',
                   '500 pages per scan',
-                  'Weekly email digests',
+                  'Daily email digests',
                   'All issue types',
                   'Priority support',
                 ].map((item) => (
@@ -512,6 +512,36 @@ export default function HomePage() {
               <Link href="/signup" className="btn-primary w-full justify-center">
                 Start free trial
                 <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Agency Plan */}
+            <div className="glass-card p-8">
+              <div className="mb-6">
+                <h3 className="font-display text-xl font-bold mb-2">Agency</h3>
+                <p className="text-slate-400 text-sm">For agencies & power users</p>
+              </div>
+              <div className="mb-8">
+                <span className="font-display text-5xl font-bold">$99</span>
+                <span className="text-slate-500">/month</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                {[
+                  '25 sites',
+                  '10,000 pages per scan',
+                  'Daily email digests',
+                  'All issue types',
+                  'Full API access',
+                  'Priority support',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/signup" className="btn-secondary w-full justify-center">
+                Get started
               </Link>
             </div>
           </div>
@@ -550,7 +580,7 @@ export default function HomePage() {
               <span className="font-display font-bold">{BRAND.name}</span>
             </div>
             <div className="flex items-center gap-8 text-sm text-slate-500">
-              <Link href="#pricing" className="hover:text-white transition-colors">
+              <Link href="/pricing" className="hover:text-white transition-colors">
                 Pricing
               </Link>
               <Link href="/login" className="hover:text-white transition-colors">
@@ -558,6 +588,12 @@ export default function HomePage() {
               </Link>
               <Link href="/signup" className="hover:text-white transition-colors">
                 Sign up
+              </Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Terms
               </Link>
             </div>
             <p className="text-sm text-slate-600">

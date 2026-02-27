@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { BRAND, getMetaTitle, getMetaDescription } from '@/config/brand';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'LinkRescue - Broken Affiliate Link Monitor',
-  description: 'Automatically find and fix broken affiliate links on your website.',
+  title: getMetaTitle(),
+  description: getMetaDescription(),
 };
 
 export default function RootLayout({

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ExternalLink, LayoutDashboard, Globe, Bell, Settings, LogOut, User } from 'lucide-react';
+import { BRAND } from '@/config/brand';
 
 export default function DashboardLayout({
   children,
@@ -16,7 +17,7 @@ export default function DashboardLayout({
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
               <ExternalLink className="w-4 h-4 text-slate-900" />
             </div>
-            <span className="font-display font-bold text-lg tracking-tight">LinkRescue</span>
+            <span className="font-display font-bold text-lg tracking-tight">{BRAND.name}</span>
           </Link>
 
           {/* Navigation - MVP: Simplified nav */}
@@ -63,7 +64,7 @@ export default function DashboardLayout({
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
               <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
             </div>
-            <span className="font-display font-bold">LinkRescue</span>
+            <span className="font-display font-bold">{BRAND.name}</span>
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/sites" className="text-slate-400 hover:text-white">

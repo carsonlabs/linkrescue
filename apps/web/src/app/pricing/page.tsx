@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getUserPlan, PLAN_LIMITS } from '@linkrescue/types';
 import { CheckoutButton, AgencyCheckoutButton } from '@/components/checkout-button';
 import { CheckCircle2, ExternalLink, Sparkles } from 'lucide-react';
+import { BRAND } from '@/config/brand';
 
 export const dynamic = 'force-dynamic';
 
@@ -84,7 +85,7 @@ export default async function PricingPage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
               <ExternalLink className="w-4 h-4 text-slate-900" />
             </div>
-            <span className="font-display font-bold text-lg tracking-tight">LinkRescue</span>
+            <span className="font-display font-bold text-lg tracking-tight">{BRAND.name}</span>
           </Link>
           <div className="flex items-center gap-3">
             {user ? (

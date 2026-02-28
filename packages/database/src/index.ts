@@ -13,3 +13,4 @@ export * from './queries/monitoring';
 export * from './queries/webhooks';
 export * from './queries/schedules';
 export * from './queries/analytics';
+export * from './queries/health-scores';

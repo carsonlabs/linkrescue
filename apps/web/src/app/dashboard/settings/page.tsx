@@ -1,8 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
-import { getUserPlan } from '@linkrescue/types';
+import { getUserPlan, getTierLimits, hasFeature, type TierName } from '@linkrescue/types';
 import { TestEmailButton } from '@/components/dashboard/test-email-button';
+import { ApiKeysSection } from '@/components/dashboard/api-keys-section';
+import { WebhookSettings } from '@/components/dashboard/webhook-settings';
+import { SlackSettings } from '@/components/dashboard/slack-settings';
 import Link from 'next/link';
-import { User, CreditCard, Bell, Crown } from 'lucide-react';
+import { User, CreditCard, Bell, Crown, Key, Webhook, MessageSquare } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +23,10 @@ export default async function SettingsPage() {
     .eq('id', user.id)
     .single();
 
-  const plan = getUserPlan(profile?.stripe_price_id ?? null);
+  const plan = getUserPlan(profile?.stripe_price_id ?? null) as TierName;
+  const tierLimits = getTierLimits(plan);
+  const hasWebhooks = hasFeature(plan, 'webhooks');
+  const hasSlack = hasFeature(plan, 'slack_integration');
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -62,16 +68,16 @@ export default async function SettingsPage() {
           <div className="flex justify-between items-center">
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold capitalize">{plan} Plan</span>
-                {plan === 'pro' && (
+                <span className="font-semibold">{tierLimits.name} Plan</span>
+                {plan !== 'free' && (
                   <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
                     <Crown className="w-3 h-3" />
-                    Pro
+                    {tierLimits.name}
                   </span>
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {plan === 'free' ? '1 site, 50 pages/scan' : '5 sites, 500 pages/scan'}
+                {tierLimits.sites} site{tierLimits.sites !== 1 ? 's' : ''}, {tierLimits.pagesPerScan === Infinity ? 'unlimited' : tierLimits.pagesPerScan} pages/scan
               </p>
             </div>
             {plan === 'free' ? (
@@ -119,6 +125,39 @@ export default async function SettingsPage() {
             </p>
             <TestEmailButton />
           </div>
+        </div>
+      </section>
+
+      {/* API Keys */}
+      <section className="border bg-card rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
+          <Key className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold text-sm">API Keys</h2>
+        </div>
+        <div className="px-6 py-5">
+          <ApiKeysSection plan={plan} rateLimit={tierLimits.apiReadRequestsPerHour} />
+        </div>
+      </section>
+
+      {/* Outbound Webhooks */}
+      <section className="border bg-card rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
+          <Webhook className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold text-sm">Webhooks</h2>
+        </div>
+        <div className="px-6 py-5">
+          <WebhookSettings hasAccess={hasWebhooks} />
+        </div>
+      </section>
+
+      {/* Slack Integration */}
+      <section className="border bg-card rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
+          <MessageSquare className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold text-sm">Slack Integration</h2>
+        </div>
+        <div className="px-6 py-5">
+          <SlackSettings hasAccess={hasSlack} />
         </div>
       </section>
     </div>

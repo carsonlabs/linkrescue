@@ -8,6 +8,7 @@ const relevantEvents = new Set([
   'checkout.session.completed',
   'customer.subscription.updated',
   'customer.subscription.deleted',
+  'invoice.payment_failed',
 ]);
 
 export async function POST(request: Request) {
@@ -38,18 +39,18 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.subscription && session.metadata?.supabase_user_id) {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+          const subscription = await stripe.subscriptions.retrieve(
+            session.subscription as string
+          );
           await updateSubscription(supabase, session.metadata.supabase_user_id, subscription);
         }
         break;
       }
 
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted': {
+      case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        // Find user by stripe_customer_id
         const { data: user } = await supabase
           .from('users')
           .select('id')
@@ -57,19 +58,39 @@ export async function POST(request: Request) {
           .single();
 
         if (user) {
-          if (event.type === 'customer.subscription.deleted') {
-            await supabase
-              .from('users')
-              .update({
-                stripe_subscription_id: null,
-                stripe_price_id: null,
-                stripe_current_period_end: null,
-              })
-              .eq('id', user.id);
-          } else {
-            await updateSubscription(supabase, user.id, subscription);
-          }
+          await updateSubscription(supabase, user.id, subscription);
         }
+        break;
+      }
+
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+
+        const { data: user } = await supabase
+          .from('users')
+          .select('id')
+          .eq('stripe_customer_id', customerId)
+          .single();
+
+        if (user) {
+          await supabase
+            .from('users')
+            .update({
+              stripe_subscription_id: null,
+              stripe_price_id: null,
+              stripe_current_period_end: null,
+            })
+            .eq('id', user.id);
+        }
+        break;
+      }
+
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId = invoice.customer as string;
+        console.error(`Payment failed for customer ${customerId}, invoice ${invoice.id}`);
+        // Stripe will retry automatically. Subscription status handled by subscription.updated.
         break;
       }
     }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { runScan } from '@linkrescue/crawler';
-import { createAdminClient, computeNextRunAt } from '@linkrescue/database';
+import { createAdminClient, computeNextRunAt, computeHealthScore, upsertHealthScore } from '@linkrescue/database';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
 import { sendWeeklyDigest } from '@linkrescue/email';
 import type { ScanFrequency } from '@linkrescue/types';
@@ -68,6 +68,14 @@ export async function GET(request: Request) {
             maxPages: limits.pagesPerScan,
             supabase,
           });
+
+          // Compute and store health score after scan
+          try {
+            const healthComponents = await computeHealthScore(supabase, site.id, limits.pagesPerScan);
+            await upsertHealthScore(supabase, site.id, healthComponents);
+          } catch (healthErr) {
+            console.error(`Failed to compute health score for ${site.domain}:`, healthErr);
+          }
 
           // Send weekly digest email
           try {

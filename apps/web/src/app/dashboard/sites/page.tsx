@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
+import { getUserPlan, hasFeature, type TierName } from '@linkrescue/types';
 import { SiteCard } from '@/components/dashboard/site-card';
 import { Globe, Plus, ArrowRight } from 'lucide-react';
 
@@ -14,6 +15,16 @@ export default async function SitesListPage() {
   } = await supabase.auth.getUser();
 
   if (!user) return null;
+
+  // Get user plan for on-demand scan access
+  const { data: profile } = await supabase
+    .from('users')
+    .select('stripe_price_id')
+    .eq('id', user.id)
+    .single();
+
+  const plan = getUserPlan(profile?.stripe_price_id ?? null) as TierName;
+  const canScan = hasFeature(plan, 'on_demand_scans');
 
   const { data: sites } = await supabase
     .from('sites')
@@ -59,6 +70,7 @@ export default async function SitesListPage() {
             site={site}
             latestScan={latestScan}
             issueCount={issueCounts.total}
+            canScan={canScan}
           />
         ))}
 

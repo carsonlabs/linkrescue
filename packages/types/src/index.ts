@@ -1,3 +1,4 @@
+export * from './tiers';
 export * from './site';
 export * from './scan';
 export * from './link';

@@ -57,7 +57,7 @@ export async function GET(request: Request) {
       const healthScore = currentHealth?.score ?? 0;
 
       // Get previous month's health score
-      const { data: prevHealthScores } = await supabase
+      const { data: prevHealthScores } = await (supabase as any)
         .from('site_health_scores')
         .select('score')
         .eq('site_id', site.id)
@@ -65,7 +65,7 @@ export async function GET(request: Request) {
         .lt('recorded_at', thisMonth)
         .order('recorded_at', { ascending: false })
         .limit(1)
-        .maybeSingle();
+        .maybeSingle() as { data: { score: number } | null };
 
       const previousHealthScore = prevHealthScores?.score ?? null;
 
@@ -92,15 +92,15 @@ export async function GET(request: Request) {
       // Estimated revenue saved (Pro/Agency only)
       let estimatedRevenueSaved: number | null = null;
       if (hasFeature(plan, 'revenue_estimates')) {
-        const { data: revenue } = await supabase
+        const { data: revenue } = await (supabase as any)
           .from('revenue_history')
           .select('total_revenue_recovered_cents')
           .eq('user_id', site.user_id)
           .gte('date', prevMonthStr)
-          .lt('date', thisMonth);
+          .lt('date', thisMonth) as { data: { total_revenue_recovered_cents: number }[] | null };
 
         estimatedRevenueSaved = (revenue ?? []).reduce(
-          (sum, r) => sum + (r.total_revenue_recovered_cents ?? 0),
+          (sum: number, r: { total_revenue_recovered_cents: number }) => sum + (r.total_revenue_recovered_cents ?? 0),
           0
         );
       }

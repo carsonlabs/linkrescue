@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe';
+import { STRIPE_PRICE_IDS } from '@linkrescue/types';
 
 export async function POST(request: Request) {
   const supabase = createClient();
@@ -12,13 +13,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Parse plan from request body
+  // Parse plan, billing interval, and referral from request body
   let plan: 'pro' | 'agency' = 'pro';
+  let interval: 'monthly' | 'annual' = 'monthly';
+  let referralId: string | undefined;
   try {
     const body = await request.json();
     plan = body.plan === 'agency' ? 'agency' : 'pro';
+    interval = body.interval === 'annual' ? 'annual' : 'monthly';
+    if (body.referral) referralId = body.referral;
   } catch {
-    // Default to pro if no body or invalid JSON
+    // Default to pro monthly if no body or invalid JSON
   }
 
   // Get or create Stripe customer
@@ -43,27 +48,31 @@ export async function POST(request: Request) {
       .eq('id', user.id);
   }
 
-  // Get the correct price ID based on plan
-  const priceId = plan === 'agency' 
-    ? process.env.STRIPE_AGENCY_PRICE_ID 
-    : process.env.STRIPE_PRO_PRICE_ID;
-    
+  // Get the correct price ID based on plan and interval
+  const priceKey = `${plan}_${interval}` as keyof typeof STRIPE_PRICE_IDS;
+  const priceId = STRIPE_PRICE_IDS[priceKey];
+
   if (!priceId) {
-    return NextResponse.json({ 
-      error: `Stripe price not configured for ${plan} plan` 
-    }, { status: 500 });
+    return NextResponse.json(
+      { error: `Stripe price not configured for ${plan} ${interval} plan` },
+      { status: 500 }
+    );
   }
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?checkout=success`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?checkout=success`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?checkout=cancelled`,
-    metadata: { 
+    metadata: {
       supabase_user_id: user.id,
-      plan: plan,
+      plan,
+      interval,
     },
+    allow_promotion_codes: true,
+    // Pass Rewardful referral ID for affiliate attribution
+    ...(referralId ? { client_reference_id: referralId } : {}),
   });
 
   return NextResponse.json({ url: session.url });

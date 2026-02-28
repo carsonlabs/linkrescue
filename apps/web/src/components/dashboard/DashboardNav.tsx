@@ -12,11 +12,14 @@ import {
   Tag,
   GitBranch,
   Activity,
+  TrendingUp,
+  BookOpen,
 } from 'lucide-react';
 
 const primaryNav = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
   { href: '/dashboard/sites', label: 'Sites', icon: Globe },
+  { href: '/dashboard/trends', label: 'Trends', icon: TrendingUp },
   { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart2 },
   { href: '/dashboard/reports', label: 'Reports', icon: FileText },
 ];
@@ -26,6 +29,7 @@ const powerNav = [
   { href: '/dashboard/offers', label: 'Offers', icon: Tag },
   { href: '/dashboard/redirect-rules', label: 'Redirect Rules', icon: GitBranch },
   { href: '/dashboard/monitoring', label: 'Monitoring', icon: Activity },
+  { href: '/dashboard/api-docs', label: 'API Docs', icon: BookOpen },
 ];
 
 const bottomNav = [{ href: '/dashboard/settings', label: 'Settings', icon: Settings }];

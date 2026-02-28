@@ -1,5 +1,9 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { CheckCircle2, AlertCircle, Clock, ExternalLink, Globe } from 'lucide-react';
+import { ScanButton } from './scan-status';
 import type { Database } from '@linkrescue/database';
 
 type Site = Database['public']['Tables']['sites']['Row'];
@@ -9,11 +13,14 @@ export function SiteCard({
   site,
   latestScan,
   issueCount,
+  canScan = false,
 }: {
   site: Site;
   latestScan: Scan | null;
   issueCount: number;
+  canScan?: boolean;
 }) {
+  const router = useRouter();
   const lastScanDate = latestScan
     ? new Date(latestScan.finished_at || latestScan.created_at)
     : null;
@@ -30,15 +37,12 @@ export function SiteCard({
   };
 
   return (
-    <Link
-      href={`/sites/${site.id}`}
-      className="group relative glass-card p-6 hover:border-green-500/30 transition-all block"
-    >
+    <div className="group relative glass-card p-6 hover:border-green-500/30 transition-all">
       {/* Glow effect on hover */}
       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/0 via-green-500/5 to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-      
+
       <div className="relative flex justify-between items-start gap-4">
-        <div className="min-w-0 flex-1">
+        <Link href={`/dashboard/sites/${site.id}`} className="min-w-0 flex-1">
           <div className="flex items-center gap-3 flex-wrap mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center flex-shrink-0">
               <Globe className="w-5 h-5 text-slate-300" />
@@ -72,9 +76,9 @@ export function SiteCard({
               Add verification meta tag to start scanning
             </p>
           )}
-        </div>
+        </Link>
 
-        <div className="text-right flex-shrink-0">
+        <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
           {issueCount > 0 ? (
             <div className="flex flex-col items-end">
               <span className="font-display text-3xl font-bold text-red-400">{issueCount}</span>
@@ -91,7 +95,16 @@ export function SiteCard({
               <p className="text-xs text-slate-500 mt-1">No issues</p>
             </div>
           ) : null}
-          <ExternalLink className="w-4 h-4 text-slate-600 mt-2 group-hover:text-green-400/50 transition-colors" />
+
+          {/* Scan Now button for verified sites */}
+          {site.verified_at && (
+            <ScanButton
+              siteId={site.id}
+              compact
+              canScan={canScan}
+              onComplete={() => router.refresh()}
+            />
+          )}
         </div>
       </div>
 
@@ -99,16 +112,16 @@ export function SiteCard({
       {latestScan && (
         <div className="mt-4 ml-13">
           <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all"
-              style={{ 
-                width: `${Math.max(0, 100 - (issueCount * 10))}%`,
-                opacity: issueCount === 0 ? 1 : 0.3 + (Math.max(0, 100 - (issueCount * 10)) / 100) * 0.7
+              style={{
+                width: `${Math.max(0, 100 - issueCount * 10)}%`,
+                opacity: issueCount === 0 ? 1 : 0.3 + (Math.max(0, 100 - issueCount * 10) / 100) * 0.7,
               }}
             />
           </div>
         </div>
       )}
-    </Link>
+    </div>
   );
 }

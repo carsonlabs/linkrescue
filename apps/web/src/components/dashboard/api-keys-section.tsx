@@ -121,19 +121,19 @@ export function ApiKeysSection({ plan, rateLimit }: ApiKeysSectionProps) {
     );
   }
 
-  if (plan === 'free') {
+  if (rateLimit === 0) {
     return (
       <div className="bg-muted/50 rounded-lg p-6 text-center">
         <Key className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
         <h3 className="font-semibold mb-1">API Access</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          API access is available on Pro and Agency plans.
+          API access is available on paid plans.
         </p>
         <a
           href="/pricing"
           className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
         >
-          Upgrade to Pro
+          View Plans
         </a>
       </div>
     );
@@ -303,7 +303,7 @@ export function ApiKeysSection({ plan, rateLimit }: ApiKeysSectionProps) {
       <div className="text-xs text-muted-foreground pt-2">
         <p>
           Need help? Check out the{' '}
-          <a href="/docs/api" className="text-primary hover:underline">
+          <a href="/dashboard/api-docs" className="text-primary hover:underline">
             API documentation
           </a>
           .

@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getLatestScan } from '@linkrescue/database';
+import { getLatestScan, getLatestHealthScore, getHealthScoreHistory } from '@linkrescue/database';
+import { getUserPlan, hasFeature, type TierName } from '@linkrescue/types';
 import { IssuesTable } from '@/components/dashboard/issues-table';
 import { VerifyButton, ScanButton } from '@/components/dashboard/scan-status';
+import { HealthScoreGauge } from '@/components/dashboard/health-score-gauge';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, Copy } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +28,24 @@ export default async function SiteDetailsPage({ params }: { params: { id: string
 
   if (!site) notFound();
 
+  // Get user plan for on-demand scan access
+  const { data: profile } = await supabase
+    .from('users')
+    .select('stripe_price_id')
+    .eq('id', user.id)
+    .single();
+
+  const plan = getUserPlan(profile?.stripe_price_id ?? null) as TierName;
+  const canScan = hasFeature(plan, 'on_demand_scans');
+
   const { data: latestScan } = await getLatestScan(supabase, site.id);
+
+  // Fetch health score
+  const { data: healthScore } = await getLatestHealthScore(supabase, site.id);
+  const { data: scoreHistory } = await getHealthScoreHistory(supabase, site.id, 7);
+  const previousScore = scoreHistory && scoreHistory.length >= 2
+    ? scoreHistory[scoreHistory.length - 2]?.score ?? null
+    : null;
 
   // Fetch issues from the latest scan
   let issues: any[] = [];
@@ -89,10 +108,39 @@ export default async function SiteDetailsPage({ params }: { params: { id: string
           </div>
           <div className="flex gap-2 flex-shrink-0">
             {!site.verified_at && <VerifyButton siteId={site.id} />}
-            {site.verified_at && <ScanButton siteId={site.id} />}
+            {site.verified_at && <ScanButton siteId={site.id} canScan={canScan} />}
           </div>
         </div>
       </div>
+
+      {/* Health Score */}
+      {site.verified_at && healthScore && (
+        <div className="glass-card p-6 flex items-center gap-6">
+          <HealthScoreGauge
+            score={healthScore.score}
+            previousScore={previousScore}
+            size="md"
+          />
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <div>
+              <p className="text-slate-500 text-xs">Healthy links</p>
+              <p className="font-semibold">{Math.round(healthScore.healthy_link_ratio * 100)}%</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">Scan coverage</p>
+              <p className="font-semibold">{Math.round(healthScore.scan_coverage * 100)}%</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">Days since critical</p>
+              <p className="font-semibold">{healthScore.days_since_critical}</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">Param integrity</p>
+              <p className="font-semibold">{Math.round(healthScore.affiliate_param_integrity * 100)}%</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {!site.verified_at && (
         <div className="border rounded-xl p-6 bg-amber-50 border-amber-200">

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getUserPlan, getPlanLimits } from '@linkrescue/types';
+import { getUserPlan, getPlanLimits, hasFeature } from '@linkrescue/types';
 import { analyzeDeadLink, matchOffers } from '@linkrescue/ai';
 import type { OfferInput } from '@linkrescue/ai';
 
@@ -15,7 +15,7 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
   const limits = getPlanLimits(plan);
 
   if (limits.aiMatchesPerScan === 0) {
-    return NextResponse.json({ error: 'AI matching requires Pro plan' }, { status: 403 });
+    return NextResponse.json({ error: 'AI matching requires a paid plan. Upgrade to Pro or Agency.' }, { status: 403 });
   }
 
   // Verify user owns the scan's site

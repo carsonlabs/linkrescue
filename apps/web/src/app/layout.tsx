@@ -53,6 +53,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Rewardful affiliate tracking */}
+        {process.env.NEXT_PUBLIC_REWARDFUL_API_KEY && (
+          <>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}})(window,'rewardful');`,
+              }}
+            />
+            <script
+              async
+              src="https://r.wdfl.co/rw.js"
+              data-rewardful={process.env.NEXT_PUBLIC_REWARDFUL_API_KEY}
+            />
+          </>
+        )}
+      </head>
       <body className={inter.className}>
         <Toaster position="top-center" />
         {children}

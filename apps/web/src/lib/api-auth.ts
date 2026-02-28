@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { getUserPlan, PLAN_LIMITS, type PlanType } from '@linkrescue/types';
+import { getUserPlan, PLAN_LIMITS, hasFeature, type PlanType } from '@linkrescue/types';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
@@ -140,7 +140,7 @@ export async function authenticateApiRequest(
   const plan = getUserPlan(user?.stripe_price_id ?? null);
   
   // Check if plan has API access
-  if (PLAN_LIMITS[plan].apiReadRequestsPerHour === 0) {
+  if (!hasFeature(plan, 'api_access')) {
     return { success: false, error: 'API access not available on your plan. Upgrade to Pro or Agency.', status: 403 };
   }
   

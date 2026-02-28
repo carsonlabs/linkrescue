@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ExternalLink, User } from 'lucide-react';
 import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { createClient } from '@/lib/supabase/server';
-import { getUserPlan } from '@linkrescue/types';
+import { getUserPlan, getTierLimits } from '@linkrescue/types';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -10,7 +10,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     data: { user },
   } = await supabase.auth.getUser();
 
-  let plan = 'free';
+  let plan: 'free' | 'pro' | 'agency' = 'free';
   if (user) {
     const { data: profile } = await supabase
       .from('users')
@@ -19,6 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       .single();
     plan = getUserPlan(profile?.stripe_price_id ?? null);
   }
+  const tierLimits = getTierLimits(plan);
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,8 +39,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {/* Upgrade nudge for free users */}
           {plan === 'free' && (
             <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-purple-500/10 border border-green-500/20">
-              <p className="text-xs font-semibold text-white mb-1">Free plan</p>
-              <p className="text-xs text-slate-400 mb-3">1 site · 50 pages/scan</p>
+              <p className="text-xs font-semibold text-white mb-1">{tierLimits.name} plan</p>
+              <p className="text-xs text-slate-400 mb-3">{tierLimits.sites} site · {tierLimits.pagesPerScan} pages/scan</p>
               <Link
                 href="/pricing"
                 className="block text-center text-xs font-semibold px-3 py-2 rounded-lg bg-green-500 text-slate-900 hover:bg-green-400 transition-colors"

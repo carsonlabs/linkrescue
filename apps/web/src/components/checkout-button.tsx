@@ -4,19 +4,28 @@ import { useState } from 'react';
 
 interface CheckoutButtonProps {
   plan?: 'pro' | 'agency';
+  interval?: 'monthly' | 'annual';
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function CheckoutButton({ plan = 'pro', className = '' }: CheckoutButtonProps) {
+export function CheckoutButton({
+  plan = 'pro',
+  interval = 'monthly',
+  className = '',
+  children,
+}: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
     setLoading(true);
     try {
+      // Get Rewardful referral ID if available
+      const referral = typeof window !== 'undefined' && (window as any).Rewardful?.referral;
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, interval, ...(referral ? { referral } : {}) }),
       });
       const data = await res.json();
 
@@ -26,13 +35,14 @@ export function CheckoutButton({ plan = 'pro', className = '' }: CheckoutButtonP
         alert(data.error || 'Failed to create checkout session');
         setLoading(false);
       }
-    } catch (error) {
+    } catch {
       alert('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
 
   const isPro = plan === 'pro';
+  const defaultLabel = isPro ? 'Start Pro Trial' : 'Start Agency Trial';
 
   return (
     <button
@@ -44,16 +54,16 @@ export function CheckoutButton({ plan = 'pro', className = '' }: CheckoutButtonP
           : 'btn-secondary border-green-500/30 hover:border-green-500/50'
       } ${className}`}
     >
-      {loading ? 'Loading...' : isPro ? 'Start Pro Trial' : 'Start Agency Trial'}
+      {loading ? 'Loading...' : children || defaultLabel}
     </button>
   );
 }
 
 // Convenience exports for pricing page
-export function ProCheckoutButton() {
-  return <CheckoutButton plan="pro" />;
+export function ProCheckoutButton({ interval = 'monthly' as const }) {
+  return <CheckoutButton plan="pro" interval={interval} />;
 }
 
-export function AgencyCheckoutButton() {
-  return <CheckoutButton plan="agency" />;
+export function AgencyCheckoutButton({ interval = 'monthly' as const }) {
+  return <CheckoutButton plan="agency" interval={interval} />;
 }

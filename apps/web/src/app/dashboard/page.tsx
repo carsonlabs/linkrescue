@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
-import { getUserPlan } from '@linkrescue/types';
+import { getUserPlan, getTierLimits } from '@linkrescue/types';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -31,6 +31,7 @@ export default async function DashboardOverviewPage() {
     .single();
 
   const plan = getUserPlan(profile?.stripe_price_id ?? null);
+  const tierLimits = getTierLimits(plan);
 
   const { data: sites } = await supabase
     .from('sites')
@@ -230,14 +231,14 @@ export default async function DashboardOverviewPage() {
               <Crown className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <p className="font-semibold text-sm mb-0.5">You&apos;re on the Free plan</p>
+              <p className="font-semibold text-sm mb-0.5">You&apos;re on the {tierLimits.name} plan</p>
               <p className="text-xs text-slate-400">
-                Upgrade to Pro for 5 sites, 500 pages/scan, AI offer matching, and guardian links.
+                Upgrade to Pro for {getTierLimits('pro').sites} sites, {getTierLimits('pro').pagesPerScan.toLocaleString()} pages/scan, revenue estimates, and fix suggestions.
               </p>
             </div>
           </div>
           <Link href="/pricing" className="btn-primary whitespace-nowrap text-sm flex-shrink-0">
-            Upgrade to Pro
+            View Plans
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -274,6 +275,7 @@ function StatCard({
 }
 
 function EmptyState({ plan }: { plan: string }) {
+  const limits = getTierLimits(plan as 'free' | 'pro' | 'agency');
   return (
     <div className="space-y-8">
       <div>
@@ -299,7 +301,7 @@ function EmptyState({ plan }: { plan: string }) {
 
       {plan === 'free' && (
         <div className="grid sm:grid-cols-3 gap-4 text-center">
-          {['1 site', '50 pages/scan', 'Weekly email digests'].map((f) => (
+          {[`${limits.sites} site`, `${limits.pagesPerScan} pages/scan`, 'Weekly email digests'].map((f) => (
             <div key={f} className="glass-card p-4">
               <CheckCircle2 className="w-5 h-5 text-green-400 mx-auto mb-2" />
               <p className="text-sm font-medium">{f}</p>

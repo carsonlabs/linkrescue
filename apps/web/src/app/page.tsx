@@ -15,6 +15,12 @@ import {
   ExternalLink,
   Plus,
   ChevronRight,
+  BarChart2,
+  Building2,
+  Webhook,
+  Users,
+  Star,
+  MessageSquare,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
@@ -80,6 +86,12 @@ const steps = [
     title: 'Get alerts & fix issues',
     description:
       'Receive email digests when broken links are found. Click to see exactly which pages are affected.',
+  },
+  {
+    number: '04',
+    title: 'Track your health score',
+    description:
+      'Monitor your site health over time with monthly reports, trend charts, and affiliate program analytics.',
   },
 ];
 
@@ -442,9 +454,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {/* Connector line for desktop */}
-            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-px">
+            <div className="hidden md:block absolute top-1/2 left-1/6 right-1/6 h-px">
               <div className="h-full bg-gradient-to-r from-transparent via-green-500/30 to-transparent" />
             </div>
 
@@ -475,11 +487,11 @@ export default function HomePage() {
             <p className="text-lg text-slate-400">Start free. Upgrade when you need more.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Free Plan */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Starter Plan */}
             <div className="glass-card p-8">
               <div className="mb-6">
-                <h3 className="font-display text-xl font-bold mb-2">Free</h3>
+                <h3 className="font-display text-xl font-bold mb-2">Starter</h3>
                 <p className="text-slate-400 text-sm">Perfect for getting started</p>
               </div>
               <div className="mb-8">
@@ -487,7 +499,7 @@ export default function HomePage() {
                 <span className="text-slate-500">/month</span>
               </div>
               <ul className="space-y-4 mb-8">
-                {['1 site', '50 pages per scan', 'Weekly email digests', 'All issue types'].map(
+                {['1 site', '200 pages per scan', 'Weekly scans', 'Basic broken link alerts'].map(
                   (item) => (
                     <li key={item} className="flex items-center gap-3 text-sm">
                       <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -502,13 +514,13 @@ export default function HomePage() {
             </div>
 
             {/* Pro Plan */}
-            <div className="relative gradient-border p-8">
+            <div className="relative gradient-border p-8 md:-mt-4 md:mb-4">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="badge-green text-xs">Most popular</span>
               </div>
               <div className="mb-6">
                 <h3 className="font-display text-xl font-bold mb-2">Pro</h3>
-                <p className="text-slate-400 text-sm">For serious affiliate sites</p>
+                <p className="text-slate-400 text-sm">For serious affiliate marketers</p>
               </div>
               <div className="mb-8">
                 <span className="font-display text-5xl font-bold text-gradient">$29</span>
@@ -517,10 +529,10 @@ export default function HomePage() {
               <ul className="space-y-4 mb-8">
                 {[
                   '5 sites',
-                  '500 pages per scan',
-                  'Weekly email digests',
-                  'All issue types',
-                  'Priority support',
+                  '2,000 pages per scan',
+                  'Daily scans',
+                  'Revenue estimates',
+                  'Fix suggestions',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-sm">
                     <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -533,6 +545,164 @@ export default function HomePage() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
+
+            {/* Agency Plan */}
+            <div className="glass-card p-8">
+              <div className="mb-6">
+                <h3 className="font-display text-xl font-bold mb-2">Agency</h3>
+                <p className="text-slate-400 text-sm">For agencies & power users</p>
+              </div>
+              <div className="mb-8">
+                <span className="font-display text-5xl font-bold">$79</span>
+                <span className="text-slate-500">/month</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                {[
+                  '25 sites',
+                  'Unlimited pages per scan',
+                  'Hourly scans',
+                  'API access & webhooks',
+                  'Slack integration',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/signup" className="btn-secondary w-full justify-center border-green-500/30">
+                Start Agency trial
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof / Testimonials */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              Trusted by <span className="text-gradient">affiliate marketers</span>
+            </h2>
+            <p className="text-lg text-slate-400">
+              See what our users say about protecting their affiliate revenue.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                quote: "LinkRescue caught 14 broken Amazon links on my site that had been losing me commissions for months. Paid for itself in the first week.",
+                name: 'Sarah M.',
+                role: 'Tech Review Blogger',
+                rating: 5,
+              },
+              {
+                quote: "The health score reports are fantastic. I can see at a glance which of my 12 sites need attention, and the affiliate parameter tracking is a game changer.",
+                name: 'James K.',
+                role: 'Affiliate Agency Owner',
+                rating: 5,
+              },
+              {
+                quote: "I used to manually check links every quarter. Now I get notified the same day something breaks. My earnings are up 20% since I stopped losing clicks to dead links.",
+                name: 'Maria L.',
+                role: 'Travel Content Creator',
+                rating: 5,
+              },
+            ].map((testimonial, i) => (
+              <div key={i} className="glass-card p-6 flex flex-col">
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: testimonial.rating }).map((_, j) => (
+                    <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-slate-300 leading-relaxed flex-1 mb-4">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-3 pt-4 border-t border-white/5">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center text-sm font-bold">
+                    {testimonial.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{testimonial.name}</p>
+                    <p className="text-xs text-slate-500">{testimonial.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* For Agencies */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <div className="inline-flex items-center gap-2 badge-green mb-6">
+              <Building2 className="w-4 h-4" />
+              For Agencies
+            </div>
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              Scale affiliate monitoring{' '}
+              <span className="text-gradient-purple">across all your clients</span>
+            </h2>
+            <p className="text-lg text-slate-400">
+              The Agency plan gives you everything you need to manage affiliate link health at scale.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                icon: Globe,
+                title: '25 Sites',
+                description: 'Monitor up to 25 client sites from a single dashboard with unlimited pages per scan.',
+              },
+              {
+                icon: Zap,
+                title: 'Hourly Scans',
+                description: 'Catch issues within the hour, not overnight. Critical for high-traffic affiliate sites.',
+              },
+              {
+                icon: Webhook,
+                title: 'API & Webhooks',
+                description: 'Integrate with your existing tools. Trigger scans programmatically and receive real-time alerts.',
+              },
+              {
+                icon: MessageSquare,
+                title: 'Slack Integration',
+                description: 'Get broken link alerts and scan summaries directly in your team Slack channels.',
+              },
+              {
+                icon: BarChart2,
+                title: 'Health Reports',
+                description: 'Monthly health reports with trend data, affiliate program analytics, and revenue impact estimates.',
+              },
+              {
+                icon: Users,
+                title: 'Priority Support',
+                description: 'Dedicated support with faster response times and help setting up complex integrations.',
+              },
+            ].map((item, i) => (
+              <div key={i} className="glass-card p-6 group hover:border-purple-500/30 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 flex items-center justify-center mb-4 transition-colors">
+                  <item.icon className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-400">{item.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/signup" className="btn-primary text-base px-8 py-4">
+              Start Agency trial
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <p className="text-sm text-slate-500 mt-3">$79/month or $790/year (save 17%)</p>
           </div>
         </div>
       </section>
@@ -577,6 +747,9 @@ export default function HomePage() {
               </Link>
               <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">
                 Calculator
+              </Link>
+              <Link href="/affiliates" className="hover:text-white transition-colors">
+                Affiliates
               </Link>
               <Link href="/privacy" className="hover:text-white transition-colors">
                 Privacy

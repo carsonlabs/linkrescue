@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   ALL_AFFILIATE_PARAMS,
   AFFILIATE_DOMAINS,
+  detectAffiliateParams,
+  compareParamSurvival,
+  type ParamSurvival,
 } from '@/config/affiliate-params';
 import {
   BROWSER_ENVIRONMENTS,
@@ -15,6 +18,7 @@ import {
 interface HopInfo {
   url: string;
   status: number;
+  jsRedirect?: boolean;
 }
 
 export interface EnvResult {
@@ -25,12 +29,33 @@ export interface EnvResult {
   finalUrl: string;
   chain: HopInfo[];
   redirectCount: number;
-  affiliateTagPreserved: boolean | null; // null = no affiliate params to check
+  affiliateTagPreserved: boolean | null;
   paramsLost: boolean;
+  paramDetails: ParamSurvival[];
   errorMessage: string | null;
-  /** True when redirect chain differs from the baseline (desktop_chrome) */
   differsFromBaseline: boolean;
   issue: string | null;
+  testMethod: 'header-simulation' | 'browser-test';
+  jsRedirectDetected: boolean;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Rate limiter (in-memory, per Vercel instance)                      */
+/* ------------------------------------------------------------------ */
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 10; // per hour
+const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
 }
 
 /* ------------------------------------------------------------------ */
@@ -50,7 +75,18 @@ function isPrivateHost(hostname: string): boolean {
   );
 }
 
-function detectAffiliate(url: string): { isAffiliate: boolean; params: string[] } {
+function isAffiliateByDomain(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return AFFILIATE_DOMAINS.some(
+      (d) => parsed.hostname === d || parsed.hostname.endsWith(`.${d}`),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function detectAffiliateSimple(url: string): { isAffiliate: boolean; params: string[] } {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -65,11 +101,10 @@ function detectAffiliate(url: string): { isAffiliate: boolean; params: string[] 
     }
   }
 
-  const isAffiliateDomain = AFFILIATE_DOMAINS.some(
-    (d) => parsed.hostname === d || parsed.hostname.endsWith(`.${d}`),
-  );
-
-  return { isAffiliate: isAffiliateDomain || foundParams.length > 0, params: foundParams };
+  return {
+    isAffiliate: isAffiliateByDomain(url) || foundParams.length > 0,
+    params: foundParams,
+  };
 }
 
 function classifyStatus(
@@ -85,32 +120,75 @@ function classifyStatus(
   return 'error';
 }
 
+/** Extract meta http-equiv="refresh" target URL from HTML */
+function extractMetaRefresh(html: string, baseUrl: string): string | null {
+  const match = html.match(
+    /<meta[^>]+http-equiv\s*=\s*["']?refresh["']?[^>]+content\s*=\s*["']?\d+\s*;\s*url\s*=\s*["']?([^"'\s>]+)/i,
+  );
+  if (!match?.[1]) return null;
+  try {
+    return new URL(match[1], baseUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+/** Try to extract window.location or document.location JS redirect from a small HTML body */
+function extractJsRedirect(html: string, baseUrl: string): string | null {
+  // Only check small bodies to avoid scanning large pages
+  if (html.length > 10_000) return null;
+
+  const patterns = [
+    /window\.location(?:\.href)?\s*=\s*["']([^"']+)["']/i,
+    /document\.location(?:\.href)?\s*=\s*["']([^"']+)["']/i,
+    /window\.location\.replace\s*\(\s*["']([^"']+)["']\s*\)/i,
+    /location\.assign\s*\(\s*["']([^"']+)["']\s*\)/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match?.[1]) {
+      try {
+        return new URL(match[1], baseUrl).toString();
+      } catch {
+        continue;
+      }
+    }
+  }
+  return null;
+}
+
 /* ------------------------------------------------------------------ */
-/*  Core redirect-chain follower                                       */
+/*  Core redirect-chain follower (Layer A)                             */
 /* ------------------------------------------------------------------ */
 
 async function followChain(
   startUrl: string,
   env: BrowserEnvironment,
-): Promise<{ chain: HopInfo[]; finalStatus: number; errorMessage: string | null }> {
+): Promise<{
+  chain: HopInfo[];
+  finalStatus: number;
+  errorMessage: string | null;
+  jsRedirectDetected: boolean;
+}> {
   const chain: HopInfo[] = [];
   let current = startUrl;
   let finalStatus = 0;
   let errorMessage: string | null = null;
+  let jsRedirectDetected = false;
 
   const headers: Record<string, string> = {
     'User-Agent': env.userAgent,
-    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    ...env.headers,
   };
-  if (env.referer) headers['Referer'] = env.referer;
-  // ITP environments: omit Cookie header entirely (simulates blocked 3rd-party cookies)
 
   try {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 10_000);
 
       let res: Response;
+      let usedGet = false;
       try {
         res = await fetch(current, {
           method: 'HEAD',
@@ -131,6 +209,7 @@ async function followChain(
           signal: controller.signal,
           headers,
         });
+        usedGet = true;
       } finally {
         clearTimeout(timeout);
       }
@@ -138,6 +217,7 @@ async function followChain(
       chain.push({ url: current, status: res.status });
       finalStatus = res.status;
 
+      // Follow HTTP redirect (3xx)
       if (res.status >= 300 && res.status < 400) {
         const location = res.headers.get('location');
         if (!location) break;
@@ -148,9 +228,63 @@ async function followChain(
         }
         const dest = new URL(current);
         if (isPrivateHost(dest.hostname)) break;
-      } else {
-        break;
+        continue;
       }
+
+      // For 200 responses, check for meta-refresh and JS redirects
+      if (res.status >= 200 && res.status < 300) {
+        // Only read body if we used GET or if it's a small response
+        let body: string | null = null;
+        if (usedGet) {
+          try {
+            body = await res.text();
+          } catch {
+            // Can't read body, skip meta-refresh check
+          }
+        } else {
+          // Do a GET to check for meta-refresh / JS redirects
+          try {
+            const getController = new AbortController();
+            const getTimeout = setTimeout(() => getController.abort(), 5_000);
+            const getRes = await fetch(current, {
+              method: 'GET',
+              redirect: 'manual',
+              signal: getController.signal,
+              headers,
+            });
+            clearTimeout(getTimeout);
+            body = await getRes.text();
+          } catch {
+            // Ignore — meta-refresh check is best-effort
+          }
+        }
+
+        if (body) {
+          // Check for meta refresh
+          const metaTarget = extractMetaRefresh(body, current);
+          if (metaTarget && metaTarget !== current) {
+            try {
+              const dest = new URL(metaTarget);
+              if (!isPrivateHost(dest.hostname)) {
+                current = metaTarget;
+                continue;
+              }
+            } catch {
+              // Invalid URL, skip
+            }
+          }
+
+          // Check for JS redirect (flag only, don't follow — Layer B handles these)
+          const jsTarget = extractJsRedirect(body, current);
+          if (jsTarget && jsTarget !== current) {
+            jsRedirectDetected = true;
+            // Add the JS redirect target as a flagged hop
+            chain.push({ url: jsTarget, status: 0, jsRedirect: true });
+          }
+        }
+      }
+
+      break;
     }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
@@ -162,7 +296,7 @@ async function followChain(
     finalStatus = 0;
   }
 
-  return { chain, finalStatus, errorMessage };
+  return { chain, finalStatus, errorMessage, jsRedirectDetected };
 }
 
 /* ------------------------------------------------------------------ */
@@ -170,6 +304,18 @@ async function followChain(
 /* ------------------------------------------------------------------ */
 
 export async function POST(req: NextRequest) {
+  // Rate limiting
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      {
+        error: "You've used your free checks for this hour. Create a free account for more.",
+        rateLimited: true,
+      },
+      { status: 429 },
+    );
+  }
+
   let body: { url?: string };
   try {
     body = await req.json();
@@ -199,23 +345,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Private/internal URLs are not allowed' }, { status: 400 });
   }
 
-  const affiliateInfo = detectAffiliate(urlStr);
+  const affiliateInfo = detectAffiliateSimple(urlStr);
   const hasAffParams = affiliateInfo.isAffiliate && affiliateInfo.params.length > 0;
+  const detectedParams = detectAffiliateParams(urlStr);
+  const detectedNetwork = detectedParams.length > 0 ? detectedParams[0].network : null;
 
   // Run all environments in parallel
   const envResults = await Promise.all(
     BROWSER_ENVIRONMENTS.map(async (env): Promise<EnvResult> => {
-      const { chain, finalStatus, errorMessage } = await followChain(urlStr, env);
+      const { chain, finalStatus, errorMessage, jsRedirectDetected } = await followChain(urlStr, env);
 
-      const finalUrl = chain.at(-1)?.url ?? urlStr;
-      const finalAffiliate = detectAffiliate(finalUrl);
+      const finalUrl = chain.filter((h) => !h.jsRedirect).at(-1)?.url ?? urlStr;
+      const paramDetails = hasAffParams ? compareParamSurvival(urlStr, finalUrl) : [];
+      const paramsLost = paramDetails.some((p) => !p.survived);
 
-      const paramsLost =
-        hasAffParams &&
-        chain.length > 1 &&
-        finalAffiliate.params.length < affiliateInfo.params.length;
-
-      const status = classifyStatus(finalStatus, chain.length, errorMessage);
+      const status = classifyStatus(finalStatus, chain.filter((h) => !h.jsRedirect).length, errorMessage);
 
       let affiliateTagPreserved: boolean | null = null;
       if (hasAffParams) {
@@ -227,20 +371,14 @@ export async function POST(req: NextRequest) {
       if (errorMessage) {
         issue = errorMessage;
       } else if (paramsLost) {
-        // Find which hop lost the params
-        const lostAtHop = chain.findIndex((hop, idx) => {
-          if (idx === 0) return false;
-          const prevAffiliate = detectAffiliate(chain[idx - 1].url);
-          const curAffiliate = detectAffiliate(hop.url);
-          return curAffiliate.params.length < prevAffiliate.params.length;
-        });
-        if (env.simulateITP && lostAtHop > 0) {
-          issue = `ITP/privacy restrictions removed tag at hop ${lostAtHop}`;
-        } else if (lostAtHop > 0) {
-          issue = `Parameter lost in redirect at hop ${lostAtHop}`;
+        const lostParams = paramDetails.filter((p) => !p.survived).map((p) => p.param);
+        if (env.cookiePolicy !== 'standard') {
+          issue = `Privacy restrictions stripped ${lostParams.join(', ')}`;
         } else {
-          issue = 'Parameter lost in redirect';
+          issue = `Parameter ${lostParams.join(', ')} lost in redirect`;
         }
+      } else if (jsRedirectDetected) {
+        issue = 'JavaScript redirect detected — browser test will verify';
       } else if (status === 'broken') {
         issue = `HTTP ${finalStatus} error`;
       }
@@ -252,21 +390,24 @@ export async function POST(req: NextRequest) {
         finalStatus,
         finalUrl,
         chain,
-        redirectCount: Math.max(0, chain.length - 1),
+        redirectCount: Math.max(0, chain.filter((h) => !h.jsRedirect).length - 1),
         affiliateTagPreserved,
         paramsLost,
+        paramDetails,
         errorMessage,
-        differsFromBaseline: false, // filled in below
+        differsFromBaseline: false,
         issue,
+        testMethod: 'header-simulation',
+        jsRedirectDetected,
       };
     }),
   );
 
-  // Mark environments that differ from the desktop_chrome baseline
-  const baseline = envResults.find((r) => r.environmentId === 'desktop_chrome');
+  // Mark environments that differ from the desktop-chrome baseline
+  const baseline = envResults.find((r) => r.environmentId === 'desktop-chrome');
   if (baseline) {
     for (const r of envResults) {
-      if (r.environmentId === 'desktop_chrome') continue;
+      if (r.environmentId === 'desktop-chrome') continue;
       r.differsFromBaseline =
         r.finalUrl !== baseline.finalUrl ||
         r.paramsLost !== baseline.paramsLost ||
@@ -279,6 +420,7 @@ export async function POST(req: NextRequest) {
     originalUrl: urlStr,
     isAffiliate: affiliateInfo.isAffiliate,
     affiliateParams: affiliateInfo.params,
+    detectedNetwork,
     environments: envResults,
   });
 }

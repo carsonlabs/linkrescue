@@ -1,6 +1,8 @@
 /**
  * Affiliate network parameter patterns and domain lists.
- * Single source of truth — used by the link checker API, crawler, and VPS browser service.
+ * Standalone copy for the browser testing API service.
+ *
+ * Keep in sync with: apps/web/src/config/affiliate-params.ts
  */
 
 export interface AffiliateNetwork {
@@ -91,7 +93,7 @@ export const AFFILIATE_DOMAINS = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
 export interface DetectedParam {
@@ -99,6 +101,18 @@ export interface DetectedParam {
   param: string;
   value: string;
 }
+
+export interface ParamSurvival {
+  param: string;
+  network: string;
+  originalValue: string;
+  survived: boolean;
+  finalValue: string | null;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
 /** Given a URL, detect which affiliate parameters are present */
 export function detectAffiliateParams(url: string): DetectedParam[] {
@@ -119,14 +133,6 @@ export function detectAffiliateParams(url: string): DetectedParam[] {
     }
   }
   return found;
-}
-
-export interface ParamSurvival {
-  param: string;
-  network: string;
-  originalValue: string;
-  survived: boolean;
-  finalValue: string | null;
 }
 
 /** Compare two URLs and check if affiliate params survived the redirect chain */

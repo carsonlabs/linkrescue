@@ -66,8 +66,8 @@ export function RevenueCalculator() {
   const brokenLinkLoss = Math.round((monthlyViews / 1000) * rpm * (brokenRate / 100));
 
   // Silent attribution failure loss (based on social traffic %)
-  // In-app browsers strip attribution ~35-60% of the time. We use a conservative 40%.
-  const attributionStripRate = 0.4;
+  // Industry estimates suggest 15-25% attribution loss through in-app browsers. We use 20%.
+  const attributionStripRate = 0.2;
   const socialViews = monthlyViews * (socialTrafficPct / 100);
   const attributionLoss = Math.round((socialViews / 1000) * rpm * attributionStripRate);
 
@@ -159,7 +159,7 @@ export function RevenueCalculator() {
             <span className="text-sm text-slate-500 font-normal">/mo</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
-            In-app browsers (Instagram, TikTok, etc.) strip affiliate tags ~40% of the time
+            In-app browsers (Instagram, TikTok, etc.) strip affiliate tags an estimated 15-25% of the time
           </p>
         </div>
 
@@ -172,6 +172,11 @@ export function RevenueCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Disclaimer */}
+      <p className="text-[11px] text-slate-500 mb-6 leading-relaxed">
+        These are estimates based on industry averages. Actual losses vary by niche, network, and traffic source.
+      </p>
 
       {/* Annual loss teaser — blurred in idle */}
       {state === 'idle' && (
@@ -236,11 +241,10 @@ export function RevenueCalculator() {
             {formatCurrency(attributionLoss * 12)}/yr from silent attribution failures
           </p>
           <p className="text-sm text-slate-400 mb-5">
-            LinkRescue scans your site daily and tests links across multiple browser environments —
-            catching both broken links and invisible attribution failures before they cost you.
+            LinkRescue catches both. Check your links across multiple browser environments for free.
           </p>
-          <Link href="/signup" className="btn-primary w-full justify-center">
-            Start protecting your revenue — free
+          <Link href="/link-checker" className="btn-primary w-full justify-center">
+            Check your links free
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

@@ -57,12 +57,23 @@ export function RevenueCalculator() {
   const [monthlyViews, setMonthlyViews] = useState(100_000);
   const [rpm, setRpm] = useState(120);
   const [brokenRate, setBrokenRate] = useState(10);
+  const [socialTrafficPct, setSocialTrafficPct] = useState(30);
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const monthlyLoss = Math.round((monthlyViews / 1000) * rpm * (brokenRate / 100));
-  const annualLoss = monthlyLoss * 12;
+  // Broken link loss (existing calculation)
+  const brokenLinkLoss = Math.round((monthlyViews / 1000) * rpm * (brokenRate / 100));
+
+  // Silent attribution failure loss (based on social traffic %)
+  // In-app browsers strip attribution ~35-60% of the time. We use a conservative 40%.
+  const attributionStripRate = 0.4;
+  const socialViews = monthlyViews * (socialTrafficPct / 100);
+  const attributionLoss = Math.round((socialViews / 1000) * rpm * attributionStripRate);
+
+  // Combined total
+  const totalMonthlyLoss = brokenLinkLoss + attributionLoss;
+  const totalAnnualLoss = totalMonthlyLoss * 12;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,7 +83,7 @@ export function RevenueCalculator() {
       const res = await fetch('/api/calculator-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, monthlyLoss, annualLoss }),
+        body: JSON.stringify({ email, monthlyLoss: totalMonthlyLoss, annualLoss: totalAnnualLoss }),
       });
       if (!res.ok) throw new Error('failed');
       setState('submitted');
@@ -116,14 +127,49 @@ export function RevenueCalculator() {
           onChange={setBrokenRate}
           format={(v) => `${v}%`}
         />
+        <SliderField
+          label="Traffic from social platforms (Instagram, TikTok, Facebook)"
+          value={socialTrafficPct}
+          min={0}
+          max={80}
+          step={5}
+          onChange={setSocialTrafficPct}
+          format={(v) => `${v}%`}
+        />
       </div>
 
-      {/* Monthly loss — always visible */}
-      <div className="border border-red-500/30 bg-red-500/5 rounded-xl p-6 mb-4">
-        <p className="text-sm text-slate-400 mb-1">Estimated monthly revenue loss</p>
-        <div className="font-display text-5xl font-bold text-red-400">
-          {formatCurrency(monthlyLoss)}
-          <span className="text-lg text-slate-500 font-normal">/mo</span>
+      {/* Two-part loss breakdown — always visible */}
+      <div className="space-y-3 mb-4">
+        {/* Broken link loss */}
+        <div className="border border-red-500/20 bg-red-500/5 rounded-xl p-4">
+          <p className="text-xs text-slate-500 mb-1">Loss from broken &amp; expired links</p>
+          <div className="font-display text-3xl font-bold text-red-400">
+            {formatCurrency(brokenLinkLoss)}
+            <span className="text-sm text-slate-500 font-normal">/mo</span>
+          </div>
+        </div>
+
+        {/* Attribution failure loss */}
+        <div className="border border-red-500/30 bg-red-500/5 rounded-xl p-4">
+          <p className="text-xs text-slate-500 mb-1">
+            Additional loss from silent attribution failures
+          </p>
+          <div className="font-display text-3xl font-bold text-red-400">
+            +{formatCurrency(attributionLoss)}
+            <span className="text-sm text-slate-500 font-normal">/mo</span>
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">
+            In-app browsers (Instagram, TikTok, etc.) strip affiliate tags ~40% of the time
+          </p>
+        </div>
+
+        {/* Combined total */}
+        <div className="border border-red-500/40 bg-red-500/10 rounded-xl p-5">
+          <p className="text-sm text-slate-400 mb-1">Total estimated monthly loss</p>
+          <div className="font-display text-5xl font-bold text-red-400">
+            {formatCurrency(totalMonthlyLoss)}
+            <span className="text-lg text-slate-500 font-normal">/mo</span>
+          </div>
         </div>
       </div>
 
@@ -182,12 +228,16 @@ export function RevenueCalculator() {
             <span className="text-sm font-semibold text-green-400">Report sent to {email}</span>
           </div>
           <p className="text-sm text-slate-400 mb-1">Your estimated annual revenue loss:</p>
-          <div className="font-display text-4xl font-bold text-red-400 mb-5">
-            {formatCurrency(annualLoss)}/yr
+          <div className="font-display text-4xl font-bold text-red-400 mb-2">
+            {formatCurrency(totalAnnualLoss)}/yr
           </div>
+          <p className="text-xs text-slate-500 mb-4">
+            {formatCurrency(brokenLinkLoss * 12)}/yr from broken links +{' '}
+            {formatCurrency(attributionLoss * 12)}/yr from silent attribution failures
+          </p>
           <p className="text-sm text-slate-400 mb-5">
-            LinkRescue scans your site daily and alerts you the moment an affiliate link breaks —
-            before it costs you another commission.
+            LinkRescue scans your site daily and tests links across multiple browser environments —
+            catching both broken links and invisible attribution failures before they cost you.
           </p>
           <Link href="/signup" className="btn-primary w-full justify-center">
             Start protecting your revenue — free

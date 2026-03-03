@@ -7,33 +7,33 @@ const SITE_URL = 'https://linkrescue.io';
 const PAGE_URL = `${SITE_URL}/link-checker`;
 
 export const metadata: Metadata = {
-  title: 'Free Affiliate Link Checker — Instant URL Health Check | LinkRescue',
+  title: 'Free Affiliate Link Checker — Multi-Environment URL Test | LinkRescue',
   description:
-    'Instantly check any URL for broken links, redirect chains, and lost affiliate tracking parameters. Free tool — no sign-up required.',
+    'Test any affiliate link across 6 browser environments — Desktop Chrome, Mobile Safari, Instagram, Facebook, TikTok, and Android. See where your tracking parameters get stripped. Free, no sign-up.',
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: 'Free Affiliate Link Checker',
+    title: 'Free Affiliate Link Checker — Multi-Environment Test',
     description:
-      'Instantly check any URL for broken links, redirect chains, and lost affiliate tracking parameters.',
+      'See how your affiliate link behaves in Instagram, TikTok, Safari, and more. Catch silent attribution failures.',
     url: PAGE_URL,
     siteName: 'LinkRescue',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Affiliate Link Checker',
+    title: 'Free Affiliate Link Checker — Multi-Environment Test',
     description:
-      'Instantly check any URL for broken links, redirect chains, and lost affiliate tracking parameters.',
+      'See how your affiliate link behaves in Instagram, TikTok, Safari, and more. Catch silent attribution failures.',
   },
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Affiliate Link Checker',
+  name: 'Affiliate Link Checker — Multi-Environment Test',
   url: PAGE_URL,
   description:
-    'Check any affiliate link for broken URLs, redirect chains, and lost tracking parameters.',
+    'Test any affiliate link across 6 browser environments to detect broken links, redirect chains, and silent attribution failures.',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -81,12 +81,12 @@ export default function LinkCheckerPage() {
               Free · No sign-up required
             </div>
             <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-6">
-              Check any affiliate link{' '}
-              <span className="text-gradient">instantly</span>
+              Test your link across{' '}
+              <span className="text-gradient">6 browser environments</span>
             </h1>
             <p className="text-lg text-slate-400 leading-relaxed">
-              Paste any URL to see its HTTP status, full redirect chain, and whether your affiliate
-              tracking parameters survive the journey.
+              Paste any URL to see how it behaves in Desktop Chrome, Mobile Safari, Instagram, Facebook,
+              TikTok, and Android. Find out where your affiliate tags get silently stripped.
             </p>
           </div>
 
@@ -94,11 +94,11 @@ export default function LinkCheckerPage() {
           <LinkChecker />
 
           {/* What we check */}
-          <div className="max-w-2xl mx-auto mt-16">
+          <div className="max-w-4xl mx-auto mt-16">
             <h2 className="font-display text-xl font-semibold text-center mb-8">
               What gets checked
             </h2>
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
                 {
                   title: 'HTTP status',
@@ -110,7 +110,11 @@ export default function LinkCheckerPage() {
                 },
                 {
                   title: 'Affiliate params',
-                  desc: 'Detect if your ref=, tag=, or aff= parameters are stripped by a redirect.',
+                  desc: 'Detect if your ref=, tag=, awc=, or irclickid= parameters are stripped.',
+                },
+                {
+                  title: 'Environment testing',
+                  desc: 'See how your link behaves in Instagram, TikTok, Safari ITP, and other environments.',
                 },
               ].map((item) => (
                 <div key={item.title} className="glass-card p-5">

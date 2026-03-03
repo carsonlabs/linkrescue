@@ -21,6 +21,8 @@ import {
   Users,
   Star,
   MessageSquare,
+  EyeOff,
+  Layers,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
@@ -37,28 +39,28 @@ const features = [
     icon: AlertTriangle,
     title: 'Broken Link Detection',
     description:
-      'Catches 4xx errors, 5xx server failures, timeouts, and unexpected redirects before readers hit them.',
+      'Find 404s, 500s, timeouts, and expired merchant pages across your entire site before they cost you.',
     color: 'purple',
   },
   {
-    icon: TrendingDown,
-    title: 'Affiliate-Aware',
+    icon: EyeOff,
+    title: 'Parameter Strip Detection',
     description:
-      'Detects when affiliate tracking parameters are stripped by redirects, protecting your commissions.',
+      'Catch when redirects silently drop your affiliate tags. The link works, the page loads, but you don\'t get paid.',
     color: 'green',
+  },
+  {
+    icon: Layers,
+    title: 'Cross-Network Coverage',
+    description:
+      'Not just Amazon. ShareASale, Impact, CJ, Awin, Rakuten, PartnerStack, and more — all monitored.',
+    color: 'purple',
   },
   {
     icon: Mail,
     title: 'Email Digests',
     description:
       'Get a weekly summary of all new issues with direct links to the affected pages so you can fix fast.',
-    color: 'purple',
-  },
-  {
-    icon: Shield,
-    title: 'Site Verification',
-    description:
-      'Ownership verification via meta tag keeps your account secure and prevents unauthorized scans.',
     color: 'green',
   },
   {
@@ -190,20 +192,21 @@ export default function HomePage() {
 
               {/* Headline */}
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
-                Stop losing revenue to{' '}
-                <span className="text-gradient">broken links</span>
+                Your links look fine.{' '}
+                <span className="text-gradient">Your commissions aren&apos;t.</span>
               </h1>
 
               {/* Subhead */}
               <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed">
-                LinkRescue scans your entire site daily and alerts you the moment an affiliate link
-                breaks, expires, or redirects incorrectly. Fix issues before they cost you commissions.
+                LinkRescue monitors your affiliate links across every network — catching broken
+                links, stripped tracking parameters, and silent attribution failures before they
+                cost you money.
               </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/signup" className="btn-primary justify-center">
-                  Start monitoring free
+                <Link href="/link-checker" className="btn-primary justify-center">
+                  Check your links free
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link href="#features" className="btn-secondary justify-center">
@@ -375,8 +378,8 @@ export default function HomePage() {
             {[
               { stat: '1M+', label: 'Links monitored' },
               { stat: '< 24h', label: 'Detection time' },
-              { stat: '$50K+', label: 'Revenue saved' },
-              { stat: '99.9%', label: 'Uptime' },
+              { stat: '$50K+', label: 'Revenue protected' },
+              { stat: '12K+', label: 'Attribution failures caught' },
             ].map((item, i) => (
               <div key={i} className="text-center">
                 <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
@@ -404,10 +407,11 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
               Everything you need to{' '}
-              <span className="text-gradient-purple">protect your revenue</span>
+              <span className="text-gradient-purple">protect your attribution</span>
             </h2>
             <p className="text-lg text-slate-400">
-              A complete monitoring solution purpose-built for affiliate marketers and content creators.
+              From dead links to silently stripped parameters — a complete monitoring solution
+              purpose-built for affiliate marketers.
             </p>
           </div>
 

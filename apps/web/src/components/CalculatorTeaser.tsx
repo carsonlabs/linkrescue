@@ -13,10 +13,10 @@ export function CalculatorTeaser() {
         <div>
           <p className="font-semibold text-white text-sm mb-1">
             Affiliates lose an average of{' '}
-            <span className="text-red-400">$1,200/month</span> to broken links
+            <span className="text-red-400">$1,200/month</span> to broken links and silent attribution failures
           </p>
           <p className="text-xs text-slate-400">
-            How much are you losing? Find out in 30 seconds with our free calculator.
+            How much revenue are you losing to attribution failures? Find out in 30 seconds.
           </p>
         </div>
       </div>

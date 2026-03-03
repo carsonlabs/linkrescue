@@ -7,35 +7,35 @@ const SITE_URL = 'https://linkrescue.io';
 const PAGE_URL = `${SITE_URL}/affiliate-link-revenue-calculator`;
 
 export const metadata: Metadata = {
-  title: 'Affiliate Link Revenue Loss Calculator | LinkRescue',
+  title: 'Attribution Failure Revenue Calculator | LinkRescue',
   description:
-    'Find out exactly how much revenue you lose each month to broken and expired affiliate links. Free calculator — get your personalized report in 30 seconds.',
+    'How much revenue are you losing to attribution failures? Calculate losses from broken links AND silent parameter stripping in Instagram, TikTok, and Safari.',
   alternates: {
     canonical: PAGE_URL,
   },
   openGraph: {
-    title: 'Affiliate Link Revenue Loss Calculator',
+    title: 'Attribution Failure Revenue Calculator',
     description:
-      'Find out exactly how much revenue you lose each month to broken and expired affiliate links.',
+      'How much revenue are you losing to broken links and silent attribution failures?',
     url: PAGE_URL,
     siteName: 'LinkRescue',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Affiliate Link Revenue Loss Calculator',
+    title: 'Attribution Failure Revenue Calculator',
     description:
-      'Find out exactly how much revenue you lose each month to broken and expired affiliate links.',
+      'How much revenue are you losing to broken links and silent attribution failures?',
   },
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Affiliate Link Revenue Loss Calculator',
+  name: 'Attribution Failure Revenue Calculator',
   url: PAGE_URL,
   description:
-    'Calculate how much revenue your affiliate site loses each month to broken, expired, and misconfigured links.',
+    'Calculate how much revenue your affiliate site loses to broken links, stripped tracking parameters, and silent attribution failures in social media browsers.',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
   offers: {
@@ -92,12 +92,12 @@ export default function CalculatorPage() {
               Free revenue calculator
             </div>
             <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-6">
-              How much are broken affiliate links{' '}
-              <span className="text-gradient">costing you?</span>
+              How much revenue are you losing to{' '}
+              <span className="text-gradient">attribution failures?</span>
             </h1>
             <p className="text-lg text-slate-400 leading-relaxed">
-              Adjust the sliders to match your site. Your estimated monthly loss updates live — then
-              unlock your personalised annual report in one click.
+              Broken links are just the start. If your traffic comes from social media, in-app browsers
+              are silently stripping your affiliate tags. See the full picture.
             </p>
           </div>
 
@@ -108,7 +108,7 @@ export default function CalculatorPage() {
           <div className="max-w-2xl mx-auto mt-16 grid sm:grid-cols-3 gap-6 text-center">
             {[
               { stat: '~15%', label: 'Average broken-link rate on affiliate sites' },
-              { stat: '$1,200', label: 'Average monthly revenue lost' },
+              { stat: '~40%', label: 'Of in-app browser clicks lose attribution' },
               { stat: '< 24h', label: 'Time to detect issues with LinkRescue' },
             ].map((item) => (
               <div key={item.label} className="glass-card p-5">

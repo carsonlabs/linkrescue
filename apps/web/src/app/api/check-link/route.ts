@@ -1,20 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  ALL_AFFILIATE_PARAMS,
+  AFFILIATE_DOMAINS,
+} from '@/config/affiliate-params';
+import {
+  BROWSER_ENVIRONMENTS,
+  type BrowserEnvironment,
+} from '@/config/browser-environments';
 
-const AFFILIATE_PARAMS = new Set([
-  'ref', 'aff', 'affiliate', 'partner', 'tag', 'utm_source', 'utm_medium', 'utm_campaign',
-  'subid', 'sub_id', 'clickref', 'cid', 'pid', 'aid', 'rid', 'tid', 'source',
-]);
-
-const AFFILIATE_DOMAINS = [
-  'amzn.to', 'amazon.com', 'shareasale.com', 'cj.com', 'awin1.com', 'prf.hn',
-  'go.redirectingat.com', 'click.linksynergy.com', 'commission-junction.com',
-  'impact.com', 'partnerize.com', 'rakuten.com', 'flexoffers.com',
-];
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
 
 interface HopInfo {
   url: string;
   status: number;
 }
+
+export interface EnvResult {
+  environmentId: string;
+  label: string;
+  status: 'ok' | 'broken' | 'redirect' | 'timeout' | 'error';
+  finalStatus: number;
+  finalUrl: string;
+  chain: HopInfo[];
+  redirectCount: number;
+  affiliateTagPreserved: boolean | null; // null = no affiliate params to check
+  paramsLost: boolean;
+  errorMessage: string | null;
+  /** True when redirect chain differs from the baseline (desktop_chrome) */
+  differsFromBaseline: boolean;
+  issue: string | null;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
 function isPrivateHost(hostname: string): boolean {
   return (
@@ -39,7 +60,7 @@ function detectAffiliate(url: string): { isAffiliate: boolean; params: string[] 
 
   const foundParams: string[] = [];
   for (const [key] of parsed.searchParams) {
-    if (AFFILIATE_PARAMS.has(key.toLowerCase())) {
+    if (ALL_AFFILIATE_PARAMS.has(key.toLowerCase())) {
       foundParams.push(key);
     }
   }
@@ -50,6 +71,103 @@ function detectAffiliate(url: string): { isAffiliate: boolean; params: string[] 
 
   return { isAffiliate: isAffiliateDomain || foundParams.length > 0, params: foundParams };
 }
+
+function classifyStatus(
+  finalStatus: number,
+  chainLength: number,
+  errorMessage: string | null,
+): 'ok' | 'broken' | 'redirect' | 'timeout' | 'error' {
+  if (errorMessage?.includes('timed out')) return 'timeout';
+  if (finalStatus >= 200 && finalStatus < 300) {
+    return chainLength > 1 ? 'redirect' : 'ok';
+  }
+  if (finalStatus >= 400 || finalStatus === 0) return 'broken';
+  return 'error';
+}
+
+/* ------------------------------------------------------------------ */
+/*  Core redirect-chain follower                                       */
+/* ------------------------------------------------------------------ */
+
+async function followChain(
+  startUrl: string,
+  env: BrowserEnvironment,
+): Promise<{ chain: HopInfo[]; finalStatus: number; errorMessage: string | null }> {
+  const chain: HopInfo[] = [];
+  let current = startUrl;
+  let finalStatus = 0;
+  let errorMessage: string | null = null;
+
+  const headers: Record<string, string> = {
+    'User-Agent': env.userAgent,
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  };
+  if (env.referer) headers['Referer'] = env.referer;
+  // ITP environments: omit Cookie header entirely (simulates blocked 3rd-party cookies)
+
+  try {
+    for (let i = 0; i < 8; i++) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10_000);
+
+      let res: Response;
+      try {
+        res = await fetch(current, {
+          method: 'HEAD',
+          redirect: 'manual',
+          signal: controller.signal,
+          headers,
+        });
+      } catch (err: unknown) {
+        if (
+          err instanceof TypeError &&
+          (err.message.includes('fetch') || err.message.includes('network'))
+        ) {
+          throw err;
+        }
+        res = await fetch(current, {
+          method: 'GET',
+          redirect: 'manual',
+          signal: controller.signal,
+          headers,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
+
+      chain.push({ url: current, status: res.status });
+      finalStatus = res.status;
+
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get('location');
+        if (!location) break;
+        try {
+          current = new URL(location, current).toString();
+        } catch {
+          break;
+        }
+        const dest = new URL(current);
+        if (isPrivateHost(dest.hostname)) break;
+      } else {
+        break;
+      }
+    }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    if (message.includes('abort') || message.includes('timeout')) {
+      errorMessage = 'Request timed out';
+    } else {
+      errorMessage = 'Could not reach URL';
+    }
+    finalStatus = 0;
+  }
+
+  return { chain, finalStatus, errorMessage };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Route handler                                                      */
+/* ------------------------------------------------------------------ */
 
 export async function POST(req: NextRequest) {
   let body: { url?: string };
@@ -64,7 +182,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 });
   }
 
-  // Normalise — add https:// if no scheme
   const urlStr = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
 
   let parsed: URL;
@@ -82,116 +199,86 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Private/internal URLs are not allowed' }, { status: 400 });
   }
 
-  // Affiliate detection on the input URL
   const affiliateInfo = detectAffiliate(urlStr);
+  const hasAffParams = affiliateInfo.isAffiliate && affiliateInfo.params.length > 0;
 
-  // Follow redirect chain manually (up to 8 hops)
-  const chain: HopInfo[] = [];
-  let current = urlStr;
-  let finalStatus = 0;
-  let errorMessage: string | null = null;
+  // Run all environments in parallel
+  const envResults = await Promise.all(
+    BROWSER_ENVIRONMENTS.map(async (env): Promise<EnvResult> => {
+      const { chain, finalStatus, errorMessage } = await followChain(urlStr, env);
 
-  try {
-    for (let i = 0; i < 8; i++) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10_000);
+      const finalUrl = chain.at(-1)?.url ?? urlStr;
+      const finalAffiliate = detectAffiliate(finalUrl);
 
-      let res: Response;
-      try {
-        res = await fetch(current, {
-          method: 'HEAD',
-          redirect: 'manual',
-          signal: controller.signal,
-          headers: {
-            'User-Agent':
-              'LinkRescue-Checker/1.0 (https://linkrescue.io; link health check)',
-            Accept: '*/*',
-          },
-        });
-      } catch (err: unknown) {
-        // HEAD not supported by some servers — try GET
-        if (
-          err instanceof TypeError &&
-          (err.message.includes('fetch') || err.message.includes('network'))
-        ) {
-          throw err;
-        }
-        res = await fetch(current, {
-          method: 'GET',
-          redirect: 'manual',
-          signal: controller.signal,
-          headers: {
-            'User-Agent': 'LinkRescue-Checker/1.0 (https://linkrescue.io)',
-          },
-        });
-      } finally {
-        clearTimeout(timeout);
+      const paramsLost =
+        hasAffParams &&
+        chain.length > 1 &&
+        finalAffiliate.params.length < affiliateInfo.params.length;
+
+      const status = classifyStatus(finalStatus, chain.length, errorMessage);
+
+      let affiliateTagPreserved: boolean | null = null;
+      if (hasAffParams) {
+        affiliateTagPreserved = !paramsLost;
       }
 
-      chain.push({ url: current, status: res.status });
-      finalStatus = res.status;
-
-      // Follow redirect
-      if (res.status >= 300 && res.status < 400) {
-        const location = res.headers.get('location');
-        if (!location) break;
-
-        // Resolve relative redirects
-        try {
-          current = new URL(location, current).toString();
-        } catch {
-          break;
+      // Issue description
+      let issue: string | null = null;
+      if (errorMessage) {
+        issue = errorMessage;
+      } else if (paramsLost) {
+        // Find which hop lost the params
+        const lostAtHop = chain.findIndex((hop, idx) => {
+          if (idx === 0) return false;
+          const prevAffiliate = detectAffiliate(chain[idx - 1].url);
+          const curAffiliate = detectAffiliate(hop.url);
+          return curAffiliate.params.length < prevAffiliate.params.length;
+        });
+        if (env.simulateITP && lostAtHop > 0) {
+          issue = `ITP/privacy restrictions removed tag at hop ${lostAtHop}`;
+        } else if (lostAtHop > 0) {
+          issue = `Parameter lost in redirect at hop ${lostAtHop}`;
+        } else {
+          issue = 'Parameter lost in redirect';
         }
-
-        // SSRF check on redirect destination
-        const dest = new URL(current);
-        if (isPrivateHost(dest.hostname)) break;
-      } else {
-        break;
+      } else if (status === 'broken') {
+        issue = `HTTP ${finalStatus} error`;
       }
+
+      return {
+        environmentId: env.id,
+        label: env.label,
+        status,
+        finalStatus,
+        finalUrl,
+        chain,
+        redirectCount: Math.max(0, chain.length - 1),
+        affiliateTagPreserved,
+        paramsLost,
+        errorMessage,
+        differsFromBaseline: false, // filled in below
+        issue,
+      };
+    }),
+  );
+
+  // Mark environments that differ from the desktop_chrome baseline
+  const baseline = envResults.find((r) => r.environmentId === 'desktop_chrome');
+  if (baseline) {
+    for (const r of envResults) {
+      if (r.environmentId === 'desktop_chrome') continue;
+      r.differsFromBaseline =
+        r.finalUrl !== baseline.finalUrl ||
+        r.paramsLost !== baseline.paramsLost ||
+        r.redirectCount !== baseline.redirectCount ||
+        r.status !== baseline.status;
     }
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    if (message.includes('abort') || message.includes('timeout')) {
-      errorMessage = 'Request timed out';
-      finalStatus = 0;
-    } else {
-      errorMessage = 'Could not reach URL';
-      finalStatus = 0;
-    }
-  }
-
-  const finalUrl = chain.at(-1)?.url ?? urlStr;
-  const finalAffiliate = detectAffiliate(finalUrl);
-
-  // Check if affiliate params were lost during redirect
-  const paramsLost =
-    affiliateInfo.isAffiliate &&
-    affiliateInfo.params.length > 0 &&
-    chain.length > 1 &&
-    finalAffiliate.params.length < affiliateInfo.params.length;
-
-  let status: 'ok' | 'broken' | 'redirect' | 'timeout' | 'error';
-  if (errorMessage?.includes('timed out')) {
-    status = 'timeout';
-  } else if (finalStatus >= 200 && finalStatus < 300) {
-    status = chain.length > 1 ? 'redirect' : 'ok';
-  } else if (finalStatus >= 400 || finalStatus === 0) {
-    status = 'broken';
-  } else {
-    status = 'error';
   }
 
   return NextResponse.json({
-    status,
-    finalStatus,
     originalUrl: urlStr,
-    finalUrl,
-    chain,
-    redirectCount: Math.max(0, chain.length - 1),
     isAffiliate: affiliateInfo.isAffiliate,
     affiliateParams: affiliateInfo.params,
-    paramsLost,
-    errorMessage,
+    environments: envResults,
   });
 }

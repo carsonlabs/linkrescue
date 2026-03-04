@@ -16,6 +16,8 @@ export type WebhookEvent =
   | 'guardian.rescued'
   | 'redirect.deployed'
   | 'redirect.rollback';
+export type SeoPageType = 'network_check' | 'comparison' | 'guide';
+export type SeoPageStatus = 'draft' | 'published' | 'archived';
 
 export interface Database {
   public: {
@@ -835,6 +837,90 @@ export interface Database {
         };
         Relationships: [];
       };
+      seo_pages: {
+        Row: {
+          id: string;
+          slug: string;
+          page_type: SeoPageType;
+          status: SeoPageStatus;
+          title: string;
+          meta_description: string;
+          og_title: string | null;
+          og_description: string | null;
+          og_image_url: string | null;
+          canonical_url: string | null;
+          hero_headline: string | null;
+          hero_subheadline: string | null;
+          content: Json;
+          sidebar: Json | null;
+          faq: Json | null;
+          network_name: string | null;
+          network_url: string | null;
+          network_commission: string | null;
+          network_cookie_days: number | null;
+          competitor_name: string | null;
+          competitor_url: string | null;
+          comparison_features: Json | null;
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          page_type: SeoPageType;
+          status?: SeoPageStatus;
+          title: string;
+          meta_description: string;
+          og_title?: string | null;
+          og_description?: string | null;
+          og_image_url?: string | null;
+          canonical_url?: string | null;
+          hero_headline?: string | null;
+          hero_subheadline?: string | null;
+          content?: Json;
+          sidebar?: Json | null;
+          faq?: Json | null;
+          network_name?: string | null;
+          network_url?: string | null;
+          network_commission?: string | null;
+          network_cookie_days?: number | null;
+          competitor_name?: string | null;
+          competitor_url?: string | null;
+          comparison_features?: Json | null;
+          published_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          page_type?: SeoPageType;
+          status?: SeoPageStatus;
+          title?: string;
+          meta_description?: string;
+          og_title?: string | null;
+          og_description?: string | null;
+          og_image_url?: string | null;
+          canonical_url?: string | null;
+          hero_headline?: string | null;
+          hero_subheadline?: string | null;
+          content?: Json;
+          sidebar?: Json | null;
+          faq?: Json | null;
+          network_name?: string | null;
+          network_url?: string | null;
+          network_commission?: string | null;
+          network_cookie_days?: number | null;
+          competitor_name?: string | null;
+          competitor_url?: string | null;
+          comparison_features?: Json | null;
+          published_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -848,6 +934,8 @@ export interface Database {
       log_format: LogFormat;
       scan_frequency: ScanFrequency;
       webhook_event: WebhookEvent;
+      seo_page_type: SeoPageType;
+      seo_page_status: SeoPageStatus;
     };
   };
 }

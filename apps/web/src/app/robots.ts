@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/dashboard/', '/api/', '/onboarding/'],
     },
-    sitemap: 'https://linkrescue.io/sitemap.xml',
+    sitemap: 'https://www.linkrescue.io/sitemap.xml',
   };
 }

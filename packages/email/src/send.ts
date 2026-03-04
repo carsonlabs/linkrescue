@@ -12,7 +12,7 @@ export async function sendEmail({
   // Lazily construct so the missing key throws at call-time, not module load.
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { data, error } = await resend.emails.send({
-    from: 'LinkRescue <noreply@linkrescue.com>',
+    from: process.env.RESEND_FROM_EMAIL || 'LinkRescue <noreply@linkrescue.com>',
     to,
     subject,
     react,

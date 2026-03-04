@@ -3,11 +3,16 @@ import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
 
+// RFC-compliant domain: labels separated by dots, each 1-63 chars (alphanumeric + hyphens), no leading/trailing hyphens
+const DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/;
+
 const createSiteSchema = z.object({
   domain: z
     .string()
     .min(1)
-    .transform((d) => d.replace(/^https?:\/\//, '').replace(/\/+$/, '').toLowerCase()),
+    .max(253)
+    .transform((d) => d.replace(/^https?:\/\//, '').replace(/\/+$/, '').toLowerCase())
+    .pipe(z.string().regex(DOMAIN_REGEX, 'Invalid domain format')),
   sitemap_url: z.string().url().optional().nullable(),
 });
 

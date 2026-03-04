@@ -34,6 +34,32 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
 
+  // Idempotency check — skip already-processed events
+  const { data: existing } = await supabase
+    .from('stripe_events')
+    .select('id')
+    .eq('stripe_event_id', event.id)
+    .single();
+
+  if (existing) {
+    return NextResponse.json({ received: true });
+  }
+
+  // Record the event before processing to prevent concurrent duplicates
+  const { error: insertError } = await supabase.from('stripe_events').insert({
+    stripe_event_id: event.id,
+    event_type: event.type,
+  });
+
+  if (insertError) {
+    // Unique constraint violation means another request is already processing this event
+    if (insertError.code === '23505') {
+      return NextResponse.json({ received: true });
+    }
+    console.error('Failed to record stripe event:', insertError);
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+  }
+
   try {
     switch (event.type) {
       case 'checkout.session.completed': {

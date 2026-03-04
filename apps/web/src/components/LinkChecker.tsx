@@ -282,16 +282,49 @@ function ResultsMatrix({ result, browserLoading }: { result: CheckResponse; brow
   const totalWithParams = result.environments.filter((e) => e.affiliateTagPreserved !== null).length;
   const hasBrowserResults = result.environments.some((e) => e.testMethod === 'browser-test');
 
+  // Detect Amazon bot-blocking: Amazon returns 403/405/503 to automated checks
+  const isAmazon = result.detectedNetwork?.toLowerCase().includes('amazon') ||
+    result.originalUrl.includes('amazon.com') || result.originalUrl.includes('amzn.to');
+  const botBlockedCodes = [403, 405, 503];
+  const botBlockedCount = result.environments.filter(
+    (e) => botBlockedCodes.includes(e.finalStatus) && e.testMethod === 'header-simulation'
+  ).length;
+  const showAmazonBotNotice = isAmazon && botBlockedCount > 0;
+
   const strippedEnvNames = result.environments
     .filter((e) => e.paramsLost)
     .map((e) => e.label.replace(' In-App Browser', '').replace(' In-App', ''));
 
   function handleShare() {
     const text = buildShareText(result);
-    navigator.clipboard.writeText(text).then(() => {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text: string) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } catch {
+      // Last resort: show the text in a prompt
+      window.prompt('Copy these results:', text);
+    }
+    document.body.removeChild(textarea);
   }
 
   return (
@@ -329,9 +362,13 @@ function ResultsMatrix({ result, browserLoading }: { result: CheckResponse; brow
           </div>
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20"
+            className={`flex items-center gap-1.5 text-xs transition-colors px-3 py-1.5 rounded-lg border ${
+              copied
+                ? 'text-green-400 border-green-500/30 bg-green-500/10'
+                : 'text-slate-400 hover:text-white border-white/10 hover:border-white/20'
+            }`}
           >
-            <Share2 className="w-3.5 h-3.5" />
+            {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
             {copied ? 'Copied!' : 'Share results'}
           </button>
         </div>
@@ -366,6 +403,23 @@ function ResultsMatrix({ result, browserLoading }: { result: CheckResponse; brow
                 )}
               </p>
             )}
+          </div>
+        )}
+
+        {/* Amazon bot-blocking notice */}
+        {showAmazonBotNotice && (
+          <div className="mt-3 border border-amber-500/20 bg-amber-500/5 rounded-lg p-3">
+            <div className="flex items-start gap-2 text-sm">
+              <Info className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="text-amber-400 font-medium">Amazon blocks automated link checks</span>
+                <p className="text-xs text-slate-400 mt-1">
+                  Amazon returns {botBlockedCodes.join('/')}&nbsp;errors to automated requests. This is normal bot protection —
+                  it does not mean your link is broken for real visitors. Browser test results (if available) are more
+                  accurate for Amazon links. To verify manually, open the link in an incognito window.
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -625,14 +679,20 @@ function TagBadge({ preserved }: { preserved: boolean | null }) {
 function TestMethodBadge({ method }: { method: 'header-simulation' | 'browser-test' }) {
   if (method === 'browser-test') {
     return (
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+      <span
+        title="Tested with a real browser engine — most accurate results"
+        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 cursor-help"
+      >
         <Zap className="w-2.5 h-2.5" />
         Browser
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20">
+    <span
+      title="Tested via HTTP headers only — fast but may differ from real browser behavior. Full browser test results will replace these when ready."
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20 cursor-help"
+    >
       Header
     </span>
   );

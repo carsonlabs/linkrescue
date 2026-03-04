@@ -2,6 +2,20 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@linkrescue/database', '@linkrescue/crawler', '@linkrescue/email', '@linkrescue/types', '@linkrescue/ai', '@linkrescue/governance'],
+  async redirects() {
+    return [
+      {
+        source: '/calculator',
+        destination: '/affiliate-link-revenue-calculator',
+        permanent: true,
+      },
+      {
+        source: '/signin',
+        destination: '/login',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       { source: '/sites/:path*', destination: '/dashboard/sites/:path*' },

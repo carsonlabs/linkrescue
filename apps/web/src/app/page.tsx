@@ -123,37 +123,37 @@ export default function HomePage() {
             </div>
             <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <Link href="#features" className="text-slate-400 hover:text-white transition-colors">
+          <div className="hidden lg:flex items-center gap-6 text-sm">
+            <Link href="#features" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
               Features
             </Link>
-            <Link href="#how-it-works" className="text-slate-400 hover:text-white transition-colors">
+            <Link href="#how-it-works" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
               How it works
             </Link>
-            <Link href="#pricing" className="text-slate-400 hover:text-white transition-colors">
+            <Link href="#pricing" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
               Pricing
             </Link>
             <Link
               href="/affiliate-link-revenue-calculator"
-              className="text-slate-400 hover:text-white transition-colors"
+              className="whitespace-nowrap text-slate-400 hover:text-white transition-colors"
             >
               Calculator
             </Link>
             <Link
               href="/link-checker"
-              className="text-slate-400 hover:text-white transition-colors"
+              className="whitespace-nowrap text-slate-400 hover:text-white transition-colors"
             >
               Link Checker
             </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-shrink-0">
             <Link
               href="/login"
-              className="hidden sm:block text-sm text-slate-400 hover:text-white transition-colors"
+              className="hidden sm:block text-sm whitespace-nowrap text-slate-400 hover:text-white transition-colors"
             >
               Sign in
             </Link>
-            <Link href="/signup" className="btn-primary text-sm">
+            <Link href="/signup" className="btn-primary text-sm whitespace-nowrap">
               Get started
               <ArrowRight className="w-4 h-4" />
             </Link>

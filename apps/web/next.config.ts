@@ -38,6 +38,21 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/calculator',
+        destination: '/affiliate-link-revenue-calculator',
+        permanent: true,
+      },
+      {
+        source: '/signin',
+        destination: '/login',
+        permanent: true,
+      },
+    ];
+  },
+
   // Sentry webpack plugin options
   sentry: {
     // Upload source maps to Sentry for better error tracking

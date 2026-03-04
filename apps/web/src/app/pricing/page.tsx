@@ -1,15 +1,33 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { getUserPlan, TIER_LIMITS } from '@linkrescue/types';
-import { CheckCircle2, ExternalLink, Sparkles, X, HelpCircle, Shield, Zap } from 'lucide-react';
-import { BRAND } from '@/config/brand';
+import { CheckCircle2, Sparkles, X, HelpCircle, Shield, Zap } from 'lucide-react';
 import { PricingToggle } from './pricing-toggle';
+import { PublicNav } from '@/components/PublicNav';
+import { PublicFooter } from '@/components/PublicFooter';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-  title: 'Pricing | LinkRescue',
-  description: 'Simple, transparent pricing. Start free, upgrade when your site grows.',
+export const metadata: Metadata = {
+  title: 'Pricing',
+  description:
+    'Simple, transparent pricing for affiliate link monitoring. Start free with 1 site, upgrade to Pro ($29/mo) or Agency ($79/mo) when your business grows. No credit card required.',
+  alternates: { canonical: 'https://www.linkrescue.io/pricing' },
+  openGraph: {
+    title: 'Pricing — LinkRescue',
+    description:
+      'Simple, transparent pricing for affiliate link monitoring. Start free, upgrade when your business grows.',
+    url: 'https://www.linkrescue.io/pricing',
+    siteName: 'LinkRescue',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing — LinkRescue',
+    description:
+      'Simple, transparent pricing for affiliate link monitoring. Start free, upgrade when your business grows.',
+  },
 };
 
 export default async function PricingPage() {
@@ -30,35 +48,9 @@ export default async function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <nav className="border-b border-white/5 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-              <ExternalLink className="w-4 h-4 text-slate-900" />
-            </div>
-            <span className="font-display font-bold text-lg tracking-tight">{BRAND.name}</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            {user ? (
-              <Link href="/dashboard/sites" className="btn-primary text-sm">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">
-                  Sign in
-                </Link>
-                <Link href="/signup" className="btn-primary text-sm">
-                  Get started free
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
-      <div className="container mx-auto px-6 py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-28 pb-16 md:pt-32 md:pb-24">
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -171,6 +163,26 @@ export default async function PricingPage() {
           </div>
         </div>
       </div>
+
+      <PublicFooter />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: 'LinkRescue',
+            description: 'Affiliate link monitoring SaaS with daily scanning, revenue impact estimates, and AI fix suggestions.',
+            brand: { '@type': 'Organization', name: 'LinkRescue' },
+            offers: [
+              { '@type': 'Offer', name: 'Starter (Free)', price: '0', priceCurrency: 'USD', description: '1 site, 200 pages/scan, weekly scans' },
+              { '@type': 'Offer', name: 'Pro', price: '29', priceCurrency: 'USD', priceSpecification: { '@type': 'UnitPriceSpecification', billingDuration: 'P1M' }, description: '5 sites, 2000 pages/scan, daily scans' },
+              { '@type': 'Offer', name: 'Agency', price: '79', priceCurrency: 'USD', priceSpecification: { '@type': 'UnitPriceSpecification', billingDuration: 'P1M' }, description: '25 sites, unlimited pages, hourly scans, API access' },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }

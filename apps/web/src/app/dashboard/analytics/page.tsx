@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getRevenueHistory, getRevenueTotals, getFinancialSummary } from '@linkrescue/database';
 import type { Database } from '@linkrescue/database';
-import RevenueChart from './RevenueChart';
+import nextDynamic from 'next/dynamic';
+
+const RevenueChart = nextDynamic(() => import('./RevenueChart'), { ssr: false });
 
 export const dynamic = 'force-dynamic';
 

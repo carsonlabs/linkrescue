@@ -82,6 +82,8 @@ export function PricingToggle({ currentPlan, isLoggedIn }: PricingToggleProps) {
           Monthly
         </span>
         <button
+          role="switch"
+          aria-checked={interval === 'annual'}
           onClick={() => setInterval(interval === 'monthly' ? 'annual' : 'monthly')}
           className={`relative w-14 h-7 rounded-full transition-colors ${
             interval === 'annual' ? 'bg-green-500' : 'bg-slate-700'

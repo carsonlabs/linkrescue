@@ -434,14 +434,28 @@ function ResultsMatrix({ result, browserLoading }: { result: CheckResponse; brow
           </div>
         )}
 
+        {/* Known affiliate domain but no identifiable tracking params */}
+        {result.isAffiliate && result.affiliateParams.length === 0 && !result.detectedNetwork && (
+          <div className="mt-4 border border-amber-500/20 bg-amber-500/5 rounded-lg p-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Info className="w-4 h-4 text-amber-400 flex-shrink-0" />
+              <span className="text-slate-400">
+                We detected a known affiliate network URL but couldn&apos;t identify the specific tracking
+                parameter. The link structure may use a non-standard format.
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Not a known affiliate URL at all */}
         {!result.isAffiliate && (
           <div className="mt-4 border border-slate-500/20 bg-slate-500/5 rounded-lg p-3">
             <div className="flex items-center gap-2 text-sm">
               <Info className="w-4 h-4 text-slate-400 flex-shrink-0" />
               <span className="text-slate-400">
-                No affiliate tracking parameters detected in this URL. Paste a link that contains
-                an affiliate tag (like <code className="font-mono bg-white/5 px-1 rounded">?tag=yoursite-20</code>) to
-                test parameter survival across environments.
+                No standard affiliate tracking parameters detected. If you&apos;re using a network like
+                Skimlinks, Sovrn, or a custom redirect, your tracking may be embedded in the URL path or
+                handled server-side — which is harder to verify via headers alone.
               </span>
             </div>
           </div>

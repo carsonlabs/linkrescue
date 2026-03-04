@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { createAdminClient } from '@linkrescue/database';
+import { getAllPosts } from '@/lib/blog';
 
 const BASE = 'https://www.linkrescue.io';
 
@@ -87,5 +88,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // If database is unavailable, return static pages only
   }
 
-  return [...staticPages, ...seoPages];
+  // Blog posts from markdown files
+  const blogPosts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `${BASE}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  // Blog index
+  const blogIndex: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE}/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+  ];
+
+  return [...staticPages, ...blogIndex, ...blogPosts, ...seoPages];
 }

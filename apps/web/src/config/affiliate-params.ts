@@ -35,8 +35,12 @@ export const AFFILIATE_NETWORKS: AffiliateNetwork[] = [
     params: ['awc', 'awinaffid', 'awinmid'],
   },
   {
+    name: 'Skimlinks',
+    params: ['id', 'xs', 'xcust'],
+  },
+  {
     name: 'PartnerStack',
-    params: ['ps_partner_key', 'ps_xid'],
+    params: ['ps_partner_key', 'ps_xid', 'via'],
   },
   {
     name: 'FlexOffers',
@@ -78,6 +82,10 @@ export const AFFILIATE_DOMAINS = [
   'rakuten.com',
   'click.linksynergy.com',
   'go.redirectingat.com',
+  'go.skimresources.com',
+  'skimlinks.com',
+  'redirectingat.com',
+  'rakutenmarketing.com',
   'prf.hn',
   'partnerize.com',
   'partnerstack.com',

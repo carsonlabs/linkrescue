@@ -28,7 +28,13 @@ const AFFILIATE_DOMAINS = [
   'awin1.com',
   'webgains.com',
   'rakuten.com',
+  'rakutenmarketing.com',
   'linksynergy.com',
+  'go.skimresources.com',
+  'skimlinks.com',
+  'redirectingat.com',
+  'partnerstack.com',
+  'refersion.com',
 ];
 
 export function isAffiliateLink(url: string): boolean {

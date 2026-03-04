@@ -1,6 +1,13 @@
 import Link from 'next/link';
 import { ExternalLink, CheckCircle2 } from 'lucide-react';
 import { SignupForm } from '@/components/auth/signup-form';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Create Free Account',
+  description: 'Start monitoring your affiliate links for free. No credit card required.',
+  robots: 'noindex',
+};
 
 const perks = [
   'Free forever for 1 site',

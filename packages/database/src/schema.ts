@@ -921,6 +921,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      email_sequence_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          email_key: string;
+          sent_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          email_key: string;
+          sent_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          email_key?: string;
+          sent_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

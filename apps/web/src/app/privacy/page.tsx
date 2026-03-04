@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { PublicNav } from '@/components/PublicNav';
+import { PublicFooter } from '@/components/PublicFooter';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | LinkRescue',
   description: 'How LinkRescue collects, uses, and protects your data.',
-  alternates: { canonical: 'https://linkrescue.io/privacy' },
+  alternates: { canonical: 'https://www.linkrescue.io/privacy' },
 };
 
 const EFFECTIVE_DATE = 'February 27, 2026';
@@ -14,27 +15,9 @@ const CONTACT_EMAIL = 'privacy@linkrescue.io';
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <nav className="border-b border-white/5 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
-              <ExternalLink className="w-4 h-4 text-slate-900" />
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
-          </Link>
-          <div className="flex gap-6 text-sm text-slate-400">
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
-            <Link href="/privacy" className="text-white">
-              Privacy
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
-      <main className="container mx-auto px-6 py-16 max-w-3xl">
+      <main className="container mx-auto px-6 pt-28 pb-16 max-w-3xl">
         <div className="mb-10">
           <h1 className="font-display text-4xl font-bold mb-3">Privacy Policy</h1>
           <p className="text-slate-400 text-sm">Effective date: {EFFECTIVE_DATE}</p>
@@ -226,21 +209,7 @@ export default function PrivacyPage() {
         </div>
       </main>
 
-      <footer className="border-t border-white/5 py-8">
-        <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <Link href="/" className="hover:text-white transition-colors">
-            ← Back to LinkRescue
-          </Link>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="text-white">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

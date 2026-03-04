@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import distinctive fonts */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @layer base {
   :root {
     /* Deep Purple + Electric Green Palette */
@@ -66,21 +63,21 @@
 }
 
 @layer base {
-  /* Distinctive Font Stack */
+  /* Font stack — loaded via next/font CSS variables */
   html {
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-base), ui-sans-serif, system-ui, sans-serif;
     scroll-behavior: smooth;
   }
-  
+
   /* Display font for headings */
   h1, h2, h3, .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-display), sans-serif;
     letter-spacing: -0.02em;
   }
-  
+
   /* Mono font for code/links */
   code, .font-mono, .link-mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono), monospace;
   }
   
   * {

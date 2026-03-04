@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowRight, ExternalLink, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
+import { PublicNav } from '@/components/PublicNav';
+import { PublicFooter } from '@/components/PublicFooter';
 import { createAdminClient } from '@linkrescue/database';
 
-const SITE_URL = 'https://linkrescue.io';
+const SITE_URL = 'https://www.linkrescue.io';
 
 type ContentBlock = {
   type: 'heading' | 'paragraph' | 'list' | 'callout';
@@ -151,31 +153,10 @@ export default async function GuidePage({
       />
 
       <div className="min-h-screen bg-slate-950 text-white">
-        {/* Nav */}
-        <nav className="border-b border-white/5">
-          <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-                <ExternalLink className="w-4 h-4 text-slate-900" />
-              </div>
-              <span className="font-display font-bold text-lg">LinkRescue</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/pricing" className="text-sm text-slate-400 hover:text-white transition-colors">
-                Pricing
-              </Link>
-              <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">
-                Log in
-              </Link>
-              <Link href="/signup" className="btn-primary text-sm px-4 py-2">
-                Start Free
-              </Link>
-            </div>
-          </div>
-        </nav>
+        <PublicNav />
 
         {/* Article Header */}
-        <section className="py-16 md:py-24">
+        <section className="pt-28 pb-16 md:pt-36 md:pb-24">
           <div className="container mx-auto px-6 max-w-3xl">
             <Link
               href="/guides"
@@ -299,27 +280,7 @@ export default async function GuidePage({
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="border-t border-white/5 py-12">
-          <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <Link href="/" className="flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
-                </div>
-                <span className="font-display font-bold">LinkRescue</span>
-              </Link>
-              <div className="flex items-center gap-8 text-sm text-slate-500">
-                <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-                <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-                <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-              </div>
-              <p className="text-sm text-slate-600">
-                &copy; {new Date().getFullYear()} LinkRescue
-              </p>
-            </div>
-          </div>
-        </footer>
+        <PublicFooter />
       </div>
     </>
   );

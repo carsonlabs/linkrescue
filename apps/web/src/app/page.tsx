@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -10,11 +8,8 @@ import {
   Zap,
   ArrowRight,
   Globe,
-  TrendingDown,
-  Clock,
   ExternalLink,
   Plus,
-  ChevronRight,
   BarChart2,
   Building2,
   Webhook,
@@ -24,8 +19,34 @@ import {
   EyeOff,
   Layers,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
+import { PublicNav } from '@/components/PublicNav';
+import { PublicFooter } from '@/components/PublicFooter';
+import { ParallaxBlobs, ParallaxFloat } from '@/components/HeroParallax';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Broken Affiliate Link Monitoring & Detection',
+  description:
+    'LinkRescue monitors your affiliate links across every network — catching broken links, stripped tracking parameters, and silent attribution failures before they cost you money.',
+  alternates: {
+    canonical: 'https://www.linkrescue.io',
+  },
+  openGraph: {
+    title: 'LinkRescue — Stop Losing Revenue to Broken Affiliate Links',
+    description:
+      'Monitor affiliate links across every network. Catch broken links, stripped parameters, and attribution failures automatically.',
+    url: 'https://www.linkrescue.io',
+    siteName: 'LinkRescue',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LinkRescue — Stop Losing Revenue to Broken Affiliate Links',
+    description:
+      'Monitor affiliate links across every network. Catch broken links, stripped parameters, and attribution failures automatically.',
+  },
+};
 
 const features = [
   {
@@ -98,87 +119,15 @@ const steps = [
 ];
 
 export default function HomePage() {
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Parallax effect for floating elements
-  const parallaxOffset = scrollY * 0.2;
-
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Navigation - Glassmorphism */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow">
-              <ExternalLink className="w-4 h-4 text-slate-900" />
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight">LinkRescue</span>
-          </Link>
-          <div className="hidden lg:flex items-center gap-6 text-sm">
-            <Link href="#features" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
-              Features
-            </Link>
-            <Link href="#how-it-works" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
-              How it works
-            </Link>
-            <Link href="#pricing" className="whitespace-nowrap text-slate-400 hover:text-white transition-colors">
-              Pricing
-            </Link>
-            <Link
-              href="/affiliate-link-revenue-calculator"
-              className="whitespace-nowrap text-slate-400 hover:text-white transition-colors"
-            >
-              Calculator
-            </Link>
-            <Link
-              href="/link-checker"
-              className="whitespace-nowrap text-slate-400 hover:text-white transition-colors"
-            >
-              Link Checker
-            </Link>
-          </div>
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <Link
-              href="/login"
-              className="hidden sm:block text-sm whitespace-nowrap text-slate-400 hover:text-white transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link href="/signup" className="btn-primary text-sm whitespace-nowrap">
-              Get started
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero Section - Asymmetric Layout */}
-      <section ref={heroRef} className="relative min-h-screen pt-24 pb-20 overflow-hidden">
+      <section className="relative min-h-screen pt-24 pb-20 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-        <div 
-          className="absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full opacity-20"
-          style={{
-            background: 'radial-gradient(circle, hsl(145 100% 55%) 0%, transparent 70%)',
-            transform: `translateY(${parallaxOffset}px)`,
-          }}
-        />
-        <div 
-          className="absolute bottom-1/4 -left-40 w-[500px] h-[500px] rounded-full opacity-15"
-          style={{
-            background: 'radial-gradient(circle, hsl(265 60% 50%) 0%, transparent 70%)',
-            transform: `translateY(${-parallaxOffset * 0.5}px)`,
-          }}
-        />
+        <ParallaxBlobs />
 
         <div className="container mx-auto px-6 relative">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center min-h-[calc(100vh-8rem)]">
@@ -233,15 +182,12 @@ export default function HomePage() {
 
             {/* Right Column - Dashboard Mockup */}
             <div className="relative lg:pl-8">
-              <div 
-                className="relative float"
-                style={{ transform: `translateY(${parallaxOffset * 0.3}px)` }}
-              >
+              <ParallaxFloat>
                 {/* Glow Behind */}
                 <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
-                
+
                 {/* Dashboard Card */}
-                <div className="relative glass-card overflow-hidden">
+                <div className="relative glass-card overflow-hidden" aria-hidden="true">
                   {/* Header Bar */}
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/5">
                     <div className="flex gap-1.5">
@@ -301,7 +247,7 @@ export default function HomePage() {
                         ].map((site) => (
                           <div
                             key={site.domain}
-                            className="border border-white/10 rounded-lg p-3.5 flex items-center justify-between hover:border-green-500/30 hover:bg-green-500/5 cursor-pointer transition-all"
+                            className="border border-white/10 rounded-lg p-3.5 flex items-center justify-between hover:border-green-500/30 hover:bg-green-500/5 transition-all"
                           >
                             <div>
                               <div className="flex items-center gap-2">
@@ -365,7 +311,7 @@ export default function HomePage() {
                   {/* Scanning Animation */}
                   <div className="scan-line" />
                 </div>
-              </div>
+              </ParallaxFloat>
             </div>
           </div>
         </div>
@@ -402,7 +348,7 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="relative py-24 md:py-32">
         <div className="absolute inset-0 bg-dot-pattern opacity-30" />
-        
+
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
@@ -416,7 +362,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto stagger-children">
-            {features.map((feature, i) => {
+            {features.map((feature) => {
               const Icon = feature.icon;
               return (
                 <div
@@ -424,8 +370,8 @@ export default function HomePage() {
                   className="feature-card group"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-colors ${
-                    feature.color === 'green' 
-                      ? 'bg-green-500/10 group-hover:bg-green-500/20' 
+                    feature.color === 'green'
+                      ? 'bg-green-500/10 group-hover:bg-green-500/20'
                       : 'bg-purple-500/10 group-hover:bg-purple-500/20'
                   }`}>
                     <Icon className={`w-6 h-6 ${
@@ -447,7 +393,7 @@ export default function HomePage() {
       <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
-        
+
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
@@ -716,7 +662,7 @@ export default function HomePage() {
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-purple-500/10 to-transparent" />
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-        
+
         <div className="container mx-auto px-6 relative text-center">
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 max-w-3xl mx-auto">
             Start monitoring your{' '}
@@ -732,42 +678,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-12">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-                <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
-              </div>
-              <span className="font-display font-bold">LinkRescue</span>
-            </div>
-            <div className="flex items-center gap-8 text-sm text-slate-500">
-              <Link href="#pricing" className="hover:text-white transition-colors">
-                Pricing
-              </Link>
-              <Link href="/link-checker" className="hover:text-white transition-colors">
-                Link Checker
-              </Link>
-              <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">
-                Calculator
-              </Link>
-              <Link href="/affiliates" className="hover:text-white transition-colors">
-                Affiliates
-              </Link>
-              <Link href="/privacy" className="hover:text-white transition-colors">
-                Privacy
-              </Link>
-              <Link href="/terms" className="hover:text-white transition-colors">
-                Terms
-              </Link>
-            </div>
-            <p className="text-sm text-slate-600">
-              © {new Date().getFullYear()} LinkRescue
-            </p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

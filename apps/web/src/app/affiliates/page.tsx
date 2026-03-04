@@ -6,17 +6,33 @@ import {
   Clock,
   Gift,
   ArrowRight,
-  ExternalLink,
   CheckCircle2,
   Users,
   TrendingUp,
   Megaphone,
 } from 'lucide-react';
+import { PublicNav } from '@/components/PublicNav';
+import { PublicFooter } from '@/components/PublicFooter';
 
 export const metadata: Metadata = {
   title: 'Affiliate Program — Earn 30% Recurring Commission',
   description:
     'Join the LinkRescue affiliate program and earn 30% recurring commission for 12 months on every referral. 90-day cookie, monthly payouts, and dedicated support.',
+  alternates: { canonical: 'https://www.linkrescue.io/affiliates' },
+  openGraph: {
+    title: 'Earn 30% Recurring Commission — LinkRescue Affiliate Program',
+    description:
+      'Join the LinkRescue affiliate program. 30% recurring commission for 12 months, 90-day cookie, monthly payouts.',
+    url: 'https://www.linkrescue.io/affiliates',
+    siteName: 'LinkRescue',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Earn 30% Recurring Commission — LinkRescue Affiliate Program',
+    description:
+      'Join the LinkRescue affiliate program. 30% recurring commission for 12 months, 90-day cookie, monthly payouts.',
+  },
 };
 
 const highlights = [
@@ -82,28 +98,10 @@ const REWARDFUL_SIGNUP_URL = process.env.NEXT_PUBLIC_REWARDFUL_SIGNUP_URL || '#'
 export default function AffiliatesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      {/* Nav */}
-      <nav className="border-b border-white/5">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-              <ExternalLink className="w-4 h-4 text-slate-900" />
-            </div>
-            <span className="font-display font-bold text-lg">LinkRescue</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/pricing" className="text-sm text-slate-400 hover:text-white transition-colors">
-              Pricing
-            </Link>
-            <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">
-              Log in
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero */}
-      <section className="py-20 md:py-28">
+      <section className="pt-28 pb-20 md:pt-36 md:pb-28">
         <div className="container mx-auto px-6 text-center max-w-3xl">
           <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 text-sm font-medium px-4 py-1.5 rounded-full mb-8 border border-green-500/20">
             <Gift className="w-4 h-4" />
@@ -301,28 +299,7 @@ export default function AffiliatesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-12">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
-                <ExternalLink className="w-3.5 h-3.5 text-slate-900" />
-              </div>
-              <span className="font-display font-bold">LinkRescue</span>
-            </Link>
-            <div className="flex items-center gap-8 text-sm text-slate-500">
-              <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            </div>
-            <p className="text-sm text-slate-600">
-              © {new Date().getFullYear()} LinkRescue
-            </p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

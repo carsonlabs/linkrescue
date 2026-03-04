@@ -1,5 +1,11 @@
 import Link from 'next/link';
 import { ArrowRight, ExternalLink } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Page Not Found',
+  robots: 'noindex',
+};
 
 export default function NotFound() {
   return (

@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getUserPlan, getPlanLimits, hasFeature, type TierName } from '@linkrescue/types';
-import { runScan } from '@linkrescue/crawler';
-import { createAdminClient, computeHealthScore, upsertHealthScore } from '@linkrescue/database';
-import { dispatchWebhook } from '@/lib/webhooks';
-import { notifySlack, formatScanComplete } from '@/lib/slack';
-
-export const maxDuration = 300; // 5 minutes for Vercel Pro
+import { dispatchScanWorker } from '@/lib/scan-dispatch';
 
 export async function POST(
   _request: Request,
@@ -93,47 +88,27 @@ export async function POST(
     }
   }
 
-  // Run scan with admin client (bypasses RLS for writes)
-  const adminDb = createAdminClient();
+  // Dispatch scan to background worker
+  const scanId = await dispatchScanWorker({
+    siteId: site.id,
+    domain: site.domain,
+    sitemapUrl: site.sitemap_url,
+    maxPages: limits.pagesPerScan,
+    crawlExclusions: site.crawl_exclusions ?? [],
+    userId: user.id,
+    triggerSource: 'manual',
+  });
 
-  try {
-    const scanResult = await runScan({
-      siteId: site.id,
-      domain: site.domain,
-      sitemapUrl: site.sitemap_url,
-      maxPages: limits.pagesPerScan,
-      supabase: adminDb,
-    });
-
-    // Compute and store health score after scan
-    try {
-      const healthComponents = await computeHealthScore(adminDb, site.id, limits.pagesPerScan);
-      await upsertHealthScore(adminDb, site.id, healthComponents);
-    } catch (healthErr) {
-      console.error(`Failed to compute health score for ${site.domain}:`, healthErr);
-    }
-
-    // Fire scan.completed webhook + Slack notification
-    dispatchWebhook(user.id, 'scan.completed', {
-      siteId: site.id,
-      domain: site.domain,
-      scanId: scanResult.scanId,
-      pagesScanned: scanResult.pagesScanned,
-      linksChecked: scanResult.linksChecked,
-    }).catch(() => {});
-
-    notifySlack(
-      user.id,
-      'scan',
-      formatScanComplete(site.domain, scanResult.pagesScanned, scanResult.linksChecked, 0),
-    ).catch(() => {});
-
-    return NextResponse.json({
-      message: 'Scan completed',
-      scanId: scanResult.scanId,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Scan failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+  if (!scanId) {
+    return NextResponse.json(
+      { error: 'A scan is already in progress for this site.' },
+      { status: 429 }
+    );
   }
+
+  return NextResponse.json({
+    message: 'Scan started',
+    status: 'dispatched',
+    scanId,
+  });
 }

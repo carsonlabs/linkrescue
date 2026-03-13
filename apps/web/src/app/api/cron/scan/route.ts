@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
-import { runScan } from '@linkrescue/crawler';
-import { createAdminClient, computeNextRunAt, computeHealthScore, upsertHealthScore } from '@linkrescue/database';
+import { createAdminClient, computeNextRunAt } from '@linkrescue/database';
 import { getUserPlan, getPlanLimits } from '@linkrescue/types';
-import { sendWeeklyDigest } from '@linkrescue/email';
 import type { ScanFrequency } from '@linkrescue/types';
+import { dispatchScanWorker } from '@/lib/scan-dispatch';
 
 export const maxDuration = 300; // 5 minutes for Vercel Pro
 
-const CONCURRENCY_LIMIT = 3;
+/** Scans stuck in 'running' for longer than this are marked failed. */
+const STUCK_RUNNING_THRESHOLD_MS = 30 * 60 * 1000; // 30 minutes
 
-// This endpoint is triggered by Vercel Cron daily
+/** Scans stuck in 'pending' (dispatch failed) for longer than this are marked failed. */
+const STUCK_PENDING_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes
+
+// This endpoint is triggered by Vercel Cron hourly
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -18,9 +21,44 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient();
 
-  // Get all verified sites with their user info.
-  // Supabase-js cannot infer !inner join shapes without Relationships in the
-  // generated schema type, so we cast to the known runtime shape here.
+  // --- Stuck-scan recovery ---
+  let stuckRecovered = 0;
+
+  // Recover scans stuck in 'running' — atomic UPDATE with status guard
+  const runningCutoff = new Date(Date.now() - STUCK_RUNNING_THRESHOLD_MS).toISOString();
+  const { data: stuckRunning } = await supabase
+    .from('scans')
+    .update({
+      status: 'failed',
+      finished_at: new Date().toISOString(),
+      error_message: 'Scan timed out (stuck in running)',
+    })
+    .eq('status', 'running')
+    .lt('started_at', runningCutoff)
+    .select('id');
+
+  stuckRecovered += stuckRunning?.length ?? 0;
+
+  // Recover scans stuck in 'pending' — atomic UPDATE with status guard
+  const pendingCutoff = new Date(Date.now() - STUCK_PENDING_THRESHOLD_MS).toISOString();
+  const { data: stuckPending } = await supabase
+    .from('scans')
+    .update({
+      status: 'failed',
+      finished_at: new Date().toISOString(),
+      error_message: 'Scan timed out (stuck in pending — dispatch may have failed)',
+    })
+    .eq('status', 'pending')
+    .lt('created_at', pendingCutoff)
+    .select('id');
+
+  stuckRecovered += stuckPending?.length ?? 0;
+
+  if (stuckRecovered > 0) {
+    console.log(`[cron/scan] Recovered ${stuckRecovered} stuck scans`);
+  }
+
+  // --- Regular scans ---
   type SiteWithUser = {
     id: string;
     user_id: string;
@@ -29,6 +67,7 @@ export async function GET(request: Request) {
     verified_at: string | null;
     created_at: string;
     verify_token: string;
+    crawl_exclusions: string[];
     users: { id: string; stripe_price_id: string | null };
   };
   const { data: sites, error } = (await supabase
@@ -45,84 +84,32 @@ export async function GET(request: Request) {
   }
 
   if (!sites || sites.length === 0) {
-    return NextResponse.json({ message: 'No verified sites to scan' });
+    return NextResponse.json({ message: 'No verified sites to scan', stuckRecovered });
   }
 
-  const results: Array<{ domain: string; status: string; error?: string }> = [];
+  let dispatched = 0;
+  let skipped = 0;
 
-  // Process sites with concurrency limit using simple batching
-  for (let i = 0; i < sites.length; i += CONCURRENCY_LIMIT) {
-    const batch = sites.slice(i, i + CONCURRENCY_LIMIT);
+  // Dispatch scans sequentially (dispatchScanWorker checks for active scans)
+  for (const site of sites) {
+    const userProfile = site.users;
+    const plan = getUserPlan(userProfile?.stripe_price_id ?? null);
+    const limits = getPlanLimits(plan);
 
-    const batchResults = await Promise.allSettled(
-      batch.map(async (site) => {
-        const userProfile = site.users;
-        const plan = getUserPlan(userProfile?.stripe_price_id ?? null);
-        const limits = getPlanLimits(plan);
+    const scanId = await dispatchScanWorker({
+      siteId: site.id,
+      domain: site.domain,
+      sitemapUrl: site.sitemap_url,
+      maxPages: limits.pagesPerScan,
+      crawlExclusions: site.crawl_exclusions ?? [],
+      userId: site.user_id,
+      triggerSource: 'cron',
+    });
 
-        try {
-          const scanResult = await runScan({
-            siteId: site.id,
-            domain: site.domain,
-            sitemapUrl: site.sitemap_url,
-            maxPages: limits.pagesPerScan,
-            supabase,
-          });
-
-          // Compute and store health score after scan
-          try {
-            const healthComponents = await computeHealthScore(supabase, site.id, limits.pagesPerScan);
-            await upsertHealthScore(supabase, site.id, healthComponents);
-          } catch (healthErr) {
-            console.error(`Failed to compute health score for ${site.domain}:`, healthErr);
-          }
-
-          // Send weekly digest email
-          try {
-            const { data: authUser } = await supabase.auth.admin.getUserById(site.user_id);
-            if (authUser?.user?.email) {
-              // Get issues from the latest scan
-              const { data: issues } = await supabase
-                .from('scan_results')
-                .select('*, link:links!inner(href, is_affiliate, page:pages!inner(url))')
-                .eq('scan_id', scanResult.scanId)
-                .neq('issue_type', 'OK')
-                .limit(20);
-
-              if (issues && issues.length > 0) {
-                await sendWeeklyDigest({
-                  email: authUser.user.email,
-                  domain: site.domain,
-                  siteId: site.id,
-                  issues: issues.map((i: any) => ({
-                    href: i.link.href,
-                    pageUrl: i.link.page.url,
-                    issueType: i.issue_type,
-                    statusCode: i.status_code,
-                    isAffiliate: i.link.is_affiliate,
-                  })),
-                  appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-                });
-              }
-            }
-          } catch (emailErr) {
-            console.error(`Failed to send digest for ${site.domain}:`, emailErr);
-          }
-
-          return { domain: site.domain, status: 'completed' };
-        } catch (err) {
-          const message = err instanceof Error ? err.message : 'Unknown error';
-          return { domain: site.domain, status: 'failed', error: message };
-        }
-      })
-    );
-
-    for (const result of batchResults) {
-      if (result.status === 'fulfilled') {
-        results.push(result.value);
-      } else {
-        results.push({ domain: 'unknown', status: 'failed', error: String(result.reason) });
-      }
+    if (scanId) {
+      dispatched++;
+    } else {
+      skipped++;
     }
   }
 
@@ -138,13 +125,14 @@ export async function GET(request: Request) {
       domain: string;
       sitemap_url: string | null;
       verified_at: string | null;
+      crawl_exclusions: string[];
       users: { id: string; stripe_price_id: string | null };
     };
   };
 
   const { data: dueSchedules } = (await supabase
     .from('scan_schedules')
-    .select('*, sites!inner(id, user_id, domain, sitemap_url, verified_at, users!inner(id, stripe_price_id))')
+    .select('*, sites!inner(id, user_id, domain, sitemap_url, verified_at, crawl_exclusions, users!inner(id, stripe_price_id))')
     .lte('next_run_at', new Date().toISOString())) as unknown as {
     data: ScheduleRow[] | null;
   };
@@ -156,19 +144,18 @@ export async function GET(request: Request) {
     const plan = getUserPlan(site.users?.stripe_price_id ?? null);
     const limits = getPlanLimits(plan);
 
-    try {
-      await runScan({
-        siteId: site.id,
-        domain: site.domain,
-        sitemapUrl: site.sitemap_url,
-        maxPages: limits.pagesPerScan,
-        supabase,
-      });
-      results.push({ domain: site.domain, status: 'completed (scheduled)' });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
-      results.push({ domain: site.domain, status: 'failed', error: message });
-    }
+    const scanId = await dispatchScanWorker({
+      siteId: site.id,
+      domain: site.domain,
+      sitemapUrl: site.sitemap_url,
+      maxPages: limits.pagesPerScan,
+      crawlExclusions: site.crawl_exclusions ?? [],
+      userId: site.user_id,
+      triggerSource: 'schedule',
+    });
+
+    if (scanId) dispatched++;
+    else skipped++;
 
     // Update next_run_at regardless of outcome
     const nextRunAt = computeNextRunAt(schedule.frequency);
@@ -178,11 +165,10 @@ export async function GET(request: Request) {
       .eq('id', schedule.id);
   }
 
-  const succeeded = results.filter((r) => r.status.startsWith('completed')).length;
-  const failed = results.filter((r) => r.status === 'failed').length;
-
   return NextResponse.json({
-    message: `Scanned ${succeeded} sites, ${failed} failed`,
-    results,
+    message: `Dispatched ${dispatched} scans, skipped ${skipped}`,
+    dispatched,
+    skipped,
+    stuckRecovered,
   });
 }

@@ -1,11 +1,12 @@
 import { XMLParser } from 'fast-xml-parser';
+import { PAGE_FETCH_TIMEOUT_MS, CRAWLER_USER_AGENT } from './crawl-config';
 
 const parser = new XMLParser({ ignoreAttributes: false });
 
 export async function fetchSitemap(sitemapUrl: string, maxUrls = 500): Promise<string[]> {
   const response = await fetch(sitemapUrl, {
-    signal: AbortSignal.timeout(10000),
-    headers: { 'User-Agent': 'LinkRescue-Crawler/1.0' },
+    signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
+    headers: { 'User-Agent': CRAWLER_USER_AGENT },
   });
 
   if (!response.ok) {

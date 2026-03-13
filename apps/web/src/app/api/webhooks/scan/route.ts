@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 import { authenticateApiRequest, checkRateLimit } from '@/lib/api-auth';
 import { hasFeature, type TierName } from '@linkrescue/types';
-import { runScan } from '@linkrescue/crawler';
-import { createAdminClient, computeHealthScore, upsertHealthScore } from '@linkrescue/database';
+import { createAdminClient } from '@linkrescue/database';
 import { getPlanLimits } from '@linkrescue/types';
-
-export const maxDuration = 300;
+import { dispatchScanWorker } from '@/lib/scan-dispatch';
 
 export async function POST(request: Request) {
   // Authenticate via API key
@@ -59,6 +57,7 @@ export async function POST(request: Request) {
     sitemap_url: string | null;
     verified_at: string | null;
     user_id: string;
+    crawl_exclusions: string[];
   };
   const { data: site } = await adminDb
     .from('sites')
@@ -75,50 +74,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Site must be verified before scanning' }, { status: 403 });
   }
 
-  // Check for already-running scan
-  const { data: runningScan } = await adminDb
-    .from('scans')
-    .select('id')
-    .eq('site_id', site.id)
-    .in('status', ['running', 'pending'])
-    .limit(1)
-    .maybeSingle() as { data: { id: string } | null };
+  const limits = getPlanLimits(plan as TierName);
 
-  if (runningScan) {
+  // Dispatch scan to background worker (checks for active scans internally)
+  const scanId = await dispatchScanWorker({
+    siteId: site.id,
+    domain: site.domain,
+    sitemapUrl: site.sitemap_url,
+    maxPages: limits.pagesPerScan,
+    crawlExclusions: site.crawl_exclusions ?? [],
+    userId,
+    triggerSource: 'webhook',
+  });
+
+  if (!scanId) {
     return NextResponse.json(
-      { error: 'A scan is already in progress for this site.', scanId: runningScan.id },
+      { error: 'A scan is already in progress for this site.' },
       { status: 409 }
     );
   }
 
-  const limits = getPlanLimits(plan as TierName);
-
-  try {
-    const scanResult = await runScan({
-      siteId: site.id,
-      domain: site.domain,
-      sitemapUrl: site.sitemap_url,
-      maxPages: limits.pagesPerScan,
-      supabase: adminDb,
-    });
-
-    // Compute health score after scan
-    try {
-      const healthComponents = await computeHealthScore(adminDb, site.id, limits.pagesPerScan);
-      await upsertHealthScore(adminDb, site.id, healthComponents);
-    } catch {
-      // Non-fatal
-    }
-
-    return NextResponse.json({
-      scanId: scanResult.scanId,
-      status: 'completed',
-      pagesScanned: scanResult.pagesScanned,
-      linksChecked: scanResult.linksChecked,
-      remaining: rateLimit.remaining,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Scan failed';
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return NextResponse.json({
+    status: 'dispatched',
+    scanId,
+    remaining: rateLimit.remaining,
+  });
 }

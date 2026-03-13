@@ -66,6 +66,7 @@ export interface Database {
           sitemap_url: string | null;
           verify_token: string;
           verified_at: string | null;
+          crawl_exclusions: string[];
           created_at: string;
         };
         Insert: {
@@ -75,6 +76,7 @@ export interface Database {
           sitemap_url?: string | null;
           verify_token?: string;
           verified_at?: string | null;
+          crawl_exclusions?: string[];
           created_at?: string;
         };
         Update: {
@@ -84,6 +86,7 @@ export interface Database {
           sitemap_url?: string | null;
           verify_token?: string;
           verified_at?: string | null;
+          crawl_exclusions?: string[];
           created_at?: string;
         };
         Relationships: [
@@ -180,6 +183,9 @@ export interface Database {
           pages_scanned: number;
           links_checked: number;
           error_message: string | null;
+          scan_summary: Json | null;
+          dispatch_key: string | null;
+          trigger_source: string | null;
           created_at: string;
         };
         Insert: {
@@ -191,6 +197,9 @@ export interface Database {
           pages_scanned?: number;
           links_checked?: number;
           error_message?: string | null;
+          scan_summary?: Json | null;
+          dispatch_key?: string | null;
+          trigger_source?: string | null;
           created_at?: string;
         };
         Update: {
@@ -202,6 +211,9 @@ export interface Database {
           pages_scanned?: number;
           links_checked?: number;
           error_message?: string | null;
+          scan_summary?: Json | null;
+          dispatch_key?: string | null;
+          trigger_source?: string | null;
           created_at?: string;
         };
         Relationships: [

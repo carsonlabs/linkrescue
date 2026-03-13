@@ -1,5 +1,4 @@
 import { withSentryConfig } from '@sentry/nextjs';
-import type { NextConfig } from 'next';
 
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
@@ -25,7 +24,8 @@ const securityHeaders = [
   },
 ];
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 

@@ -34,10 +34,10 @@ export function validateEnv() {
     const missing = Object.entries(errors)
       .map(([key, msgs]) => `  - ${key}: ${msgs?.join(', ')}`)
       .join('\n');
-    console.error(`\n❌ Missing or invalid environment variables:\n${missing}\n`);
-    throw new Error(
-      `Missing or invalid environment variables:\n${missing}\n\nSee .env.example for required values.`
-    );
+    // Warn but don't crash — a missing env var should not take down the entire app.
+    // The relevant feature will fail at call-time with a clearer error.
+    console.error(`\n⚠️  Missing or invalid environment variables:\n${missing}\n`);
+    return null;
   }
   return parsed.data;
 }

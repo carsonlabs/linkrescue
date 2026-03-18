@@ -4,7 +4,7 @@
 export const BRAND = {
   // Core Identity
   name: process.env.NEXT_PUBLIC_BRAND_NAME || 'LinkRescue',
-  tagline: process.env.NEXT_PUBLIC_BRAND_TAGLINE || 'Stop losing revenue to broken links',
+  tagline: process.env.NEXT_PUBLIC_BRAND_TAGLINE || 'Recover lost affiliate commissions from your content archive',
   
   // Visual
   logo: process.env.NEXT_PUBLIC_BRAND_LOGO || '/logo.svg',

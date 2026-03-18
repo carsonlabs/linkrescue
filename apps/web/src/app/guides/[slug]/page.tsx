@@ -4,8 +4,6 @@ import { notFound } from 'next/navigation';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { PublicNav } from '@/components/PublicNav';
 import { PublicFooter } from '@/components/PublicFooter';
-import { createAdminClient } from '@linkrescue/database';
-
 const SITE_URL = 'https://www.linkrescue.io';
 
 type ContentBlock = {
@@ -35,6 +33,10 @@ type SeoPage = {
 };
 
 async function getPage(slug: string): Promise<SeoPage | null> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return null;
+  }
+  const { createAdminClient } = await import('@linkrescue/database');
   const db = createAdminClient();
   const { data } = await db
     .from('seo_pages' as any)

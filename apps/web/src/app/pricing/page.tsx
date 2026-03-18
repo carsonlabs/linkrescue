@@ -12,12 +12,12 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Simple, transparent pricing for affiliate link monitoring. Start free with 1 site, upgrade to Pro ($29/mo) or Agency ($79/mo) when your business grows. No credit card required.',
+    'Recover lost affiliate commissions starting free. Upgrade to Pro ($29/mo) for daily scans and revenue estimates, or Agency ($79/mo) for multi-site monitoring. No credit card required.',
   alternates: { canonical: 'https://www.linkrescue.io/pricing' },
   openGraph: {
     title: 'Pricing — LinkRescue',
     description:
-      'Simple, transparent pricing for affiliate link monitoring. Start free, upgrade when your business grows.',
+      'Affiliate revenue protection for publishers and agencies. Start free, upgrade when your content archive grows.',
     url: 'https://www.linkrescue.io/pricing',
     siteName: 'LinkRescue',
     type: 'website',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Pricing — LinkRescue',
     description:
-      'Simple, transparent pricing for affiliate link monitoring. Start free, upgrade when your business grows.',
+      'Affiliate revenue protection for publishers and agencies. Start free, upgrade when your content archive grows.',
   },
 };
 
@@ -57,19 +57,19 @@ export default async function PricingPage() {
             Simple, transparent <span className="text-gradient">pricing</span>
           </h1>
           <p className="text-lg text-slate-400 max-w-xl mx-auto">
-            Start free. Upgrade when your site grows. Cancel anytime.
+            Start free with one site. Upgrade when your content archive needs more coverage.
           </p>
         </div>
 
-        {/* Social proof */}
+        {/* Trust signals */}
         <div className="flex items-center justify-center gap-6 mb-12 text-sm text-slate-500">
           <span className="flex items-center gap-1.5">
             <Shield className="w-4 h-4 text-green-400" />
-            Trusted by 500+ affiliate marketers
+            14-day money-back guarantee
           </span>
           <span className="hidden sm:flex items-center gap-1.5">
             <Zap className="w-4 h-4 text-green-400" />
-            1M+ links monitored
+            No credit card required to start
           </span>
         </div>
 
@@ -95,11 +95,11 @@ export default async function PricingPage() {
                 <ComparisonRow label="Sites" free="1" pro="5" agency="25" />
                 <ComparisonRow label="Pages per scan" free="200" pro="2,000" agency="Unlimited" />
                 <ComparisonRow label="Scan frequency" free="Weekly" pro="Daily" agency="Hourly" />
-                <ComparisonRow label="Issue detection" free={true} pro={true} agency={true} />
-                <ComparisonRow label="Basic alerts" free={true} pro={true} agency={true} />
-                <ComparisonRow label="Weekly digest" free={false} pro={true} agency={true} />
-                <ComparisonRow label="Revenue estimates" free={false} pro={true} agency={true} />
-                <ComparisonRow label="Fix suggestions" free={false} pro={true} agency={true} />
+                <ComparisonRow label="Broken link & attribution detection" free={true} pro={true} agency={true} />
+                <ComparisonRow label="Email alerts on new issues" free={true} pro={true} agency={true} />
+                <ComparisonRow label="Weekly digest with fix links" free={false} pro={true} agency={true} />
+                <ComparisonRow label="Revenue impact estimates" free={false} pro={true} agency={true} />
+                <ComparisonRow label="Prioritized fix suggestions" free={false} pro={true} agency={true} />
                 <ComparisonRow label="Realtime alerts" free={false} pro={false} agency={true} />
                 <ComparisonRow label="API access" free={false} pro={false} agency={true} />
                 <ComparisonRow label="Outbound webhooks" free={false} pro={false} agency={true} />
@@ -118,28 +118,28 @@ export default async function PricingPage() {
           </h2>
           <div className="space-y-4">
             <FaqItem
-              question="How does the free plan work?"
-              answer="The Starter plan is free forever. You can monitor 1 site with up to 200 pages scanned weekly. No credit card required."
+              question="How does the free Starter plan work?"
+              answer="Starter is free forever for one site with up to 200 pages scanned weekly. It's a real scan — you'll see broken links, stripped parameters, and attribution issues. No credit card required."
             />
             <FaqItem
-              question="Can I switch plans at any time?"
-              answer="Yes! You can upgrade, downgrade, or cancel anytime. When you upgrade, you'll be prorated for the remainder of your billing cycle. When you downgrade, the change takes effect at the end of your current period."
+              question="What's the difference between Starter and Pro?"
+              answer="Pro scans daily instead of weekly, covers up to 5 sites and 2,000 pages per scan, and adds revenue impact estimates and fix suggestions so you can prioritize which links to repair first."
             />
             <FaqItem
               question="What counts as a 'page per scan'?"
-              answer="Each unique URL on your site that we crawl and check for broken links counts as one page. We discover pages through your sitemap or by crawling your site structure."
+              answer="Each unique URL on your site that we crawl counts as one page. We discover pages through your sitemap and by crawling your site structure — including old archive content that other tools skip."
             />
             <FaqItem
-              question="How do annual plans work?"
-              answer="Annual plans give you 2 months free compared to monthly billing. You pay upfront for the full year. You can still cancel anytime and receive a prorated refund."
+              question="Who is the Agency plan for?"
+              answer="Agency is for teams managing multiple affiliate sites — whether your own portfolio or client sites. You get 25 sites, hourly scans, API access, webhooks, and Slack integration."
             />
             <FaqItem
-              question="What happens when I hit my plan limits?"
-              answer="You'll receive a notification when approaching limits. Scans will stop at your page limit but still report all issues found. You can upgrade at any time to increase limits."
+              question="Can I switch plans at any time?"
+              answer="Yes. Upgrade, downgrade, or cancel anytime. Upgrades are prorated immediately. Downgrades take effect at the end of your current billing period."
             />
             <FaqItem
               question="Do you offer refunds?"
-              answer="Yes, we offer a 14-day money-back guarantee on all paid plans. If you're not satisfied, contact us for a full refund."
+              answer="Yes, all paid plans include a 14-day money-back guarantee. If LinkRescue isn't right for you, contact us for a full refund."
             />
           </div>
         </div>
@@ -173,7 +173,7 @@ export default async function PricingPage() {
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: 'LinkRescue',
-            description: 'Affiliate link monitoring SaaS with daily scanning, revenue impact estimates, and AI fix suggestions.',
+            description: 'Affiliate revenue protection for publishers. Crawls your content archive to find broken links, stripped parameters, and attribution failures.',
             brand: { '@type': 'Organization', name: 'LinkRescue' },
             offers: [
               { '@type': 'Offer', name: 'Starter (Free)', price: '0', priceCurrency: 'USD', description: '1 site, 200 pages/scan, weekly scans' },

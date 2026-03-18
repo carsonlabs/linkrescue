@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import { createAdminClient } from '@linkrescue/database';
 import { getAllPosts } from '@/lib/blog';
 
 const BASE = 'https://www.linkrescue.io';
@@ -59,9 +58,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // Blog posts from markdown files
+  const blogPosts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `${BASE}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  // Blog index
+  const blogIndex: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE}/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+  ];
+
   // Dynamic SEO pages from database
   let seoPages: MetadataRoute.Sitemap = [];
   try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return [...staticPages, ...blogIndex, ...blogPosts];
+    }
+    const { createAdminClient } = await import('@linkrescue/database');
     const supabase = createAdminClient();
     const { data } = await supabase
       .from('seo_pages')
@@ -87,24 +108,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch {
     // If database is unavailable, return static pages only
   }
-
-  // Blog posts from markdown files
-  const blogPosts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
-    url: `${BASE}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
-
-  // Blog index
-  const blogIndex: MetadataRoute.Sitemap = [
-    {
-      url: `${BASE}/blog`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-  ];
 
   return [...staticPages, ...blogIndex, ...blogPosts, ...seoPages];
 }

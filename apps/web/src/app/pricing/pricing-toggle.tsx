@@ -18,13 +18,13 @@ export function PricingToggle({ currentPlan, isLoggedIn }: PricingToggleProps) {
     {
       key: 'free' as const,
       tier: TIER_LIMITS.free,
-      description: 'Perfect for getting started',
+      description: 'Try it on one site, free',
       popular: false,
       features: [
         `${TIER_LIMITS.free.sites} site`,
         `${TIER_LIMITS.free.pagesPerScan} pages per scan`,
         'Weekly scans',
-        'Basic broken link alerts',
+        'Broken link & attribution alerts',
         'Monthly email digest',
       ],
       cta: 'Get started free',
@@ -32,22 +32,22 @@ export function PricingToggle({ currentPlan, isLoggedIn }: PricingToggleProps) {
     {
       key: 'pro' as const,
       tier: TIER_LIMITS.pro,
-      description: 'For serious affiliate marketers',
+      description: 'For publishers who care about revenue',
       popular: true,
       features: [
         `${TIER_LIMITS.pro.sites} sites`,
         `${TIER_LIMITS.pro.pagesPerScan.toLocaleString()} pages per scan`,
         'Daily scans',
-        'Weekly email digests',
-        'Revenue estimates',
-        'Fix suggestions',
+        'Weekly digests with fix links',
+        'Revenue impact estimates',
+        'Prioritized fix suggestions',
       ],
       cta: 'Start Pro Trial',
     },
     {
       key: 'agency' as const,
       tier: TIER_LIMITS.agency,
-      description: 'For agencies & power users',
+      description: 'For teams managing multiple sites',
       popular: false,
       features: [
         `${TIER_LIMITS.agency.sites} sites`,

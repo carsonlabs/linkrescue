@@ -4,20 +4,17 @@ import {
   CheckCircle2,
   Mail,
   Search,
-  Shield,
-  Zap,
   ArrowRight,
   Globe,
   ExternalLink,
   Plus,
   BarChart2,
   Building2,
-  Webhook,
-  Users,
-  Star,
-  MessageSquare,
   EyeOff,
   Layers,
+  FileSearch,
+  TrendingDown,
+  Archive,
 } from 'lucide-react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
 import { PublicNav } from '@/components/PublicNav';
@@ -26,69 +23,69 @@ import { ParallaxBlobs, ParallaxFloat } from '@/components/HeroParallax';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Broken Affiliate Link Monitoring & Detection',
+  title: 'Recover Lost Affiliate Commissions — Broken Link & Attribution Monitoring',
   description:
-    'LinkRescue monitors your affiliate links across every network — catching broken links, stripped tracking parameters, and silent attribution failures before they cost you money.',
+    'LinkRescue crawls your content archive to find broken affiliate links, stripped tracking parameters, and silent attribution failures that are costing you commissions right now.',
   alternates: {
     canonical: 'https://www.linkrescue.io',
   },
   openGraph: {
-    title: 'LinkRescue — Stop Losing Revenue to Broken Affiliate Links',
+    title: 'LinkRescue — Recover Lost Affiliate Commissions',
     description:
-      'Monitor affiliate links across every network. Catch broken links, stripped parameters, and attribution failures automatically.',
+      'Your old content is still getting traffic. LinkRescue finds the broken links, stripped parameters, and dead merchant pages that are silently leaking your affiliate revenue.',
     url: 'https://www.linkrescue.io',
     siteName: 'LinkRescue',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LinkRescue — Stop Losing Revenue to Broken Affiliate Links',
+    title: 'LinkRescue — Recover Lost Affiliate Commissions',
     description:
-      'Monitor affiliate links across every network. Catch broken links, stripped parameters, and attribution failures automatically.',
+      'Your old content is still getting traffic. LinkRescue finds the broken links and attribution failures that are silently leaking your revenue.',
   },
 };
 
 const features = [
   {
     icon: Search,
-    title: 'Deep Link Scanning',
+    title: 'Full-Archive Crawling',
     description:
-      'Crawls every page of your site and checks every outbound link — not just your sitemap.',
+      'Scans every page on your site — not just your sitemap. Old reviews, roundups, and tutorials that still rank get checked too.',
     color: 'green',
   },
   {
-    icon: AlertTriangle,
-    title: 'Broken Link Detection',
+    icon: EyeOff,
+    title: 'Attribution Failure Detection',
     description:
-      'Find 404s, 500s, timeouts, and expired merchant pages across your entire site before they cost you.',
+      'Catches redirects that silently strip your affiliate tags. The link works, the page loads, but you don\'t get credited.',
     color: 'purple',
   },
   {
-    icon: EyeOff,
-    title: 'Parameter Strip Detection',
+    icon: AlertTriangle,
+    title: 'Dead Link & Merchant Alerts',
     description:
-      'Catch when redirects silently drop your affiliate tags. The link works, the page loads, but you don\'t get paid.',
+      'Finds 404s, expired merchant pages, and program shutdowns across your entire content archive before they keep costing you.',
     color: 'green',
   },
   {
     icon: Layers,
-    title: 'Cross-Network Coverage',
+    title: 'Every Affiliate Network',
     description:
-      'Not just Amazon. ShareASale, Impact, CJ, Awin, Rakuten, PartnerStack, and more — all monitored.',
+      'Amazon, ShareASale, Impact, CJ, Awin, Rakuten, PartnerStack — all monitored in one place.',
     color: 'purple',
   },
   {
-    icon: Mail,
-    title: 'Email Digests',
+    icon: BarChart2,
+    title: 'Revenue Impact Estimates',
     description:
-      'Get a weekly summary of all new issues with direct links to the affected pages so you can fix fast.',
+      'See which broken links are on your highest-traffic pages so you know what to fix first for maximum recovery.',
     color: 'green',
   },
   {
-    icon: Zap,
-    title: 'Daily Automatic Scans',
+    icon: Mail,
+    title: 'Actionable Digests',
     description:
-      'Set it and forget it. LinkRescue scans your sites every night and only notifies you when something breaks.',
+      'Weekly reports with direct links to affected pages. Fix the issues that matter, skip the noise.',
     color: 'purple',
   },
 ];
@@ -97,24 +94,24 @@ const steps = [
   {
     number: '01',
     title: 'Add your site',
-    description: 'Enter your domain and optional sitemap URL. We find every page automatically.',
+    description: 'Enter your domain. We discover every page automatically, including deep archive content.',
   },
   {
     number: '02',
     title: 'Verify ownership',
-    description: 'Add a simple meta tag to your site to prove ownership. Takes less than a minute.',
+    description: 'Add a simple meta tag to prove it\'s yours. Takes less than a minute.',
   },
   {
     number: '03',
-    title: 'Get alerts & fix issues',
+    title: 'Review your first scan',
     description:
-      'Receive email digests when broken links are found. Click to see exactly which pages are affected.',
+      'See exactly which pages have broken links, stripped parameters, or dead merchant destinations.',
   },
   {
     number: '04',
-    title: 'Track your health score',
+    title: 'Fix and recover revenue',
     description:
-      'Monitor your site health over time with monthly reports, trend charts, and affiliate program analytics.',
+      'Prioritized by traffic and estimated impact. Update the links that matter most first.',
   },
 ];
 
@@ -123,9 +120,8 @@ export default function HomePage() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       <PublicNav />
 
-      {/* Hero Section - Asymmetric Layout */}
+      {/* Hero Section */}
       <section className="relative min-h-screen pt-24 pb-20 overflow-hidden">
-        {/* Background Elements */}
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
         <ParallaxBlobs />
 
@@ -136,47 +132,47 @@ export default function HomePage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 badge-green">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Built for affiliate marketers
+                Built for affiliate publishers
               </div>
 
               {/* Headline */}
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
-                Your links look fine.{' '}
-                <span className="text-gradient">Your commissions aren&apos;t.</span>
+                Your old content is still earning{' '}
+                <span className="text-gradient">— or leaking.</span>
               </h1>
 
               {/* Subhead */}
               <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed">
-                LinkRescue monitors your affiliate links across every network — catching broken
-                links, stripped tracking parameters, and silent attribution failures before they
-                cost you money.
+                LinkRescue crawls your entire site archive to find broken affiliate links,
+                stripped tracking parameters, and silent attribution failures before they
+                keep costing you commissions.
               </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/link-checker" className="btn-primary justify-center">
-                  Check your links free
+                  Scan your site for leaks
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link href="#features" className="btn-secondary justify-center">
+                <Link href="#how-it-works" className="btn-secondary justify-center">
                   See how it works
                 </Link>
               </div>
 
-              {/* Social Proof */}
-              <div className="flex items-center gap-6 pt-4">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="w-10 h-10 rounded-full border-2 border-slate-900 bg-gradient-to-br from-slate-700 to-slate-600"
-                    />
-                  ))}
-                </div>
-                <div className="text-sm">
-                  <span className="text-white font-semibold">1,000+</span>
-                  <span className="text-slate-500"> sites protected</span>
-                </div>
+              {/* Value prop bullets instead of fake social proof */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 text-sm text-slate-500">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  Free for 1 site
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  No credit card required
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  Results in minutes
+                </span>
               </div>
             </div>
 
@@ -221,10 +217,6 @@ export default function HomePage() {
                           <Mail className="w-4 h-4" />
                           Alerts
                         </div>
-                        <div className="flex items-center gap-2 px-2 py-1.5 text-slate-500 rounded-md">
-                          <Shield className="w-4 h-4" />
-                          Settings
-                        </div>
                       </nav>
                     </div>
 
@@ -241,9 +233,9 @@ export default function HomePage() {
                       {/* Site Cards */}
                       <div className="space-y-2.5">
                         {[
-                          { domain: 'my-affiliate-blog.com', issues: 12, pages: 847, verified: true },
-                          { domain: 'deals.example.com', issues: 3, pages: 234, verified: true },
-                          { domain: 'review-site.io', issues: 0, pages: 156, verified: false },
+                          { domain: 'best-gear-reviews.com', issues: 14, pages: 847, verified: true },
+                          { domain: 'deals.niche-blog.com', issues: 3, pages: 234, verified: true },
+                          { domain: 'compare-tools.io', issues: 0, pages: 156, verified: false },
                         ].map((site) => (
                           <div
                             key={site.domain}
@@ -317,31 +309,117 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative py-16 border-y border-white/5 bg-white/[0.02]">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
-            {[
-              { stat: '1M+', label: 'Links monitored' },
-              { stat: '< 24h', label: 'Detection time' },
-              { stat: '$50K+', label: 'Revenue protected' },
-              { stat: '12K+', label: 'Attribution failures caught' },
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
-                  {item.stat}
-                </div>
-                <div className="text-sm text-slate-500">{item.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Calculator Teaser */}
       <section className="py-10">
         <div className="container mx-auto px-6">
           <CalculatorTeaser />
+        </div>
+      </section>
+
+      {/* Problem: Old Content Archives */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 badge-green mb-6">
+                <Archive className="w-4 h-4" />
+                The hidden problem
+              </div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+                Your biggest revenue leak is hiding in{' '}
+                <span className="text-gradient-purple">old posts</span>
+              </h2>
+              <p className="text-slate-400 leading-relaxed mb-6">
+                Your top leak is rarely this week&apos;s article. It&apos;s usually an old review,
+                roundup, or tutorial still getting organic traffic with affiliate links you
+                haven&apos;t checked in months.
+              </p>
+              <p className="text-slate-400 leading-relaxed">
+                Merchants change URLs, programs shut down, redirects strip your tracking
+                parameters — and the page keeps ranking while you stop earning.
+              </p>
+            </div>
+            <div className="space-y-4">
+              {[
+                {
+                  icon: TrendingDown,
+                  title: 'Silent revenue decay',
+                  desc: 'Links break gradually as merchants update their sites. No error, no alert — just lost commissions.',
+                },
+                {
+                  icon: FileSearch,
+                  title: 'Buried in your archive',
+                  desc: 'A 2-year-old review ranking on page 1 with a dead affiliate link is actively losing you money.',
+                },
+                {
+                  icon: EyeOff,
+                  title: 'Invisible to you',
+                  desc: 'The page loads fine for visitors. The link redirects. But your affiliate tag got stripped along the way.',
+                },
+              ].map((item) => (
+                <div key={item.title} className="glass-card p-5 flex gap-4 items-start">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-red-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
+                    <p className="text-sm text-slate-400">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Differentiation: Not Just Broken Links */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              Generic link checkers{' '}
+              <span className="text-gradient">miss what matters</span>
+            </h2>
+            <p className="text-lg text-slate-400">
+              Most tools stop at 404s. LinkRescue catches the problems that actually cost
+              affiliate publishers money.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+            {[
+              {
+                bad: 'Flags broken links on any page',
+                good: 'Prioritizes affiliate links on pages that actually get traffic',
+              },
+              {
+                bad: 'Only checks HTTP status codes',
+                good: 'Detects redirects that drop tracking parameters mid-chain',
+              },
+              {
+                bad: 'Treats your whole site the same',
+                good: 'Understands affiliate URLs from Amazon, ShareASale, Impact, CJ, and more',
+              },
+              {
+                bad: 'Gives you a list of broken URLs',
+                good: 'Shows the page, the link, the problem type, and estimated revenue impact',
+              },
+            ].map((item, i) => (
+              <div key={i} className="glass-card p-6 space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-red-400 text-xs font-bold">&times;</span>
+                  </span>
+                  <p className="text-sm text-slate-500">{item.bad}</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-slate-300">{item.good}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -352,12 +430,12 @@ export default function HomePage() {
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-              Everything you need to{' '}
-              <span className="text-gradient-purple">protect your attribution</span>
+              Purpose-built for{' '}
+              <span className="text-gradient-purple">affiliate revenue protection</span>
             </h2>
             <p className="text-lg text-slate-400">
-              From dead links to silently stripped parameters — a complete monitoring solution
-              purpose-built for affiliate marketers.
+              Everything you need to find, fix, and prevent affiliate link failures across your
+              content archive.
             </p>
           </div>
 
@@ -391,7 +469,6 @@ export default function HomePage() {
 
       {/* How it Works */}
       <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
 
         <div className="container mx-auto px-6 relative">
@@ -400,7 +477,7 @@ export default function HomePage() {
               Get started in <span className="text-gradient">minutes</span>
             </h2>
             <p className="text-lg text-slate-400">
-              No complex setup. No code to deploy. Just add your site and we handle the rest.
+              No code to deploy. Add your site and get your first scan results today.
             </p>
           </div>
 
@@ -427,6 +504,55 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ICP: Built for Publishers & Agencies */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <div className="inline-flex items-center gap-2 badge-green mb-6">
+              <Building2 className="w-4 h-4" />
+              Who it&apos;s for
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              Built for affiliate publishers{' '}
+              <span className="text-gradient-purple">and the agencies that manage them</span>
+            </h2>
+            <p className="text-lg text-slate-400">
+              If you manage a content archive, comparison pages, or multiple affiliate sites,
+              LinkRescue shows where revenue is slipping and what to fix first.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                icon: FileSearch,
+                title: 'Review & comparison sites',
+                description: 'Large archives of product reviews with dozens of affiliate links per page. One broken link per post adds up fast.',
+              },
+              {
+                icon: Layers,
+                title: 'Niche content publishers',
+                description: 'Hundreds of tutorials, guides, and roundups with embedded affiliate links that quietly decay over time.',
+              },
+              {
+                icon: Globe,
+                title: 'Agencies managing client sites',
+                description: 'Monitor multiple client sites from one dashboard. Catch issues before your clients notice their revenue dropping.',
+              },
+            ].map((item, i) => (
+              <div key={i} className="glass-card p-6 group hover:border-green-500/30 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 group-hover:bg-green-500/20 flex items-center justify-center mb-4 transition-colors">
+                  <item.icon className="w-6 h-6 text-green-400" />
+                </div>
+                <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-400">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="relative py-24 md:py-32">
         <div className="container mx-auto px-6">
@@ -434,7 +560,7 @@ export default function HomePage() {
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
               Simple, transparent <span className="text-gradient-purple">pricing</span>
             </h2>
-            <p className="text-lg text-slate-400">Start free. Upgrade when you need more.</p>
+            <p className="text-lg text-slate-400">Start free with one site. Upgrade when you need more coverage.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -442,14 +568,14 @@ export default function HomePage() {
             <div className="glass-card p-8">
               <div className="mb-6">
                 <h3 className="font-display text-xl font-bold mb-2">Starter</h3>
-                <p className="text-slate-400 text-sm">Perfect for getting started</p>
+                <p className="text-slate-400 text-sm">Try it on one site, free</p>
               </div>
               <div className="mb-8">
                 <span className="font-display text-5xl font-bold">$0</span>
                 <span className="text-slate-500">/month</span>
               </div>
               <ul className="space-y-4 mb-8">
-                {['1 site', '200 pages per scan', 'Weekly scans', 'Basic broken link alerts'].map(
+                {['1 site', '200 pages per scan', 'Weekly scans', 'Broken link alerts'].map(
                   (item) => (
                     <li key={item} className="flex items-center gap-3 text-sm">
                       <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -470,7 +596,7 @@ export default function HomePage() {
               </div>
               <div className="mb-6">
                 <h3 className="font-display text-xl font-bold mb-2">Pro</h3>
-                <p className="text-slate-400 text-sm">For serious affiliate marketers</p>
+                <p className="text-slate-400 text-sm">For publishers who care about revenue</p>
               </div>
               <div className="mb-8">
                 <span className="font-display text-5xl font-bold text-gradient">$29</span>
@@ -481,7 +607,7 @@ export default function HomePage() {
                   '5 sites',
                   '2,000 pages per scan',
                   'Daily scans',
-                  'Revenue estimates',
+                  'Revenue impact estimates',
                   'Fix suggestions',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-sm">
@@ -500,7 +626,7 @@ export default function HomePage() {
             <div className="glass-card p-8">
               <div className="mb-6">
                 <h3 className="font-display text-xl font-bold mb-2">Agency</h3>
-                <p className="text-slate-400 text-sm">For agencies & power users</p>
+                <p className="text-slate-400 text-sm">For teams managing multiple sites</p>
               </div>
               <div className="mb-8">
                 <span className="font-display text-5xl font-bold">$79</span>
@@ -529,150 +655,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Social Proof / Testimonials */}
-      <section className="relative py-24 md:py-32 border-t border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-              Trusted by <span className="text-gradient">affiliate marketers</span>
-            </h2>
-            <p className="text-lg text-slate-400">
-              See what our users say about protecting their affiliate revenue.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                quote: "LinkRescue caught 14 broken Amazon links on my site that had been losing me commissions for months. Paid for itself in the first week.",
-                name: 'Sarah M.',
-                role: 'Tech Review Blogger',
-                rating: 5,
-              },
-              {
-                quote: "The health score reports are fantastic. I can see at a glance which of my 12 sites need attention, and the affiliate parameter tracking is a game changer.",
-                name: 'James K.',
-                role: 'Affiliate Agency Owner',
-                rating: 5,
-              },
-              {
-                quote: "I used to manually check links every quarter. Now I get notified the same day something breaks. My earnings are up 20% since I stopped losing clicks to dead links.",
-                name: 'Maria L.',
-                role: 'Travel Content Creator',
-                rating: 5,
-              },
-            ].map((testimonial, i) => (
-              <div key={i} className="glass-card p-6 flex flex-col">
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: testimonial.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-slate-300 leading-relaxed flex-1 mb-4">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center text-sm font-bold">
-                    {testimonial.name[0]}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">{testimonial.name}</p>
-                    <p className="text-xs text-slate-500">{testimonial.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* For Agencies */}
-      <section className="relative py-24 md:py-32 border-t border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
-        <div className="container mx-auto px-6 relative">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <div className="inline-flex items-center gap-2 badge-green mb-6">
-              <Building2 className="w-4 h-4" />
-              For Agencies
-            </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-              Scale affiliate monitoring{' '}
-              <span className="text-gradient-purple">across all your clients</span>
-            </h2>
-            <p className="text-lg text-slate-400">
-              The Agency plan gives you everything you need to manage affiliate link health at scale.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                icon: Globe,
-                title: '25 Sites',
-                description: 'Monitor up to 25 client sites from a single dashboard with unlimited pages per scan.',
-              },
-              {
-                icon: Zap,
-                title: 'Hourly Scans',
-                description: 'Catch issues within the hour, not overnight. Critical for high-traffic affiliate sites.',
-              },
-              {
-                icon: Webhook,
-                title: 'API & Webhooks',
-                description: 'Integrate with your existing tools. Trigger scans programmatically and receive real-time alerts.',
-              },
-              {
-                icon: MessageSquare,
-                title: 'Slack Integration',
-                description: 'Get broken link alerts and scan summaries directly in your team Slack channels.',
-              },
-              {
-                icon: BarChart2,
-                title: 'Health Reports',
-                description: 'Monthly health reports with trend data, affiliate program analytics, and revenue impact estimates.',
-              },
-              {
-                icon: Users,
-                title: 'Priority Support',
-                description: 'Dedicated support with faster response times and help setting up complex integrations.',
-              },
-            ].map((item, i) => (
-              <div key={i} className="glass-card p-6 group hover:border-purple-500/30 transition-colors">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 group-hover:bg-purple-500/20 flex items-center justify-center mb-4 transition-colors">
-                  <item.icon className="w-6 h-6 text-purple-400" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-400">{item.description}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link href="/signup" className="btn-primary text-base px-8 py-4">
-              Start Agency trial
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <p className="text-sm text-slate-500 mt-3">$79/month or $790/year (save 17%)</p>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="relative py-24 md:py-32 overflow-hidden">
-        {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-purple-500/10 to-transparent" />
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
 
         <div className="container mx-auto px-6 relative text-center">
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 max-w-3xl mx-auto">
-            Start monitoring your{' '}
-            <span className="text-gradient">affiliate links</span> today
+            Find out what your{' '}
+            <span className="text-gradient">content archive</span> is leaking
           </h2>
           <p className="text-lg text-slate-400 mb-10 max-w-xl mx-auto">
-            Free forever for one site. No credit card required. Takes less than 5 minutes to set up.
+            Free for one site. No credit card required. First scan results in minutes.
           </p>
           <Link href="/signup" className="btn-primary text-base px-8 py-4">
-            Get started free
+            Scan your site free
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

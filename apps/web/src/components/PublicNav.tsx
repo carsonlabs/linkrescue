@@ -7,6 +7,7 @@ import { ExternalLink, ArrowRight, Menu, X } from 'lucide-react';
 const NAV_LINKS = [
   { href: '/#features', label: 'Features' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/api-landing', label: 'API' },
   { href: '/link-checker', label: 'Link Checker' },
   { href: '/affiliate-link-revenue-calculator', label: 'Calculator' },
   { href: '/blog', label: 'Blog' },

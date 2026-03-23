@@ -14,6 +14,7 @@ export function PublicFooter() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-slate-500">
             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link href="/api-landing" className="hover:text-white transition-colors">API</Link>
             <Link href="/link-checker" className="hover:text-white transition-colors">Link Checker</Link>
             <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">Calculator</Link>
             <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>

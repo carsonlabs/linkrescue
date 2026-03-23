@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getUserPlan, hasFeature, type TierName } from '@linkrescue/types';
-import { BookOpen, Code2, Key, Zap, Webhook } from 'lucide-react';
+import { BookOpen, Code2, Key, Zap, Webhook, Search, Link2, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +40,7 @@ export default async function ApiDocsPage() {
             <div>
               <h3 className="font-semibold text-amber-300">API access requires a paid plan</h3>
               <p className="text-sm text-slate-400 mt-1">
-                Upgrade to Pro for read-only API access, or Agency for full API + webhook-triggered scans.
+                Upgrade to Pro for link checking, or Agency for full site scans + webhooks.
               </p>
             </div>
           </div>
@@ -64,66 +64,240 @@ export default async function ApiDocsPage() {
         </pre>
       </div>
 
-      {/* Trigger Scan */}
+      {/* ─── Check Links ─── */}
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
-          <Zap className="w-5 h-5 text-purple-400" />
-          <h2 className="font-display font-semibold text-lg">Trigger Scan</h2>
-          <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
-            Agency
+          <Link2 className="w-5 h-5 text-green-400" />
+          <h2 className="font-display font-semibold text-lg">Check Links</h2>
+          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+            Pro+
           </span>
         </div>
         <p className="text-sm text-slate-400">
-          Trigger an on-demand scan for a specific site. Agency plan only.
+          Check one or more URLs for broken links, redirect chains, and affiliate parameter survival.
+          Returns results synchronously (typically under 10 seconds).
         </p>
 
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono bg-green-500/20 text-green-400 px-2 py-1 rounded">POST</span>
-            <code className="text-sm text-slate-300">{baseUrl}/api/webhooks/scan</code>
+            <code className="text-sm text-slate-300">{baseUrl}/api/v1/check-links</code>
           </div>
 
           <div>
             <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Request Body</h4>
             <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
-              <code className="text-slate-300">{`{
-  "siteId": "your-site-uuid"
-}`}</code>
+              <code className="text-slate-300">{`// Single URL
+{ "url": "https://amzn.to/abc123" }
+
+// Batch (up to 20 URLs)
+{ "urls": [
+  "https://amzn.to/abc123",
+  "https://example.com/old-page",
+  "https://shareasale.com/r.cfm?b=12345"
+] }`}</code>
             </pre>
           </div>
 
           <div>
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Success Response (200)</h4>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Response (200)</h4>
             <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
               <code className="text-slate-300">{`{
-  "scanId": "scan-uuid",
-  "status": "completed",
-  "pagesScanned": 42,
-  "linksChecked": 187,
-  "remaining": 9
+  "checked": 3,
+  "summary": {
+    "broken": 1,
+    "redirects": 1,
+    "params_lost": 0
+  },
+  "results": [
+    {
+      "url": "https://amzn.to/abc123",
+      "status": "redirect",
+      "status_code": 301,
+      "final_url": "https://amazon.com/dp/...",
+      "redirect_count": 2,
+      "is_affiliate": true,
+      "affiliate_params_preserved": true,
+      "params_lost": [],
+      "issue": null
+    },
+    {
+      "url": "https://example.com/old-page",
+      "status": "broken",
+      "status_code": 404,
+      "final_url": "https://example.com/old-page",
+      "redirect_count": 0,
+      "is_affiliate": false,
+      "affiliate_params_preserved": null,
+      "params_lost": [],
+      "issue": "HTTP 404"
+    }
+  ]
 }`}</code>
             </pre>
           </div>
 
+          {/* cURL example */}
           <div>
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Error Responses</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex gap-3">
-                <code className="text-red-400 flex-shrink-0">401</code>
-                <span className="text-slate-400">Invalid or missing API key</span>
-              </div>
-              <div className="flex gap-3">
-                <code className="text-red-400 flex-shrink-0">403</code>
-                <span className="text-slate-400">Feature not available on your plan</span>
-              </div>
-              <div className="flex gap-3">
-                <code className="text-amber-400 flex-shrink-0">409</code>
-                <span className="text-slate-400">Scan already in progress for this site</span>
-              </div>
-              <div className="flex gap-3">
-                <code className="text-amber-400 flex-shrink-0">429</code>
-                <span className="text-slate-400">Daily scan limit reached</span>
-              </div>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">cURL</h4>
+            <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+              <code className="text-slate-300">{`curl -X POST ${baseUrl}/api/v1/check-links \\
+  -H "Authorization: Bearer lr_your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"urls": ["https://amzn.to/abc123", "https://example.com/old"]}'`}</code>
+            </pre>
+          </div>
+
+          {/* Node.js example */}
+          <div>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Node.js</h4>
+            <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+              <code className="text-slate-300">{`const res = await fetch("${baseUrl}/api/v1/check-links", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer lr_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    urls: ["https://amzn.to/abc123"]
+  }),
+});
+const data = await res.json();
+console.log(data.summary); // { broken: 0, redirects: 1, params_lost: 0 }`}</code>
+            </pre>
+          </div>
+
+          {/* Python example */}
+          <div>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Python</h4>
+            <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+              <code className="text-slate-300">{`import requests
+
+resp = requests.post(
+    "${baseUrl}/api/v1/check-links",
+    headers={"Authorization": "Bearer lr_your_api_key"},
+    json={"urls": ["https://amzn.to/abc123"]},
+)
+data = resp.json()
+for r in data["results"]:
+    if r["status"] == "broken":
+        print(f"BROKEN: {r['url']} ({r['issue']})")`}</code>
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Async Site Scan ─── */}
+      <div className="glass-card p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <Search className="w-5 h-5 text-purple-400" />
+          <h2 className="font-display font-semibold text-lg">Site Scan (Async)</h2>
+          <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
+            Agency
+          </span>
+        </div>
+        <p className="text-sm text-slate-400">
+          Crawl an entire site for broken links. Returns immediately with a scan ID.
+          Poll for results or use a webhook callback.
+        </p>
+
+        {/* Step 1: Submit */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Step 1 — Submit Scan</h4>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono bg-green-500/20 text-green-400 px-2 py-1 rounded">POST</span>
+            <code className="text-sm text-slate-300">{baseUrl}/api/v1/scans</code>
+          </div>
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "url": "https://example.com",
+  "webhook_url": "https://your-server.com/callback"  // optional
+}`}</code>
+          </pre>
+          <p className="text-xs text-slate-500">
+            Response: <code className="text-green-400">202 Accepted</code>
+          </p>
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "scan_id": "a1b2c3d4-...",
+  "status": "pending",
+  "domain": "example.com",
+  "poll_url": "${baseUrl}/api/v1/scans/a1b2c3d4-...",
+  "estimated_seconds": 120
+}`}</code>
+          </pre>
+        </div>
+
+        {/* Step 2: Poll */}
+        <div className="space-y-3 pt-2">
+          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Step 2 — Poll for Results</h4>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono bg-blue-500/20 text-blue-400 px-2 py-1 rounded">GET</span>
+            <code className="text-sm text-slate-300">{`{baseUrl}/api/v1/scans/{scan_id}`}</code>
+          </div>
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`// While running:
+{ "scan_id": "...", "status": "running", "pages_scanned": 24, "links_checked": 187 }
+
+// When done:
+{
+  "scan_id": "...",
+  "status": "completed",
+  "domain": "example.com",
+  "pages_scanned": 48,
+  "links_checked": 523,
+  "issue_count": 7,
+  "issues": [
+    {
+      "url": "https://dead-link.com/page",
+      "status_code": 404,
+      "issue_type": "BROKEN_4XX",
+      "is_affiliate": false
+    }
+  ]
+}`}</code>
+          </pre>
+        </div>
+
+        {/* cURL example */}
+        <div className="space-y-3 pt-2">
+          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Full cURL Example</h4>
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`# Submit scan
+curl -X POST ${baseUrl}/api/v1/scans \\
+  -H "Authorization: Bearer lr_your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"url": "https://example.com"}'
+
+# Poll for results (use scan_id from above)
+curl ${baseUrl}/api/v1/scans/SCAN_ID \\
+  -H "Authorization: Bearer lr_your_api_key"`}</code>
+          </pre>
+        </div>
+
+        {/* Error codes */}
+        <div className="pt-2">
+          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Error Responses</h4>
+          <div className="space-y-2 text-sm">
+            <div className="flex gap-3">
+              <code className="text-red-400 flex-shrink-0">401</code>
+              <span className="text-slate-400">Invalid or missing API key</span>
+            </div>
+            <div className="flex gap-3">
+              <code className="text-red-400 flex-shrink-0">403</code>
+              <span className="text-slate-400">API access not available on your plan</span>
+            </div>
+            <div className="flex gap-3">
+              <code className="text-amber-400 flex-shrink-0">404</code>
+              <span className="text-slate-400">Site not found in your account</span>
+            </div>
+            <div className="flex gap-3">
+              <code className="text-amber-400 flex-shrink-0">409</code>
+              <span className="text-slate-400">Scan already in progress</span>
+            </div>
+            <div className="flex gap-3">
+              <code className="text-amber-400 flex-shrink-0">429</code>
+              <span className="text-slate-400">Rate limit exceeded</span>
             </div>
           </div>
         </div>
@@ -132,28 +306,37 @@ export default async function ApiDocsPage() {
       {/* Rate Limits */}
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-blue-400" />
+          <Clock className="w-5 h-5 text-blue-400" />
           <h2 className="font-display font-semibold text-lg">Rate Limits</h2>
         </div>
+        <p className="text-sm text-slate-400">
+          Rate limit headers are included in every response:{' '}
+          <code className="text-slate-300 text-xs">X-RateLimit-Limit</code>,{' '}
+          <code className="text-slate-300 text-xs">X-RateLimit-Remaining</code>,{' '}
+          <code className="text-slate-300 text-xs">X-RateLimit-Reset</code>.
+        </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/10">
                 <th className="text-left py-3 px-3 text-slate-400 font-medium">Plan</th>
-                <th className="text-right py-3 px-3 text-slate-400 font-medium">Read Requests</th>
-                <th className="text-right py-3 px-3 text-slate-400 font-medium">Scan Requests</th>
+                <th className="text-right py-3 px-3 text-slate-400 font-medium">Check Links</th>
+                <th className="text-right py-3 px-3 text-slate-400 font-medium">Site Scans</th>
+                <th className="text-right py-3 px-3 text-slate-400 font-medium">Monthly Pages</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               <tr>
-                <td className="py-3 px-3">Pro</td>
+                <td className="py-3 px-3 font-medium">Pro</td>
                 <td className="py-3 px-3 text-right text-slate-400">100/hour</td>
                 <td className="py-3 px-3 text-right text-slate-400">2/day</td>
+                <td className="py-3 px-3 text-right text-slate-400">10,000</td>
               </tr>
               <tr>
-                <td className="py-3 px-3">Agency</td>
+                <td className="py-3 px-3 font-medium">Agency</td>
                 <td className="py-3 px-3 text-right text-slate-400">1,000/hour</td>
                 <td className="py-3 px-3 text-right text-slate-400">10/day</td>
+                <td className="py-3 px-3 text-right text-slate-400">100,000</td>
               </tr>
             </tbody>
           </table>
@@ -164,7 +347,7 @@ export default async function ApiDocsPage() {
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
           <Webhook className="w-5 h-5 text-orange-400" />
-          <h2 className="font-display font-semibold text-lg">Outbound Webhooks</h2>
+          <h2 className="font-display font-semibold text-lg">Webhooks</h2>
           <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
             Agency
           </span>
@@ -176,23 +359,23 @@ export default async function ApiDocsPage() {
         </p>
 
         <div>
-          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Available Events</h4>
+          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Events</h4>
           <div className="space-y-2 text-sm">
             <div className="flex gap-3">
               <code className="text-green-400 flex-shrink-0">scan.completed</code>
-              <span className="text-slate-400">Fired when a scan finishes successfully</span>
+              <span className="text-slate-400">Scan finished successfully</span>
             </div>
             <div className="flex gap-3">
               <code className="text-red-400 flex-shrink-0">scan.failed</code>
-              <span className="text-slate-400">Fired when a scan fails</span>
+              <span className="text-slate-400">Scan encountered a fatal error</span>
             </div>
             <div className="flex gap-3">
               <code className="text-red-400 flex-shrink-0">link.broken</code>
-              <span className="text-slate-400">Fired when a new broken link is detected</span>
+              <span className="text-slate-400">New broken link detected</span>
             </div>
             <div className="flex gap-3">
               <code className="text-green-400 flex-shrink-0">link.fixed</code>
-              <span className="text-slate-400">Fired when a previously broken link is fixed</span>
+              <span className="text-slate-400">Previously broken link recovered</span>
             </div>
           </div>
         </div>
@@ -200,8 +383,7 @@ export default async function ApiDocsPage() {
         <div>
           <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Signature Verification</h4>
           <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
-            <code className="text-slate-300">{`// Verify the X-LinkRescue-Signature header
-const crypto = require('crypto');
+            <code className="text-slate-300">{`const crypto = require('crypto');
 const signature = req.headers['x-linkrescue-signature'];
 const expected = 'sha256=' + crypto
   .createHmac('sha256', WEBHOOK_SECRET)
@@ -215,17 +397,20 @@ if (signature !== expected) {
         </div>
       </div>
 
-      {/* cURL Example */}
+      {/* Quick Start */}
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
           <Code2 className="w-5 h-5 text-slate-400" />
           <h2 className="font-display font-semibold text-lg">Quick Start</h2>
         </div>
+        <p className="text-sm text-slate-400">
+          Check your first link in 30 seconds:
+        </p>
         <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
-          <code className="text-slate-300">{`curl -X POST ${baseUrl}/api/webhooks/scan \\
+          <code className="text-slate-300">{`curl -X POST ${baseUrl}/api/v1/check-links \\
   -H "Authorization: Bearer lr_your_api_key" \\
   -H "Content-Type: application/json" \\
-  -d '{"siteId": "your-site-uuid"}'`}</code>
+  -d '{"url": "https://amzn.to/abc123"}'`}</code>
         </pre>
       </div>
     </div>

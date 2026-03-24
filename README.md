@@ -1,166 +1,139 @@
-# LinkRescue - Broken Affiliate Link Monitor
+# LinkRescue
 
-**LinkRescue** is a production-ready micro-SaaS that automatically monitors websites for broken and redirected affiliate links, helping site owners recover lost revenue.
+**Stop losing affiliate commissions to broken links.** LinkRescue monitors your entire site for broken, redirected, and parameter-stripped affiliate links — so you can fix them before they cost you money.
+
+[linkrescue.io](https://linkrescue.io)
+
+## What It Does
+
+Affiliate sites lose revenue every day from links that silently break — 404s, merchant shutdowns, redirects that strip your affiliate parameters. LinkRescue crawls your full content archive (not just your sitemap), detects every affiliate link across 20+ networks, and tells you exactly what's broken and how much it's costing you.
+
+**Key capabilities:**
+- Full-archive crawling with sitemap + internal link discovery
+- Affiliate link detection across Amazon, ShareASale, Impact, CJ, Awin, Rakuten, PartnerStack, and more
+- Issue classification: broken (4xx/5xx), timeouts, redirect-to-home, lost parameters
+- Health score tracking with 30/60/90-day trends
+- AI-powered replacement offer matching for broken links
+- Revenue impact estimates on highest-traffic pages
+- Monthly health report emails
+- API + webhooks for agency workflows
+- Slack integration
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 14 (App Router) + React + Tailwind CSS |
-| Database | Supabase (PostgreSQL) with RLS |
+| Frontend | Next.js 14 (App Router) + React 18 + Tailwind CSS |
+| Database | Supabase (PostgreSQL) with Row-Level Security |
 | Auth | Supabase Auth (magic link / passwordless) |
-| Payments | Stripe subscriptions |
+| Payments | Stripe (3 tiers, monthly + annual billing) |
 | Email | Resend + React Email |
-| Cron | Vercel Cron (daily scans) |
-| Crawler | fetch + Cheerio (no headless browser) |
+| Scheduling | Vercel Cron |
+| Crawler | Cheerio + fast-xml-parser (no headless browser) |
+| AI | Anthropic Claude (offer matching, revenue analysis) |
+| Monitoring | Sentry |
 | Monorepo | Turborepo + pnpm |
+
+## Plans
+
+| | Starter (Free) | Pro ($29/mo) | Agency ($79/mo) |
+|---|---|---|---|
+| Sites | 1 | 5 | 25 |
+| Pages/scan | 200 | 2,000 | Unlimited |
+| Scan frequency | Weekly | Daily | Hourly |
+| Revenue estimates | - | Yes | Yes |
+| Fix suggestions | - | Yes | Yes |
+| API access | - | - | Yes |
+| Webhooks | - | - | Yes |
+| Slack integration | - | - | Yes |
+
+Annual billing available (save ~17%).
+
+## Project Structure
+
+```
+apps/web/              Next.js app (pages, API routes, components)
+packages/crawler/      Sitemap parser, crawler, link checker
+packages/database/     Supabase client + schema types
+packages/email/        Resend + React Email templates
+packages/ai/           Claude integration (offer matching)
+packages/governance/   Role-based access control
+packages/types/        Shared TypeScript types
+packages/cli/          Command-line tools
+packages/config/       Shared TS/ESLint/Tailwind config
+```
 
 ## Setup
 
 ### Prerequisites
 
-- Node.js >= 18
+- Node.js >= 20
 - pnpm >= 8 (`npm install -g pnpm`)
-- Supabase project ([supabase.com](https://supabase.com))
-- Stripe account ([stripe.com](https://stripe.com))
-- Resend account ([resend.com](https://resend.com))
+- Supabase project
+- Stripe account
+- Resend account
 
-### 1. Install Dependencies
+### Install
 
 ```bash
 pnpm install
+cp apps/web/.env.example apps/web/.env
+# Fill in env vars (see below)
+pnpm dev
 ```
 
-### 2. Environment Variables
-
-```bash
-cp .env.example .env
-```
-
-Fill in all values:
+### Environment Variables
 
 | Variable | Source |
 |----------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase > Project Settings > API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase > Project Settings > API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase > Project Settings > API |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe > Developers > API keys |
-| `STRIPE_SECRET_KEY` | Stripe > Developers > API keys |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe > Developers > API Keys |
+| `STRIPE_SECRET_KEY` | Stripe > Developers > API Keys |
 | `STRIPE_WEBHOOK_SECRET` | Stripe > Developers > Webhooks |
-| `STRIPE_PRO_PRICE_ID` | Stripe > Products > Pro plan price ID |
+| `STRIPE_PRO_PRICE_ID` | Stripe > Products > Pro price ID |
+| `STRIPE_AGENCY_PRICE_ID` | Stripe > Products > Agency price ID |
 | `RESEND_API_KEY` | Resend > API Keys |
+| `ANTHROPIC_API_KEY` | Anthropic > API Keys |
 | `CRON_SECRET` | Generate: `openssl rand -base64 32` |
-| `NEXT_PUBLIC_APP_URL` | Your deployed URL (or `http://localhost:3000`) |
+| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` or production URL |
 
-### 3. Database Setup
+### Database
 
 Run the migration SQL in your Supabase SQL Editor:
 
-1. Open Supabase > SQL Editor
-2. Paste the contents of `packages/database/migrations/001_initial_schema.sql`
-3. Execute
-
-This creates all tables with RLS policies:
-- `users` - profiles + Stripe subscription data
-- `sites` - monitored domains with verification
-- `pages` - discovered pages per site
-- `links` - outbound links with affiliate detection
-- `scans` - scan jobs and status
-- `scan_results` - per-link issue classification
-- `scan_events` - scan log entries
-
-### 4. Stripe Setup
-
-1. Create a Product in Stripe with a monthly price (e.g., $29/month)
-2. Copy the Price ID to `STRIPE_PRO_PRICE_ID`
-3. After deploying, create a webhook endpoint at `https://your-app/api/webhooks/stripe`
-4. Subscribe to events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
-5. Copy the webhook signing secret to `STRIPE_WEBHOOK_SECRET`
-
-### 5. Run Development Server
-
 ```bash
-pnpm dev
+# packages/database/migrations/001_initial_schema.sql
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+See `SUPABASE_SETUP.md` for full schema documentation.
 
-## Features
+### Stripe
 
-### Authentication
-- Magic link (passwordless) via Supabase Auth
-- Protected dashboard routes via middleware
-
-### Site Management
-- Add sites with domain + optional sitemap URL
-- Ownership verification via meta tag:
-  ```html
-  <meta name="linkrescue-site-verification" content="YOUR_TOKEN" />
-  ```
-
-### Scan Engine
-1. Tries sitemap (provided URL, then `domain/sitemap.xml`), supports sitemap index
-2. Falls back to crawling internal links (depth=2, same-domain only)
-3. Extracts external outbound links
-4. Checks each link: HEAD then GET fallback, follows redirects (up to 5 hops), 10s timeout
-5. Detects affiliate links (patterns: `ref=`, `aff=`, `tag=`, `utm_`, `affiliate`; networks: amzn.to, shareasale, cj, impact, clickbank, etc.)
-6. Classifies issues: `BROKEN_4XX`, `SERVER_5XX`, `TIMEOUT`, `REDIRECT_TO_HOME`, `LOST_PARAMS`, `OK`
-
-### Dashboard
-- `/sites` - list sites with issue counts + last scan
-- `/sites/[id]` - issues table with filters (by issue type) + search
-- Trigger manual scans
-
-### Email
-- Weekly digest per user via Resend
-- "Send test email" in Settings
-
-### Stripe Plans
-- **Free**: 1 site, 50 pages/scan
-- **Pro** ($29/mo): 5 sites, 500 pages/scan
-- Blocks site creation and scans when limits hit
-- Checkout + billing portal
-
-### Cron
-- Vercel Cron daily at midnight: `GET /api/cron/scan`
-- Scans all verified sites with plan-based page limits
-- Concurrency limit of 3 parallel scans
-- Sends digest emails after scans
+1. Create three products: Starter (free), Pro ($29/mo + $290/yr), Agency ($79/mo + $790/yr)
+2. Copy price IDs to env vars
+3. Create webhook endpoint at `https://your-domain/api/webhooks/stripe`
+4. Subscribe to: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
 | `pnpm dev` | Start dev server |
-| `pnpm build` | Build all packages |
-| `pnpm lint` | Lint all packages |
+| `pnpm build` | Build all packages + Next.js |
+| `pnpm lint` | Lint all code |
 | `pnpm type-check` | TypeScript check |
 | `pnpm --filter @linkrescue/crawler test` | Run crawler tests |
 
-## Project Structure
+## Deploy
 
-```
-apps/web/              Next.js app (pages, API routes, components)
-packages/database/     Supabase client, schema types, query functions
-packages/crawler/      Sitemap parser, crawler, link checker, classifier
-packages/email/        Resend client, React Email templates
-packages/types/        Shared TypeScript types
-packages/config/       Shared TS/ESLint/Tailwind config
-```
-
-## Launch Checklist
-
-- [ ] Create Supabase project and run migration SQL
-- [ ] Configure all environment variables
-- [ ] Create Stripe product + price for Pro plan
-- [ ] Deploy to Vercel
-- [ ] Set environment variables in Vercel
-- [ ] Configure Stripe webhook endpoint
-- [ ] Verify Vercel Cron is active
-- [ ] Configure Resend domain (for production email sending)
-- [ ] Test: sign up, add site, verify, run scan, check issues
-- [ ] Test: upgrade to Pro via Stripe checkout
-- [ ] Test: receive weekly digest email
+1. Push to GitHub
+2. Connect repo to Vercel
+3. Set all environment variables in Vercel dashboard
+4. Configure Vercel Cron for daily scans
+5. Create Stripe webhook endpoint pointing to production
+6. Configure Resend domain for production email
 
 ## License
 

@@ -137,8 +137,8 @@ export default function HomePage() {
 
               {/* Headline */}
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
-                Your old content is still earning{' '}
-                <span className="text-gradient">— or leaking.</span>
+                Find the broken affiliate links{' '}
+                <span className="text-gradient">silently costing you commissions.</span>
               </h1>
 
               {/* Subhead */}
@@ -173,6 +173,20 @@ export default function HomePage() {
                   <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
                   Results in minutes
                 </span>
+              </div>
+
+              {/* Credibility bar */}
+              <div className="border-t border-white/5 pt-6 mt-2">
+                <p className="text-xs text-slate-500 mb-3 uppercase tracking-wider font-medium">
+                  Built by an affiliate publisher tired of losing commissions to dead links
+                </p>
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
+                  <span>38+ affiliate networks</span>
+                  <span className="text-white/10">|</span>
+                  <span>6 issue types detected</span>
+                  <span className="text-white/10">|</span>
+                  <span>Daily autopilot scans</span>
+                </div>
               </div>
             </div>
 

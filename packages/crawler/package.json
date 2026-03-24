@@ -12,7 +12,7 @@
   "dependencies": {
     "@linkrescue/types": "workspace:*",
     "cheerio": "^1.0.0-rc.12",
-    "fast-xml-parser": "^4.3.5"
+    "fast-xml-parser": "^5.5.7"
   },
   "devDependencies": {
     "@linkrescue/config": "workspace:*",

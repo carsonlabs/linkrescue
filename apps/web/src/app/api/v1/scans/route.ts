@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateApiRequest, checkRateLimit } from '@/lib/api-auth';
 import { createAdminClient } from '@linkrescue/database';
 import { getTierLimits } from '@linkrescue/types';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Create pending scan row
-  const scanId = uuidv4();
+  const scanId = randomUUID();
   const maxPages = tierLimits.pagesPerScan === Infinity ? 50000 : tierLimits.pagesPerScan;
 
   const { error: insertError } = await adminDb
@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
         level: 'info',
         message: `API webhook callback: ${body.webhook_url}`,
       })
-      .catch(() => {});
+      .then(() => {}, () => {});
   }
 
   // Dispatch to scan worker (fire-and-forget)

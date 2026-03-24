@@ -91,7 +91,8 @@ export async function runScan(options: ScanOptions) {
     try {
       urls = await discoverPages(domain, sitemapUrl, maxPages);
       await logEvent(supabase, scanId, 'info', `Found ${urls.length} URLs from sitemap`);
-    } catch {
+    } catch (err) {
+      console.error(`[crawler] Sitemap discovery failed for ${domain}:`, err);
       await logEvent(supabase, scanId, 'info', `No sitemap found, falling back to crawl`);
     }
 
@@ -188,7 +189,8 @@ export async function runScan(options: ScanOptions) {
           let linkHostname: string;
           try {
             linkHostname = new URL(extLink.href).hostname;
-          } catch {
+          } catch (err) {
+            console.error(`[crawler] Invalid URL skipped: ${extLink.href}`, err);
             linkHostname = '';
           }
           if (linkHostname) {

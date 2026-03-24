@@ -40,7 +40,7 @@ export async function GET(
       id,
       status,
       started_at,
-      completed_at,
+      finished_at,
       pages_scanned,
       links_checked,
       scan_summary,
@@ -75,7 +75,7 @@ export async function GET(
     status: scan.status,
     domain: site.domain,
     started_at: scan.started_at,
-    completed_at: scan.completed_at,
+    completed_at: scan.finished_at,
     pages_scanned: scan.pages_scanned,
     links_checked: scan.links_checked,
   };

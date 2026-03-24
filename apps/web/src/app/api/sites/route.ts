@@ -16,6 +16,22 @@ const createSiteSchema = z.object({
   sitemap_url: z.string().url().optional().nullable(),
 });
 
+/* Rate limiter: 10 site creates per hour per user (in-memory, per instance) */
+const createRateMap = new Map<string, { count: number; resetAt: number }>();
+const CREATE_RATE_LIMIT = 10;
+const CREATE_RATE_WINDOW = 60 * 60 * 1000;
+
+function isCreateRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const entry = createRateMap.get(userId);
+  if (!entry || now > entry.resetAt) {
+    createRateMap.set(userId, { count: 1, resetAt: now + CREATE_RATE_WINDOW });
+    return false;
+  }
+  entry.count++;
+  return entry.count > CREATE_RATE_LIMIT;
+}
+
 export async function POST(request: Request) {
   const supabase = createClient();
   const {
@@ -24,6 +40,13 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (isCreateRateLimited(user.id)) {
+    return NextResponse.json(
+      { error: 'Too many sites created. Please try again later.' },
+      { status: 429 }
+    );
   }
 
   const body = await request.json();

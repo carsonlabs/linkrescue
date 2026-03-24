@@ -32,7 +32,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const body = await request.json();
   const parsed = InviteSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: { message: "Invalid request data" } }, { status: 400 });
 
   const { data, error } = await addOrgMember(supabase, {
     org_id: params.id,

@@ -161,7 +161,7 @@ export async function GET(request: Request) {
         sentSet.add(logKey);
         sent++;
       } catch (err) {
-        console.error(`Failed to send ${step.key} to ${user.email}:`, err);
+        console.error(`Failed to send ${step.key} for user ${user.id}:`, err);
         failed++;
       }
     }
@@ -198,7 +198,7 @@ export async function GET(request: Request) {
             sentSet.add(nudgeKey);
             sent++;
           } catch (err) {
-            console.error(`Failed to send upgrade nudge to ${user.email}:`, err);
+            console.error(`Failed to send upgrade nudge for user ${user.id}:`, err);
             failed++;
           }
         }

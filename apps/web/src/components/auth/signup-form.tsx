@@ -28,8 +28,8 @@ export function SignupForm() {
       setError(authError.message);
       toast.error(authError.message);
     } else {
-      setMessage('Check your email for a magic link to get started.');
-      toast.success('Check your email for a magic link!');
+      setMessage('Check your email for a magic link to get started. The link expires in 1 hour. Check your spam folder if you don\'t see it.');
+      toast.success('Magic link sent! Check your email.');
     }
     setLoading(false);
   };

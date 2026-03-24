@@ -40,18 +40,40 @@ export interface EnvResult {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Rate limiter (in-memory, per Vercel instance)                      */
+/*  Rate limiter (in-memory with sliding window + cleanup)             */
 /* ------------------------------------------------------------------ */
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 10; // per hour
 const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
+let lastCleanup = Date.now();
 
-function isRateLimited(ip: string): boolean {
+function cleanupStaleEntries() {
   const now = Date.now();
-  const entry = rateLimitMap.get(ip);
+  // Clean up every 5 minutes to prevent memory leaks
+  if (now - lastCleanup < 5 * 60 * 1000) return;
+  lastCleanup = now;
+  for (const [key, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(key);
+  }
+}
+
+function getClientIdentifier(req: NextRequest): string {
+  // Use multiple signals to make IP spoofing harder
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    ?? req.headers.get('x-real-ip')
+    ?? 'unknown';
+  const ua = req.headers.get('user-agent') ?? '';
+  // Simple hash combining IP + UA prefix for fingerprinting
+  return `${ip}:${ua.slice(0, 50)}`;
+}
+
+function isRateLimited(identifier: string): boolean {
+  cleanupStaleEntries();
+  const now = Date.now();
+  const entry = rateLimitMap.get(identifier);
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    rateLimitMap.set(identifier, { count: 1, resetAt: now + RATE_WINDOW });
     return false;
   }
   entry.count++;
@@ -305,8 +327,8 @@ async function followChain(
 
 export async function POST(req: NextRequest) {
   // Rate limiting
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
-  if (isRateLimited(ip)) {
+  const clientId = getClientIdentifier(req);
+  if (isRateLimited(clientId)) {
     return NextResponse.json(
       {
         error: "You've used your free checks for this hour. Create a free account for more.",

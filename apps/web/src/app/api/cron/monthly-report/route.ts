@@ -122,7 +122,7 @@ export async function GET(request: Request) {
 
       sent++;
     } catch (err) {
-      console.error(`Failed to send monthly report for ${site.domain}:`, err);
+      console.error(`Failed to send monthly report for site ${site.id}:`, err);
       failed++;
     }
   }

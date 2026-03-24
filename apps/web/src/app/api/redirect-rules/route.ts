@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const parsed = CreateSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: { message: "Invalid request data" } }, { status: 400 });
 
   // Chain detection against deployed rules
   const { data: deployed } = await getDeployedRules(supabase, user.id);

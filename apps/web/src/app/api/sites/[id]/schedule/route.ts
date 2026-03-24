@@ -33,7 +33,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const body = await request.json();
   const parsed = UpsertSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: { message: "Invalid request data" } }, { status: 400 });
 
   const nextRunAt = computeNextRunAt(parsed.data.frequency);
   const { data, error } = await upsertSchedule(supabase, params.id, parsed.data.frequency, nextRunAt);

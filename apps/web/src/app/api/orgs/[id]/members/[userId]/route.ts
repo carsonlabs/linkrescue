@@ -21,7 +21,7 @@ export async function PATCH(
 
   const body = await request.json();
   const parsed = UpdateSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: { message: "Invalid request data" } }, { status: 400 });
 
   const { data, error } = await updateOrgMember(supabase, params.id, params.userId, parsed.data);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

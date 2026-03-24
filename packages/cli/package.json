@@ -1,0 +1,45 @@
+{
+  "name": "linkrescue",
+  "version": "1.0.0",
+  "description": "Find broken links and affiliate parameter issues on any website",
+  "bin": {
+    "linkrescue": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "broken-links",
+    "link-checker",
+    "affiliate",
+    "seo",
+    "cli"
+  ],
+  "license": "MIT",
+  "author": "LinkRescue <hello@linkrescue.io>",
+  "homepage": "https://linkrescue.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linkrescue/linkrescue.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@linkrescue/crawler": "workspace:*",
+    "@linkrescue/types": "workspace:*",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.17"
+  }
+}

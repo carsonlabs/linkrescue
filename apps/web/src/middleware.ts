@@ -88,6 +88,12 @@ export async function middleware(request: NextRequest) {
     // Continue on error to avoid breaking the app
   }
 
+  // Add security headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
   return response;
 }
 

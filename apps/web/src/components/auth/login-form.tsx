@@ -26,7 +26,7 @@ export function LoginForm() {
     if (authError) {
       setError(authError.message);
     } else {
-      setMessage('Check your email for a magic link to sign in.');
+      setMessage('Check your email for a magic link to sign in. The link expires in 1 hour. Check spam if you don\'t see it.');
     }
     setLoading(false);
   };

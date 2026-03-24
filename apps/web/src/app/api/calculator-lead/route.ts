@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
   // TODO: Send transactional email via Resend (post-launch)
   // TODO: Tag subscriber in email marketing list (post-launch)
 
-  console.log('[calculator-lead]', { email, monthlyLoss, annualLoss });
+  console.log('[calculator-lead] Lead captured successfully');
 
   return NextResponse.json({ ok: true });
 }

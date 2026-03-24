@@ -32,11 +32,25 @@ interface HopInfo {
 /*  CORS headers                                                       */
 /* ------------------------------------------------------------------ */
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+function getCorsHeaders(req?: NextRequest): Record<string, string> {
+  const origin = req?.headers.get('origin') ?? '';
+  const allowedOrigins = [
+    'https://linkrescue.io',
+    'https://www.linkrescue.io',
+    process.env.NEXT_PUBLIC_APP_URL,
+  ].filter(Boolean);
+
+  // For API consumers using Bearer tokens (not browser requests), allow the origin
+  // Browser CORS is only relevant for fetch from other websites
+  const allowOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0] ?? 'https://linkrescue.io';
+
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Vary': 'Origin',
+  };
+}
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -256,8 +270,8 @@ async function checkOneLink(rawUrl: string): Promise<LinkResult> {
 /*  Route handlers                                                     */
 /* ------------------------------------------------------------------ */
 
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+export async function OPTIONS(req: NextRequest) {
+  return new NextResponse(null, { status: 204, headers: getCorsHeaders(req) });
 }
 
 export async function POST(req: NextRequest) {
@@ -266,14 +280,14 @@ export async function POST(req: NextRequest) {
   if (!auth.success) {
     return NextResponse.json(
       { error: auth.error },
-      { status: auth.status, headers: CORS_HEADERS },
+      { status: auth.status, headers: getCorsHeaders(req) },
     );
   }
 
   // Rate limit
   const rateLimit = await checkRateLimit(auth.context.userId, auth.context.plan, 'read');
   const rateLimitHeaders = {
-    ...CORS_HEADERS,
+    ...getCorsHeaders(req),
     'X-RateLimit-Limit': String(rateLimit.limit),
     'X-RateLimit-Remaining': String(rateLimit.remaining),
     'X-RateLimit-Reset': rateLimit.resetAt.toISOString(),
@@ -293,7 +307,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: 'Invalid JSON body' },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: getCorsHeaders(req) },
     );
   }
 
@@ -308,7 +322,7 @@ export async function POST(req: NextRequest) {
   if (urls.length === 0) {
     return NextResponse.json(
       { error: 'Provide "url" (string) or "urls" (array, max 20)' },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: getCorsHeaders(req) },
     );
   }
 

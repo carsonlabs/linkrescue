@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const parsed = CreateSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: { message: "Invalid request data" } }, { status: 400 });
 
   const { data, error } = await createOffer(supabase, { ...parsed.data, user_id: user.id });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     if (parsed.success) {
       valid.push(parsed.data);
     } else {
-      errors.push(`Row ${i + 1}: ${JSON.stringify(parsed.error.flatten().fieldErrors)}`);
+      errors.push(`Row ${i + 1}: Invalid data`);
     }
   }
 

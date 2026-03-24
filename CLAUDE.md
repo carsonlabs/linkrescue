@@ -274,3 +274,12 @@ If we hit context limits or need to continue in a new session:
 - [x] Phase 4: API & Webhook Infrastructure
 - [x] Phase 5: Affiliate Program Setup
 - [x] Phase 6: Landing Page & SEO Infrastructure
+
+## Agent Learning
+
+If you discover something non-obvious while working in this project:
+1. **Update this file** — add the finding to the relevant section above (architecture, commands, gotchas)
+2. **Append to `C:\DEV\studio\AGENT_KNOWLEDGE.md`** — add an entry under this project's section with date and context
+3. **If a documented behavior is wrong** — fix it here and mark the old AGENT_KNOWLEDGE.md entry as `[RESOLVED]`
+
+The goal: every agent session leaves better documentation for the next one.

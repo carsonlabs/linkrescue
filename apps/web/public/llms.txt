@@ -1,0 +1,16 @@
+# LinkRescue
+> Broken affiliate link monitor — recover lost commissions from dead links, stripped parameters, and silent attribution failures.
+
+## About
+LinkRescue crawls your websites and checks every affiliate link for health. Detects 404s, server errors, timeouts, redirect chains, homepage redirects, and stripped tracking parameters. Daily automated scans with email digest reports.
+
+## Pricing
+- Free: 1 site, 200 pages, weekly scans
+- Pro ($29/mo): 5 sites, 2,000 pages, daily scans
+- Agency ($79/mo): 25 sites, unlimited pages, hourly scans, API access
+
+## Links
+- Website: https://linkrescue.io
+- Pricing: https://linkrescue.io/pricing
+- API Docs: https://linkrescue.io/api
+- Blog: https://linkrescue.io/blog

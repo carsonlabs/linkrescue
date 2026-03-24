@@ -94,11 +94,6 @@ export default function RootLayout({
               operatingSystem: 'Any',
               description:
                 'LinkRescue scans your site daily and alerts you the moment an affiliate link breaks, expires, or redirects incorrectly.',
-              aggregateRating: {
-                '@type': 'AggregateRating',
-                ratingValue: '4.9',
-                reviewCount: '124',
-              },
               offers: {
                 '@type': 'Offer',
                 price: '29.00',

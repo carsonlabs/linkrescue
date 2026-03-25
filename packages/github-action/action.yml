@@ -1,0 +1,48 @@
+name: 'LinkRescue Broken Link Checker'
+description: 'Check URLs for broken links, stripped affiliate parameters, and redirect chain issues using the LinkRescue API.'
+author: 'LinkRescue'
+branding:
+  icon: 'link'
+  color: 'green'
+
+inputs:
+  api-key:
+    description: 'LinkRescue API key (starts with lr_). Get one at https://linkrescue.io'
+    required: true
+  urls:
+    description: 'Newline-separated list of URLs to check'
+    required: false
+  urls-file:
+    description: 'Path to a file containing URLs to check (one per line)'
+    required: false
+  sitemap:
+    description: 'URL of a sitemap.xml to extract and check all URLs from'
+    required: false
+  fail-on-broken:
+    description: 'Fail the action if any broken links are found'
+    required: false
+    default: 'true'
+  fail-on-params-lost:
+    description: 'Fail the action if any affiliate parameters are lost'
+    required: false
+    default: 'true'
+  api-url:
+    description: 'LinkRescue API base URL (override for self-hosted)'
+    required: false
+    default: 'https://app.linkrescue.io'
+
+outputs:
+  total:
+    description: 'Total URLs checked'
+  broken:
+    description: 'Number of broken URLs'
+  redirects:
+    description: 'Number of redirect URLs'
+  params-lost:
+    description: 'Number of URLs with lost affiliate parameters'
+  results-json:
+    description: 'Full JSON results'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

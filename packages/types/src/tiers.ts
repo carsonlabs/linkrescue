@@ -46,6 +46,7 @@ export const TIER_LIMITS = {
       'revenue_estimates',
       'fix_suggestions',
       'on_demand_scans',
+      'api_access',
     ] as readonly string[],
   },
   agency: {

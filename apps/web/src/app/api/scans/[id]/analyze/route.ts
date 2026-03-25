@@ -75,8 +75,8 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
         });
         matchesCreated++;
       }
-    } catch {
-      // Skip individual failures, continue processing
+    } catch (err) {
+      console.error(`[analyze] AI analysis failed for ${link.href}:`, err instanceof Error ? err.message : err);
     }
   }
 

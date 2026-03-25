@@ -5,10 +5,15 @@ import { checkLink } from './link-checker';
 import { validateFetchUrl, validateFetchUrlWithDns } from './url-safety';
 import { getRobotsRules, isPathAllowed, clearRobotsCache } from './robots';
 import { DomainLimiter } from './domain-limiter';
+import { detectSoft404 } from './soft-404';
+import { extractTextContent, hashContent, detectContentChange } from './content-hash';
+import { checkWaybackArchive } from './wayback';
 import {
   PAGE_FETCH_TIMEOUT_MS,
   CRAWL_DELAY_MS,
   CRAWLER_USER_AGENT,
+  LINK_CHECK_TIMEOUT_MS,
+  CHECKER_USER_AGENT,
 } from './crawl-config';
 import type { ScanOptions, ScanSummary } from './types';
 import { createScanSummary } from './types';
@@ -21,6 +26,9 @@ export { isAffiliateLink, classifyIssue } from './classifier';
 export { validateFetchUrl, isPrivateHost, validateFetchUrlWithDns, isPrivateIp } from './url-safety';
 export { getRobotsRules, isPathAllowed, clearRobotsCache } from './robots';
 export { DomainLimiter } from './domain-limiter';
+export { detectSoft404 } from './soft-404';
+export { extractTextContent, hashContent, detectContentChange } from './content-hash';
+export { checkWaybackArchive } from './wayback';
 export type { LinkCheckResult, ExtractedLink, PageLinks, ScanOptions, ScanSummary } from './types';
 export { createScanSummary } from './types';
 
@@ -216,6 +224,81 @@ export async function runScan(options: ScanOptions) {
             domainLimiter.recordRateLimit(linkHostname);
           }
 
+          // ── Phase 3: Advanced detection ──
+
+          let finalIssueType = result.issueType;
+          let waybackUrl: string | null = null;
+          let contentHash: string | null = null;
+
+          // Soft-404 + Content change: fetch body for links that returned 200-299
+          if (
+            result.issueType === 'OK' &&
+            result.finalUrl &&
+            result.statusCode !== null &&
+            result.statusCode >= 200 &&
+            result.statusCode < 300
+          ) {
+            try {
+              const bodyRes = await fetch(result.finalUrl, {
+                method: 'GET',
+                signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
+                headers: { 'User-Agent': CHECKER_USER_AGENT },
+              });
+              const bodyContentType = bodyRes.headers.get('content-type') || '';
+              if (bodyContentType.includes('text/html') && bodyRes.ok) {
+                const bodyHtml = await bodyRes.text();
+
+                // Soft-404 check
+                const soft404 = detectSoft404(bodyHtml);
+                if (soft404.isSoft404) {
+                  finalIssueType = 'SOFT_404';
+                }
+
+                // Content change check — compare with stored hash
+                const currentText = extractTextContent(bodyHtml);
+                contentHash = hashContent(currentText);
+
+                if (linkRecord.content_hash && linkRecord.content_text) {
+                  const change = detectContentChange(bodyHtml, linkRecord.content_text);
+                  if (change.hasChanged && finalIssueType === 'OK') {
+                    finalIssueType = 'CONTENT_CHANGED';
+                  }
+                }
+              }
+            } catch {
+              // Body fetch failed — not critical, keep original result
+            }
+          }
+
+          // Wayback Machine: for broken links, check for archived version
+          if (
+            (finalIssueType === 'BROKEN_4XX' || finalIssueType === 'SOFT_404') &&
+            result.href
+          ) {
+            try {
+              const wayback = await checkWaybackArchive(result.href);
+              if (wayback.hasArchive) {
+                waybackUrl = wayback.archiveUrl;
+              }
+            } catch {
+              // Wayback check failed — not critical
+            }
+          }
+
+          // Update link record with content hash and text for future comparisons
+          if (contentHash) {
+            const updateData: Record<string, string> = { content_hash: contentHash };
+            // Only store text on first scan or if content changed
+            if (!linkRecord.content_hash || finalIssueType === 'CONTENT_CHANGED') {
+              const bodyText = await fetchBodyText(result.finalUrl);
+              if (bodyText) {
+                // Store truncated text (max 10KB) for future comparison
+                updateData.content_text = bodyText.slice(0, 10_000);
+              }
+            }
+            await supabase.from('links').update(updateData).eq('id', linkRecord.id);
+          }
+
           // Store scan result
           await supabase.from('scan_results').insert({
             scan_id: scanId,
@@ -223,7 +306,8 @@ export async function runScan(options: ScanOptions) {
             status_code: result.statusCode,
             final_url: result.finalUrl,
             redirect_hops: result.redirectHops,
-            issue_type: result.issueType,
+            issue_type: finalIssueType,
+            wayback_url: waybackUrl,
           });
         }
       } catch (err) {
@@ -304,4 +388,23 @@ async function logEvent(
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Fetch body text for a URL (for content hash storage). Returns null on failure. */
+async function fetchBodyText(url: string | null): Promise<string | null> {
+  if (!url) return null;
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
+      headers: { 'User-Agent': CHECKER_USER_AGENT },
+    });
+    if (!res.ok) return null;
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('text/html')) return null;
+    const html = await res.text();
+    return extractTextContent(html);
+  } catch {
+    return null;
+  }
 }

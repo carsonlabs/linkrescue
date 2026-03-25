@@ -1,5 +1,5 @@
 export type ScanStatus = 'pending' | 'running' | 'completed' | 'failed';
-export type IssueType = 'OK' | 'BROKEN_4XX' | 'SERVER_5XX' | 'TIMEOUT' | 'REDIRECT_TO_HOME' | 'LOST_PARAMS';
+export type IssueType = 'OK' | 'BROKEN_4XX' | 'SERVER_5XX' | 'TIMEOUT' | 'REDIRECT_TO_HOME' | 'LOST_PARAMS' | 'SOFT_404' | 'CONTENT_CHANGED';
 
 export interface Scan {
   id: string;

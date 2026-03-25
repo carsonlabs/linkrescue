@@ -75,8 +75,8 @@ export async function POST(request: Request) {
     try {
       const healthComponents = await computeHealthScore(adminDb, siteId, maxPages);
       await upsertHealthScore(adminDb, siteId, healthComponents);
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      console.error(`[scan-worker] Health score computation failed for site ${siteId}:`, err instanceof Error ? err.message : err);
     }
 
     // Post-scan: webhooks and Slack (only if we have a userId)

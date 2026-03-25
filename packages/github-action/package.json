@@ -1,0 +1,19 @@
+{
+  "name": "@linkrescue/github-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action for checking broken links via the LinkRescue API",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --minify",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vercel/ncc": "^0.38.0",
+    "typescript": "^5.3.0"
+  }
+}

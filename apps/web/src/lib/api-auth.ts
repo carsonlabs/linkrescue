@@ -96,7 +96,10 @@ export async function authenticateApiRequest(
     return { success: false, error: 'Invalid API key format', status: 401 };
   }
   
-  const supabase = createAdminClient();
+  // Use admin client (service role) to bypass RLS on api_keys table.
+  // Tables api_keys and api_rate_limits aren't in the generated DB types,
+  // so we cast to `any` for untyped table access.
+  const supabase: any = createAdminClient();
 
   // Find the API key by prefix first (faster lookup)
   const prefix = key.slice(0, 11);
@@ -106,30 +109,30 @@ export async function authenticateApiRequest(
     .eq('key_prefix', prefix)
     .is('revoked_at', null)
     .or(`expires_at.gt.${new Date().toISOString()},expires_at.is.null`);
-  
-  if (fetchError || !apiKeys || apiKeys.length === 0) {
+
+  if (fetchError || !apiKeys || (apiKeys as any[]).length === 0) {
     return { success: false, error: 'Invalid or expired API key', status: 401 };
   }
-  
+
   // Check each key against the hash
-  let matchedKey = null;
-  for (const apiKey of apiKeys) {
+  let matchedKey: any = null;
+  for (const apiKey of apiKeys as any[]) {
     if (await verifyApiKey(key, apiKey.key_hash)) {
       matchedKey = apiKey;
       break;
     }
   }
-  
+
   if (!matchedKey) {
     return { success: false, error: 'Invalid API key', status: 401 };
   }
-  
+
   // Update last_used_at
   await supabase
     .from('api_keys')
     .update({ last_used_at: new Date().toISOString() })
     .eq('id', matchedKey.id);
-  
+
   // Get user's plan
   const { data: user } = await supabase
     .from('users')
@@ -166,7 +169,7 @@ export async function checkRateLimit(
   plan: PlanType,
   type: RateLimitType = 'read'
 ): Promise<{ allowed: boolean; limit: number; remaining: number; resetAt: Date }> {
-  const supabase = createAdminClient();
+  const supabase: any = createAdminClient();
   
   const now = new Date();
   

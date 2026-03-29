@@ -3,6 +3,7 @@ import { getUserPlan, PLAN_LIMITS, hasFeature, type PlanType } from '@linkrescue
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createAdminClient } from '@linkrescue/database';
 
 export type RateLimitType = 'read' | 'scan';
 
@@ -95,8 +96,8 @@ export async function authenticateApiRequest(
     return { success: false, error: 'Invalid API key format', status: 401 };
   }
   
-  const supabase = createApiClient();
-  
+  const supabase = createAdminClient();
+
   // Find the API key by prefix first (faster lookup)
   const prefix = key.slice(0, 11);
   const { data: apiKeys, error: fetchError } = await supabase
@@ -104,8 +105,7 @@ export async function authenticateApiRequest(
     .select('*')
     .eq('key_prefix', prefix)
     .is('revoked_at', null)
-    .gt('expires_at', new Date().toISOString())
-    .or('expires_at.is.null');
+    .or(`expires_at.gt.${new Date().toISOString()},expires_at.is.null`);
   
   if (fetchError || !apiKeys || apiKeys.length === 0) {
     return { success: false, error: 'Invalid or expired API key', status: 401 };
@@ -166,7 +166,7 @@ export async function checkRateLimit(
   plan: PlanType,
   type: RateLimitType = 'read'
 ): Promise<{ allowed: boolean; limit: number; remaining: number; resetAt: Date }> {
-  const supabase = createApiClient();
+  const supabase = createAdminClient();
   
   const now = new Date();
   

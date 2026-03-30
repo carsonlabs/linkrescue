@@ -25,7 +25,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Recover Lost Affiliate Commissions — Broken Link & Attribution Monitoring',
   description:
-    'LinkRescue crawls your content archive to find broken affiliate links, stripped tracking parameters, and silent attribution failures that are costing you commissions right now.',
+    'Find broken affiliate links, stripped tracking params, and silent attribution failures costing you commissions. Daily scans, instant alerts.',
   alternates: {
     canonical: 'https://www.linkrescue.io',
   },

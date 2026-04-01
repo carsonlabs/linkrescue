@@ -10,6 +10,8 @@ import {
   Link2,
   Clock,
   Terminal,
+  Radio,
+  Wrench,
 } from 'lucide-react';
 import { PublicNav } from '@/components/PublicNav';
 import { PublicFooter } from '@/components/PublicFooter';
@@ -254,6 +256,37 @@ func main() {
           </SectionCard>
 
           {/* ─── Async Site Scan ─── */}
+          <SectionCard icon={Radio} title="Monitoring" badge="Agency" badgeColor="blue">
+            <p className="text-sm text-slate-400">
+              Turn a verified site in your account into a recurring monitor. Pass a cadence in hours
+              and LinkRescue will normalize it to the nearest supported schedule.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
+                  POST
+                </span>
+                <code className="text-sm text-slate-300">/api/v1/monitors</code>
+              </div>
+
+              <CodeBlock label="Request Body">{`{
+  "url": "https://example.com",
+  "frequency_hours": 24
+}`}</CodeBlock>
+
+              <CodeBlock label="Response (200)">{`{
+  "monitoring_id": "9b3c2f5a-...",
+  "site_id": "2a4f8c7d-...",
+  "url": "https://example.com",
+  "status": "active",
+  "frequency_hours": 24,
+  "normalized_frequency": "daily",
+  "next_scan": "2026-04-02T13:00:00.000Z"
+}`}</CodeBlock>
+            </div>
+          </SectionCard>
+
           <SectionCard icon={Search} title="Site Scan (Async)" badge="Agency" badgeColor="purple">
             <p className="text-sm text-slate-400">
               Crawl an entire site for broken links. Returns immediately with a scan ID.
@@ -364,6 +397,44 @@ curl ${BASE_URL}/api/v1/scans/SCAN_ID \\
           </SectionCard>
 
           {/* Rate Limits */}
+          <SectionCard icon={Wrench} title="Fix Suggestions" badge="Agency" badgeColor="orange">
+            <p className="text-sm text-slate-400">
+              Convert broken-link findings into remediation guidance. Pass a completed
+              <code className="text-slate-300 text-xs"> scan_id </code>
+              or provide a raw
+              <code className="text-slate-300 text-xs"> broken_links </code>
+              array from another workflow.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono bg-orange-500/20 text-orange-400 px-2 py-1 rounded">
+                  POST
+                </span>
+                <code className="text-sm text-slate-300">/api/v1/suggestions</code>
+              </div>
+
+              <CodeBlock label="Request Body">{`{
+  "scan_id": "a1b2c3d4-..."
+}`}</CodeBlock>
+
+              <CodeBlock label="Response (200)">{`{
+  "suggestions": [
+    {
+      "broken_url": "https://merchant.example/dead-offer",
+      "status_code": 404,
+      "issue_type": "BROKEN_4XX",
+      "priority": "high",
+      "action": "update_affiliate_link",
+      "detail": "This affiliate destination is dead. Update it to the current merchant link or replace it with a comparable offer."
+    }
+  ],
+  "total": 1,
+  "high_priority": 1
+}`}</CodeBlock>
+            </div>
+          </SectionCard>
+
           <SectionCard icon={Clock} title="Rate Limits" badgeColor="blue">
             <p className="text-sm text-slate-400">
               Rate limit headers are included in every response:{' '}

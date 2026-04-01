@@ -186,7 +186,7 @@ export default function ApiLandingPage() {
         {/* Endpoints */}
         <section className="container mx-auto px-6 mt-28 max-w-3xl">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-center tracking-tight mb-12">
-            Two endpoints. Full coverage.
+            Four endpoints. Full workflow.
           </h2>
 
           <div className="space-y-4">
@@ -229,6 +229,44 @@ export default function ApiLandingPage() {
                 <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Async (202)</span>
                 <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Webhook callback</span>
                 <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">10 scans/day</span>
+              </div>
+            </div>
+
+            <div className="glass-card p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs font-mono font-bold bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded">
+                  POST
+                </span>
+                <code className="text-sm text-slate-300 font-mono">/api/v1/monitors</code>
+                <span className="text-xs bg-white/5 text-slate-400 px-2 py-0.5 rounded-full ml-auto">
+                  Agency
+                </span>
+              </div>
+              <p className="text-sm text-slate-400 mb-3">
+                Put a site on a recurring monitoring schedule for always-on health checks and agent workflows.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Daily / weekly / monthly</span>
+                <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Returns next scan time</span>
+              </div>
+            </div>
+
+            <div className="glass-card p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs font-mono font-bold bg-orange-500/20 text-orange-400 px-2.5 py-1 rounded">
+                  POST
+                </span>
+                <code className="text-sm text-slate-300 font-mono">/api/v1/suggestions</code>
+                <span className="text-xs bg-white/5 text-slate-400 px-2 py-0.5 rounded-full ml-auto">
+                  Agency
+                </span>
+              </div>
+              <p className="text-sm text-slate-400 mb-3">
+                Turn broken-link findings into prioritized remediation guidance from either a scan ID or a raw report.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Agent-friendly output</span>
+                <span className="text-xs bg-white/5 text-slate-500 px-2 py-1 rounded">Supports scan_id or broken_links</span>
               </div>
             </div>
           </div>

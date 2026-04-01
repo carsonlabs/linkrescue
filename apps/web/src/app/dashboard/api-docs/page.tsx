@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { getUserPlan, hasFeature, type TierName } from '@linkrescue/types';
-import { BookOpen, Code2, Key, Zap, Webhook, Search, Link2, Clock } from 'lucide-react';
+import { BookOpen, Code2, Key, Zap, Webhook, Search, Link2, Clock, Radio, Wrench } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -190,6 +190,46 @@ for r in data["results"]:
       {/* ─── Async Site Scan ─── */}
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
+          <Radio className="w-5 h-5 text-blue-400" />
+          <h2 className="font-display font-semibold text-lg">Monitoring</h2>
+          <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
+            Agency
+          </span>
+        </div>
+        <p className="text-sm text-slate-400">
+          Create or update a recurring monitoring schedule for a site already in your account.
+          The API accepts hours and normalizes them to the nearest supported cadence.
+        </p>
+
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono bg-blue-500/20 text-blue-400 px-2 py-1 rounded">POST</span>
+            <code className="text-sm text-slate-300">{baseUrl}/api/v1/monitors</code>
+          </div>
+
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "url": "https://example.com",
+  "frequency_hours": 24
+}`}</code>
+          </pre>
+
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "monitoring_id": "9b3c2f5a-...",
+  "site_id": "2a4f8c7d-...",
+  "url": "https://example.com",
+  "status": "active",
+  "frequency_hours": 24,
+  "normalized_frequency": "daily",
+  "next_scan": "2026-04-02T13:00:00.000Z"
+}`}</code>
+          </pre>
+        </div>
+      </div>
+
+      <div className="glass-card p-6 space-y-4">
+        <div className="flex items-center gap-2">
           <Search className="w-5 h-5 text-purple-400" />
           <h2 className="font-display font-semibold text-lg">Site Scan (Async)</h2>
           <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
@@ -304,6 +344,48 @@ curl ${baseUrl}/api/v1/scans/SCAN_ID \\
       </div>
 
       {/* Rate Limits */}
+      <div className="glass-card p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <Wrench className="w-5 h-5 text-orange-400" />
+          <h2 className="font-display font-semibold text-lg">Fix Suggestions</h2>
+          <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
+            Agency
+          </span>
+        </div>
+        <p className="text-sm text-slate-400">
+          Turn completed scan results into remediation guidance. Pass a scan ID for product-native
+          suggestions, or send a raw broken-links payload from another system.
+        </p>
+
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono bg-orange-500/20 text-orange-400 px-2 py-1 rounded">POST</span>
+            <code className="text-sm text-slate-300">{baseUrl}/api/v1/suggestions</code>
+          </div>
+
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "scan_id": "a1b2c3d4-..."
+}`}</code>
+          </pre>
+
+          <pre className="bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm overflow-x-auto">
+            <code className="text-slate-300">{`{
+  "suggestions": [
+    {
+      "broken_url": "https://merchant.example/dead-offer",
+      "priority": "high",
+      "action": "update_affiliate_link",
+      "detail": "This affiliate destination is dead. Update it to the current merchant link or replace it with a comparable offer."
+    }
+  ],
+  "total": 1,
+  "high_priority": 1
+}`}</code>
+          </pre>
+        </div>
+      </div>
+
       <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="w-5 h-5 text-blue-400" />

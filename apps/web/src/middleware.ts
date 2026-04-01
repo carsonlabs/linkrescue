@@ -18,6 +18,11 @@ const protectedPaths = [
 const authPaths = ['/login', '/signup'];
 
 export async function middleware(request: NextRequest) {
+  // Redirect bare /api to the API landing page
+  if (request.nextUrl.pathname === '/api') {
+    return NextResponse.redirect(new URL('/api-landing', request.url), 301);
+  }
+
   // Check if env vars are set
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -99,6 +104,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Match /api exactly so middleware can redirect it to /api-landing
+    '/api',
+    // Match all other pages except static assets and API subroutes
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

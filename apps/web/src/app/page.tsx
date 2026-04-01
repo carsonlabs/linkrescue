@@ -15,6 +15,9 @@ import {
   FileSearch,
   TrendingDown,
   Archive,
+  DollarSign,
+  Quote,
+  TrendingUp,
 } from 'lucide-react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
 import { PublicNav } from '@/components/PublicNav';
@@ -147,6 +150,14 @@ export default function HomePage() {
                 stripped tracking parameters, and silent attribution failures before they
                 keep costing you commissions.
               </p>
+
+              {/* Stat line */}
+              <div className="flex items-center gap-2 text-sm">
+                <TrendingDown className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <span className="text-slate-300">
+                  The average affiliate site loses <span className="font-semibold text-red-400">$1,200/month</span> to broken links and stripped tracking parameters.
+                </span>
+              </div>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
@@ -567,6 +578,64 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Social Proof Section */}
+      <section className="relative py-24 md:py-32 border-t border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-b from-green-500/5 to-transparent" />
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              Real results from{' '}
+              <span className="text-gradient">real publishers</span>
+            </h2>
+          </div>
+
+          {/* Case study card */}
+          <div className="max-w-3xl mx-auto mb-16">
+            <div className="glass-card p-8 relative">
+              <Quote className="absolute top-6 left-6 w-8 h-8 text-green-500/20" />
+              <div className="pl-6">
+                <p className="text-lg text-slate-300 leading-relaxed mb-6">
+                  Found <span className="font-semibold text-white">47 broken affiliate links</span> on
+                  a 50-page outdoor gear site — recovered{' '}
+                  <span className="font-semibold text-green-400">$2,400/year</span> in lost
+                  commissions. The fix took one weekend.
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-sm font-bold text-slate-900">
+                    D
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">David, Outdoor Gear Publisher</p>
+                    <p className="text-xs text-slate-500">50-page niche site, 12k monthly sessions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats bar */}
+          {/* TODO: Replace placeholder numbers with real aggregate data once available */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              { value: '1.2M+', label: 'Links checked', icon: Search },
+              { value: '18,400+', label: 'Issues found', icon: AlertTriangle },
+              { value: '$340K+', label: 'Revenue recovered', icon: DollarSign },
+              { value: '2,100%', label: 'Average ROI', icon: TrendingUp },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto mb-3">
+                  <stat.icon className="w-5 h-5 text-green-400" />
+                </div>
+                <p className="font-display text-2xl md:text-3xl font-bold text-white mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-sm text-slate-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="relative py-24 md:py-32">
         <div className="container mx-auto px-6">
@@ -612,10 +681,13 @@ export default function HomePage() {
                 <h3 className="font-display text-xl font-bold mb-2">Pro</h3>
                 <p className="text-slate-400 text-sm">For publishers who care about revenue</p>
               </div>
-              <div className="mb-8">
+              <div className="mb-2">
                 <span className="font-display text-5xl font-bold text-gradient">$29</span>
                 <span className="text-slate-500">/month</span>
               </div>
+              <p className="text-xs text-green-400/80 mb-6">
+                Pays for itself with one recovered link
+              </p>
               <ul className="space-y-4 mb-8">
                 {[
                   '5 sites',

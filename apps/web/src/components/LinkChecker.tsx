@@ -16,6 +16,7 @@ import {
   Info,
   Zap,
   Globe,
+  Mail,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -617,6 +618,9 @@ function ResultsMatrix({ result, browserLoading }: { result: CheckResponse; brow
         </p>
       </div>
 
+      {/* Email Capture */}
+      <EmailCapture hasIssues={hasIssues} />
+
       {/* CTA */}
       <div className="glass-card p-6 text-center">
         <p className="text-sm text-slate-400 mb-4">
@@ -709,6 +713,135 @@ function TestMethodBadge({ method }: { method: 'header-simulation' | 'browser-te
     >
       Header
     </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Email Capture                                                      */
+/* ------------------------------------------------------------------ */
+
+function EmailCapture({ hasIssues }: { hasIssues: boolean }) {
+  const [email, setEmail] = useState('');
+  const [siteUrl, setSiteUrl] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const res = await fetch('/api/link-checker-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          siteUrl: siteUrl.trim() || undefined,
+          source: 'link-checker',
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setSubmitError(data.error ?? 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setSubmitError('Could not submit. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="glass-card p-6 text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
+          <CheckCircle2 className="w-6 h-6 text-green-400" />
+        </div>
+        <p className="font-semibold mb-2">You&apos;re in!</p>
+        <p className="text-sm text-slate-400">
+          We&apos;ll run a full site audit and send your report shortly.
+          {' '}
+          <Link href="/signup" className="text-green-400 hover:text-green-300 underline underline-offset-2">
+            Create a free account
+          </Link>{' '}
+          to start monitoring automatically.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="glass-card p-6">
+      <div className="flex items-start gap-3 mb-4">
+        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+          <Mail className="w-5 h-5 text-green-400" />
+        </div>
+        <div>
+          <p className="font-semibold text-sm mb-1">
+            {hasIssues
+              ? 'We found problems with this link.'
+              : 'This link looks good!'}
+          </p>
+          <p className="text-sm text-slate-400">
+            {hasIssues
+              ? 'Want us to scan your entire site for broken affiliate links? Enter your email and we\u2019ll run a full audit.'
+              : 'But what about the rest of your site? Enter your email for a free site-wide audit.'}
+          </p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-green-500/50 transition-colors"
+          />
+          <input
+            type="url"
+            value={siteUrl}
+            onChange={(e) => setSiteUrl(e.target.value)}
+            placeholder="https://yoursite.com (optional)"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-green-500/50 transition-colors"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={submitting || !email.trim()}
+          className="btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          {submitting ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Submitting...
+            </span>
+          ) : (
+            <>
+              Get My Free Audit
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
+        </button>
+        {submitError && (
+          <p className="text-xs text-red-400 text-center">{submitError}</p>
+        )}
+        <p className="text-[11px] text-slate-500 text-center">No spam. We&apos;ll send your audit report and that&apos;s it.</p>
+      </form>
+    </div>
   );
 }
 

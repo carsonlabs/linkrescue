@@ -28,6 +28,22 @@ type OfferMatchSummary = {
   reason: string;
 };
 
+type ScanSuggestionMatchRow = {
+  match_score: number;
+  match_reason: string;
+  offers: { title: string; url: string } | null;
+};
+
+type ScanSuggestionResultRow = {
+  id: string;
+  status_code: number | null;
+  final_url: string | null;
+  issue_type: IssueType;
+  redirect_hops: number;
+  links: { href: string; is_affiliate: boolean };
+  matches: ScanSuggestionMatchRow[] | null;
+};
+
 function inferPriority(link: BrokenLinkInput): 'high' | 'medium' | 'low' {
   if (link.seo_impact === 'high' || link.is_affiliate) return 'high';
   if (
@@ -136,12 +152,14 @@ async function loadScanSuggestions(userId: string, scanId: string) {
     .neq('issue_type', 'OK')
     .limit(500);
 
-  const suggestions = (results ?? []).map((result) => {
-    const link = result.links as { href: string; is_affiliate: boolean };
+  const typedResults = (results ?? []) as unknown as ScanSuggestionResultRow[];
+
+  const suggestions = typedResults.map((result) => {
+    const link = result.links;
     const matches = Array.isArray(result.matches)
       ? result.matches
           .map((match) => {
-            const offer = match.offers as { title: string; url: string } | null;
+            const offer = match.offers;
             if (!offer) return null;
             return {
               title: offer.title,
@@ -159,7 +177,7 @@ async function loadScanSuggestions(userId: string, scanId: string) {
         id: result.id,
         url: link.href,
         status_code: result.status_code,
-        issue_type: result.issue_type as IssueType,
+        issue_type: result.issue_type,
         final_url: result.final_url,
         is_affiliate: link.is_affiliate,
       },

@@ -18,6 +18,8 @@ import {
   Shield,
   Clock,
   Zap,
+  Share2,
+  Check,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -41,6 +43,7 @@ interface ScanResult {
   brokenAffiliateCount: number;
   estimatedMonthlyLoss: number;
   brokenLinks: BrokenLinkDetail[];
+  shareId: string | null;
 }
 
 type ScanState = 'idle' | 'scanning' | 'done' | 'error';
@@ -115,6 +118,7 @@ export function FreeScanForm() {
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [progressIdx, setProgressIdx] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
@@ -314,6 +318,23 @@ export function FreeScanForm() {
           <span>{result.totalAffiliateLinks} affiliate links found</span>
           <span className="w-1 h-1 bg-slate-600 rounded-full" />
           <span>{result.domain}</span>
+          {result.shareId && (
+            <>
+              <span className="w-1 h-1 bg-slate-600 rounded-full" />
+              <button
+                onClick={() => {
+                  const shareUrl = `${window.location.origin}/scan/${result.shareId}`;
+                  navigator.clipboard.writeText(shareUrl);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors"
+              >
+                {copied ? <Check className="w-3 h-3" /> : <Share2 className="w-3 h-3" />}
+                {copied ? 'Link copied!' : 'Share results'}
+              </button>
+            </>
+          )}
         </div>
 
         {/* No issues found */}

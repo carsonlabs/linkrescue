@@ -183,7 +183,26 @@ export async function POST(req: NextRequest) {
       // Don't fail the scan — still return results
     }
 
-    // 4. Return results (client will gate the full list)
+    // 4. Save shareable scan result
+    let shareId: string | null = null;
+    try {
+      const db = createAdminClient();
+      const { data: scanRow } = await (db.from as Function)('free_scan_results').insert({
+        domain,
+        pages_scanned: pageUrls.length,
+        total_links_checked: totalLinksChecked,
+        total_affiliate_links: totalAffiliateLinks,
+        broken_links_count: allBrokenLinks.length,
+        broken_affiliate_count: brokenAffiliateCount,
+        estimated_monthly_loss: estimatedLoss,
+        broken_links: allBrokenLinks,
+      }).select('id').single();
+      shareId = scanRow?.id ?? null;
+    } catch (err) {
+      console.error('[free-scan] Failed to save shareable result:', err);
+    }
+
+    // 5. Return results (client will gate the full list)
     return NextResponse.json({
       domain,
       pagesScanned: pageUrls.length,
@@ -192,8 +211,8 @@ export async function POST(req: NextRequest) {
       brokenLinksCount: allBrokenLinks.length,
       brokenAffiliateCount,
       estimatedMonthlyLoss: estimatedLoss,
-      // Send all broken links — the client gates display (blur after top 3)
       brokenLinks: allBrokenLinks,
+      shareId,
     });
   } catch (err) {
     console.error('[free-scan] Scan error:', err);

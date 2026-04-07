@@ -9,7 +9,7 @@ const SITE_URL = 'https://www.linkrescue.io';
 const PAGE_URL = `${SITE_URL}/free-scan`;
 
 export const metadata: Metadata = {
-  title: 'Free Site Scan — Find Broken Affiliate Links | LinkRescue',
+  title: 'Free Broken Affiliate Link Scan',
   description:
     'Scan your entire site for broken affiliate links in under 2 minutes. See which links are losing you money and how much revenue you could recover. Free, no credit card.',
   alternates: { canonical: PAGE_URL },

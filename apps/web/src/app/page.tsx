@@ -26,7 +26,7 @@ import { ParallaxBlobs, ParallaxFloat } from '@/components/HeroParallax';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Recover Lost Affiliate Commissions — Broken Link & Attribution Monitoring',
+  title: 'Recover Lost Affiliate Commissions',
   description:
     'Find broken affiliate links, stripped tracking params, and silent attribution failures costing you commissions. Daily scans, instant alerts.',
   alternates: {

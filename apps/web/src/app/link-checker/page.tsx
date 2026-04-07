@@ -9,7 +9,7 @@ const SITE_URL = 'https://www.linkrescue.io';
 const PAGE_URL = `${SITE_URL}/link-checker`;
 
 export const metadata: Metadata = {
-  title: 'Free Affiliate Link Checker — Multi-Environment URL Test | LinkRescue',
+  title: 'Free Affiliate Link Checker',
   description:
     'Test any affiliate link across 6 browser environments — Desktop Chrome, Mobile Safari, Instagram, Facebook, TikTok, and Android. See where your tracking parameters get stripped. Free, no sign-up.',
   alternates: { canonical: PAGE_URL },

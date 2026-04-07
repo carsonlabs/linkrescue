@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Recover lost affiliate commissions starting free. Upgrade to Pro ($29/mo) for daily scans and revenue estimates, or Agency ($79/mo) for multi-site monitoring. No credit card required.',
+    'Recover lost affiliate commissions starting free. Pro ($29/mo) for daily scans, Agency ($79/mo) for multi-site monitoring. No credit card.',
   alternates: { canonical: 'https://www.linkrescue.io/pricing' },
   openGraph: {
     title: 'Pricing — LinkRescue',

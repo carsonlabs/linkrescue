@@ -1,16 +1,41 @@
 # LinkRescue
-> Broken affiliate link monitor — recover lost commissions from dead links, stripped parameters, and silent attribution failures.
 
-## About
-LinkRescue crawls your websites and checks every affiliate link for health. Detects 404s, server errors, timeouts, redirect chains, homepage redirects, and stripped tracking parameters. Daily automated scans with email digest reports.
+> LinkRescue monitors affiliate links across your entire site and catches broken links, stripped tracking parameters, and dead merchant pages that silently leak your commissions.
+
+## Product
+
+- [Homepage](https://www.linkrescue.io/): Broken affiliate link monitoring for affiliate marketers
+- [Free Scan](https://www.linkrescue.io/free-scan): Scan any site for broken affiliate links — free, no signup
+- [Link Checker](https://www.linkrescue.io/link-checker): Check individual affiliate links instantly
+- [Revenue Calculator](https://www.linkrescue.io/affiliate-link-revenue-calculator): Estimate how much broken links cost you
+- [Pricing](https://www.linkrescue.io/pricing): Free/Pro ($29/mo)/Agency ($79/mo)
+- [Dashboard](https://www.linkrescue.io/dashboard): Monitor sites, view scan history, track health scores
+
+## What It Does
+
+- Full-Archive Crawling — Scans every page, not just your sitemap. Old reviews and tutorials that still rank get checked too.
+- Parameter Integrity — Detects stripped or corrupted affiliate tracking parameters (Amazon tags, ShareASale IDs, etc.)
+- Dead Merchant Detection — Catches merchant pages that 404 or redirect to generic homepages
+- Daily Automated Scans — Set it and forget it. Get alerts when something breaks.
+- Health Score — 0-100 score per site tracking link health over time with trend charts
 
 ## Pricing
-- Free: 1 site, 200 pages, weekly scans
-- Pro ($29/mo): 5 sites, 2,000 pages, daily scans
-- Agency ($79/mo): 25 sites, unlimited pages, hourly scans, API access
 
-## Links
-- Website: https://linkrescue.io
-- Pricing: https://linkrescue.io/pricing
-- API Docs: https://linkrescue.io/api
-- Blog: https://linkrescue.io/blog
+- Starter (Free): 1 site, 200 pages/scan, weekly scans
+- Pro ($29/month): 5 sites, 2,000 pages/scan, daily scans, revenue estimates
+- Agency ($79/month): 25 sites, unlimited pages, hourly scans, API access, Slack integration
+
+## Free Tools
+
+- [Free Scan](https://www.linkrescue.io/free-scan): Full site scan, no signup required
+- [Link Checker](https://www.linkrescue.io/link-checker): Check a single URL instantly
+- [Revenue Calculator](https://www.linkrescue.io/affiliate-link-revenue-calculator): Estimate lost commissions
+
+## Guides
+
+- [Blog](https://www.linkrescue.io/blog): Affiliate link management guides and industry insights
+
+## Contact
+
+- Website: https://www.linkrescue.io
+- Built by [Freedom Engineers](https://freedomengineers.tech)

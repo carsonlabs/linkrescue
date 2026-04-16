@@ -26,6 +26,13 @@ export function PublicFooter() {
             &copy; {new Date().getFullYear()} LinkRescue
           </p>
         </div>
+        <div className="mt-6 pt-6 border-t border-white/5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-600">
+          <span className="text-slate-500">More from Freedom Engineers</span>
+          <a href="https://yorklivingcost.ca" className="hover:text-white transition-colors">YorkLivingCost</a>
+          <a href="https://agentready.tools" className="hover:text-white transition-colors">AgentReady</a>
+          <a href="https://selfheal.dev" className="hover:text-white transition-colors">SelfHeal</a>
+          <a href="https://freedomengineers.tech" className="hover:text-white transition-colors">Freedom Engineers</a>
+        </div>
       </div>
     </footer>
   );

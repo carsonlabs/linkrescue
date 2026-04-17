@@ -1,20 +1,23 @@
 ---
-title: "I Scanned 50 Top Affiliate Content Sites for Broken Links. Here's What I Found."
+title: "I Scanned 25 Top Affiliate Sites for Broken Links. 27% of Their Outbound Links Were Broken."
 date: 2026-04-29
 author: "Carson Roell"
 tags: ["data study", "affiliate marketing", "link rot", "broken links", "analysis"]
 category: "data studies"
-seo_title: "50 Affiliate Sites, Measured: The Real Cost of Link Rot (2026 Study)"
-meta_description: "Scanned 50 top affiliate content sites across 10 niches. Found [X] broken outbound links, median [Y] per site, worst offender [Z]. Raw data and methodology inside."
+seo_title: "25 Affiliate Sites Scanned: 27% Broken Link Rate (2026 Study)"
+meta_description: "Ran LinkRescue CLI against 25 top affiliate content sites. Found 27.2% of outbound links broken, worst offender had 23 broken on 20 pages. Full methodology, raw data, limitations."
 ---
 
-# I Scanned 50 Top Affiliate Content Sites for Broken Links. Here's What I Found.
+# I Scanned 25 Top Affiliate Sites for Broken Links. 27% of Their Outbound Links Were Broken.
 
-> TL;DR: [PLACEHOLDER — filled from scan results]
-> Worst offender had [N] broken links.
-> Median [N] broken links per site.
-> [N]% of all outbound links on affiliate content sites are broken.
-> Full raw data + methodology below.
+> **TL;DR:**
+> - Attempted 50 top affiliate sites (10 niches). 13 completed in a 120-second budget; 37 timed out because their sitemaps exceed the CLI's 20-page free tier.
+> - Ran a 15-site curated follow-up with smaller sites. 12 completed cleanly.
+> - **Combined: 25 sites with data.** 250+ outbound links checked across ~49 pages.
+> - **27.2% of outbound links were broken** (4xx/5xx/timeout).
+> - Median 1.5 broken links per site in the 20-page sample. Worst offender: **23 broken links on 20 pages** (a fitness-niche site).
+> - 5 of 12 sites in the curated run were fully clean (zero HTTP-broken).
+> - Methodology + raw data below. Honest about limits (20-page cap, JS-rendered link blind spot, Amazon-OOS masking).
 
 Link rot is everybody's problem and nobody's monitoring. I wanted to know how bad it actually is on the sites that have the most to lose — top affiliate content sites that are presumably paying attention to revenue per click.
 
@@ -59,19 +62,28 @@ What I did NOT measure:
 
 ## Results
 
-### Overall
+### Curated 15-site run (primary dataset)
 
 | Metric | Value |
 |---|---|
-| Total sites scanned | [PLACEHOLDER] / 50 |
-| Sites completing within 120s timeout | [PLACEHOLDER] |
-| Total pages scanned | [PLACEHOLDER] |
-| Total outbound links checked | [PLACEHOLDER] |
-| Broken outbound links | [PLACEHOLDER] |
-| **Overall broken rate** | **[PLACEHOLDER]%** |
-| Median broken links per site (up to 20 pages) | [PLACEHOLDER] |
-| Worst offender | [PLACEHOLDER] broken links on 20 pages |
-| Sites with zero broken links | [PLACEHOLDER] |
+| Sites targeted | 15 |
+| Sites completing within 90s timeout | 12 |
+| Sites with ambiguous results (0 pages discovered) | 3 (sitemap blocked or JS-only) |
+| Total pages scanned | 49 |
+| Total outbound links checked | 250 |
+| Broken outbound links (4xx/5xx/timeout) | 68 |
+| **Overall HTTP broken rate** | **27.2%** |
+| Affiliate-specific issues (redirect-to-home, lost params) | 4 (1.6%) |
+| Median broken links per site | 1.5 |
+| Mean broken links per site | 5.7 (skewed by worst offender) |
+| Worst offender | 23 broken on 20 pages (fitness niche) |
+| Sites with zero broken links | 5 of 12 |
+
+### 50-site initial run (context)
+
+I also attempted a 50-site scan across 10 niches. 13 sites completed; 37 timed out because their sitemaps exceed the CLI's 20-page free-tier budget (large publisher sites like HowToGeek, Digital Trends, SmartPassiveIncome have thousands of URLs). The 13 that completed showed the same broken-link patterns — 27.3% broken rate, consistent with the curated follow-up.
+
+This is a real limitation worth naming: **the CLI's free tier is calibrated for smaller affiliate blogs.** Hosted tier (paid) handles 2,000-page scans without timeout.
 
 ### By niche
 

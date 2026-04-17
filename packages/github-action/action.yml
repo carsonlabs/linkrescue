@@ -1,47 +1,48 @@
 name: 'LinkRescue Broken Link Checker'
-description: 'Check URLs for broken links, stripped affiliate parameters, and redirect chain issues using the LinkRescue API.'
-author: 'LinkRescue'
+description: 'Scan a site or list of URLs for broken affiliate links, lost tracking params, and redirect issues. Wraps the free linkrescue CLI — no signup, no API key required.'
+author: 'Freedom Engineers'
 branding:
   icon: 'link'
   color: 'green'
 
 inputs:
-  api-key:
-    description: 'LinkRescue API key (starts with lr_). Get one at https://linkrescue.io'
-    required: true
+  site:
+    description: 'URL to scan. Crawls up to max-pages pages via sitemap/crawl. Use this OR urls/urls-file.'
+    required: false
   urls:
-    description: 'Newline-separated list of URLs to check'
+    description: 'Newline-separated list of URLs to check individually (single-page per URL).'
     required: false
   urls-file:
-    description: 'Path to a file containing URLs to check (one per line)'
+    description: 'Path to a file containing URLs to check (one URL per line, blank lines and # comments ignored).'
     required: false
-  sitemap:
-    description: 'URL of a sitemap.xml to extract and check all URLs from'
+  max-pages:
+    description: 'Max pages to scan when using the `site` input. Default 20. Free CLI hard-caps at 20.'
     required: false
+    default: '20'
+  affiliate-only:
+    description: 'Only report issues on affiliate links (filters out non-affiliate outbound links).'
+    required: false
+    default: 'false'
   fail-on-broken:
-    description: 'Fail the action if any broken links are found'
+    description: 'Fail the workflow if any broken links (4xx/5xx/timeout) are found.'
     required: false
     default: 'true'
   fail-on-params-lost:
-    description: 'Fail the action if any affiliate parameters are lost'
+    description: 'Fail the workflow if any links lose affiliate tracking parameters in their redirect chain.'
     required: false
-    default: 'true'
-  api-url:
-    description: 'LinkRescue API base URL (override for self-hosted)'
-    required: false
-    default: 'https://app.linkrescue.io'
+    default: 'false'
 
 outputs:
   total:
-    description: 'Total URLs checked'
+    description: 'Total outbound links checked'
   broken:
-    description: 'Number of broken URLs'
+    description: 'Number of broken links (4xx/5xx/timeout)'
   redirects:
-    description: 'Number of redirect URLs'
+    description: 'Number of links that redirected to homepage (lost context)'
   params-lost:
-    description: 'Number of URLs with lost affiliate parameters'
+    description: 'Number of affiliate links that lost tracking parameters in redirects'
   results-json:
-    description: 'Full JSON results'
+    description: 'Full issues as JSON array (stringified) for further processing'
 
 runs:
   using: 'node20'

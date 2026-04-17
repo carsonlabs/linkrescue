@@ -1,12 +1,37 @@
 {
   "name": "@linkrescue/github-action",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "GitHub Action for checking broken links via the LinkRescue API",
+  "description": "GitHub Action that wraps the open-source linkrescue CLI. Scans for broken affiliate links, lost tracking params, and redirect issues. Free, no API key required.",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "ncc build src/index.ts -o dist --minify",
     "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "github-action",
+    "affiliate-links",
+    "broken-links",
+    "link-checker",
+    "linkrescue",
+    "seo",
+    "ci"
+  ],
+  "license": "MIT",
+  "author": "Carson Roell / Freedom Engineers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carsonlabs/linkrescue.git",
+    "directory": "packages/github-action"
+  },
+  "bugs": {
+    "url": "https://github.com/carsonlabs/linkrescue/issues"
   },
   "dependencies": {
     "@actions/core": "^1.10.1"

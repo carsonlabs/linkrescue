@@ -1,29 +1,38 @@
 # LinkRescue GitHub Action
 
-Check URLs for broken links, stripped affiliate parameters, and redirect chain issues in your CI/CD pipeline.
+Find broken affiliate links in your CI/CD. **Free, no signup, no API key.**
 
-## Usage
+Wraps the open-source [`linkrescue` CLI](https://www.npmjs.com/package/linkrescue). Same engine, same output — just inside your workflow.
+
+## Quick start — scan an entire site
 
 ```yaml
-- uses: linkrescue/check-links@v1
+- uses: carsonlabs/linkrescue-action@v2
   with:
-    api-key: ${{ secrets.LINKRESCUE_API_KEY }}
+    site: https://yoursite.com
+    fail-on-broken: true
+```
+
+## Check specific URLs
+
+```yaml
+- uses: carsonlabs/linkrescue-action@v2
+  with:
     urls: |
       https://amzn.to/abc123
-      https://example.com/affiliate-page
+      https://example.com/page
       https://shareasale.com/r.cfm?b=12345
 ```
 
-### Check URLs from a file
+## Check URLs from a file
 
 ```yaml
-- uses: linkrescue/check-links@v1
+- uses: carsonlabs/linkrescue-action@v2
   with:
-    api-key: ${{ secrets.LINKRESCUE_API_KEY }}
-    urls-file: urls.txt
+    urls-file: affiliate-links.txt
 ```
 
-### Full workflow example
+## Full workflow example
 
 ```yaml
 name: Check Links
@@ -31,7 +40,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 8 * * 1' # Every Monday at 8am
+    - cron: '0 8 * * 1'  # every Monday 8 AM UTC
 
 jobs:
   check-links:
@@ -39,19 +48,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: linkrescue/check-links@v1
+      - uses: carsonlabs/linkrescue-action@v2
         id: linkcheck
         with:
-          api-key: ${{ secrets.LINKRESCUE_API_KEY }}
-          urls-file: affiliate-links.txt
-          fail-on-broken: 'true'
-          fail-on-params-lost: 'true'
+          site: https://yoursite.com
+          fail-on-broken: true
+          fail-on-params-lost: false
 
       - name: Print summary
         if: always()
         run: |
           echo "Checked: ${{ steps.linkcheck.outputs.total }}"
-          echo "Broken: ${{ steps.linkcheck.outputs.broken }}"
+          echo "Broken:  ${{ steps.linkcheck.outputs.broken }}"
+          echo "Redirects: ${{ steps.linkcheck.outputs.redirects }}"
           echo "Params lost: ${{ steps.linkcheck.outputs.params-lost }}"
 ```
 
@@ -59,22 +68,43 @@ jobs:
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `api-key` | Yes | — | LinkRescue API key (`lr_...`) |
-| `urls` | No | — | Newline-separated URLs to check |
-| `urls-file` | No | — | Path to file with URLs (one per line) |
-| `fail-on-broken` | No | `true` | Fail if broken links found |
-| `fail-on-params-lost` | No | `true` | Fail if affiliate params are lost |
+| `site` | No* | — | URL to scan (crawls up to `max-pages` pages) |
+| `urls` | No* | — | Newline-separated URLs to check individually |
+| `urls-file` | No* | — | Path to file with URLs (one per line, `#` comments supported) |
+| `max-pages` | No | `20` | Max pages when using `site` (free-tier CLI caps at 20) |
+| `affiliate-only` | No | `false` | Only report issues on affiliate links |
+| `fail-on-broken` | No | `true` | Fail workflow if broken links found |
+| `fail-on-params-lost` | No | `false` | Fail workflow if affiliate tracking params are lost in redirects |
+
+\* You must provide at least one of `site`, `urls`, or `urls-file`.
 
 ## Outputs
 
 | Output | Description |
 |--------|-------------|
-| `total` | Total URLs checked |
-| `broken` | Number of broken URLs |
-| `redirects` | Number of redirect URLs |
-| `params-lost` | URLs with lost affiliate parameters |
-| `results-json` | Full JSON results array |
+| `total` | Total links checked |
+| `broken` | Broken links (4xx/5xx/timeout) |
+| `redirects` | Links that redirected to the homepage (lost context) |
+| `params-lost` | Affiliate links that lost tracking params in redirects |
+| `results-json` | Full issues as a JSON array for further processing |
 
-## Get an API Key
+## How it works
 
-API access starts at $29/mo (Pro plan). Sign up at [linkrescue.io](https://linkrescue.io).
+On each run, this Action invokes `npx linkrescue` (pinned to `^1.1.0`) inside your workflow runner:
+
+- **`site` mode** → runs `linkrescue scan <site> --json`
+- **`urls` / `urls-file` mode** → runs `linkrescue check <url> --json` per URL
+
+No hosted API, no authentication, no per-workflow cost. The CLI is MIT-licensed.
+
+**Polite by default:** respects `robots.txt`, uses a 10-second per-link timeout, and rate-limits per-domain.
+
+## Hosted version (optional)
+
+If you want scheduled scans with email alerts, multi-site dashboards, longer page budgets (up to 2,000 pages/scan), and affiliate platform integrations, the hosted service at [linkrescue.io](https://linkrescue.io) offers those starting at $29/month. The hosted service is completely separate from this Action — this Action does **not** require any linkrescue.io account.
+
+## License
+
+[MIT](./LICENSE). Source: [github.com/carsonlabs/linkrescue](https://github.com/carsonlabs/linkrescue).
+
+Issues: [github.com/carsonlabs/linkrescue/issues](https://github.com/carsonlabs/linkrescue/issues)

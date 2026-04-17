@@ -88,15 +88,25 @@ function isRedirectToHome(finalUrl: string, originalUrl: string): boolean {
     const final = new URL(finalUrl);
     const original = new URL(originalUrl);
 
-    // If different domain and final URL is just the root
-    if (final.hostname !== original.hostname) {
-      const path = final.pathname.replace(/\/+$/, '');
-      if (path === '' || path === '/') return true;
-    }
+    const originalPath = original.pathname.replace(/\/+$/, '');
+    const finalPath = final.pathname.replace(/\/+$/, '');
+
+    // Skip if the original link was already pointing to the root.
+    // That's a homepage link, not a redirect-to-home issue.
+    if (originalPath === '' || originalPath === '/') return false;
+
+    // Flag only when the original path was non-root but final resolved to root.
+    // apex/www canonicalization (hostname mismatch, same root path) is NOT a real issue
+    // if the link already targeted the root — but if it targeted a deep path that got
+    // flattened to `/`, that IS a lost-context redirect.
+    const finalIsRoot = finalPath === '' || finalPath === '/';
+    if (!finalIsRoot) return false;
+
+    // Final is root AND original had a real path — genuine lost-context redirect.
+    return true;
   } catch {
-    // ignore
+    return false;
   }
-  return false;
 }
 
 function hasLostParams(originalUrl: string, finalUrl: string): boolean {

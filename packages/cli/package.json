@@ -1,12 +1,14 @@
 {
   "name": "linkrescue",
-  "version": "1.0.0",
-  "description": "Find broken links and affiliate parameter issues on any website",
+  "version": "1.1.0",
+  "description": "Find broken affiliate links on any website. No signup, no API key, works on any stack. Respects robots.txt.",
   "bin": {
     "linkrescue": "dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -25,19 +27,21 @@
   "homepage": "https://linkrescue.io",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linkrescue/linkrescue.git"
+    "url": "git+https://github.com/carsonlabs/linkrescue.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/carsonlabs/linkrescue/issues"
   },
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
+  "devDependencies": {
     "@linkrescue/crawler": "workspace:*",
     "@linkrescue/types": "workspace:*",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
-    "ora": "^8.2.0"
-  },
-  "devDependencies": {
+    "ora": "^8.2.0",
     "tsup": "^8.4.0",
     "typescript": "^5.3.3",
     "@types/node": "^20.11.17"

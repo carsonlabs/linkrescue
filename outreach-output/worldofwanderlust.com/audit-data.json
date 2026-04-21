@@ -1,0 +1,85 @@
+{
+  "domain": "worldofwanderlust.com",
+  "scannedAt": "2026-03-30T17:50:16.923Z",
+  "pagesScanned": 2,
+  "totalLinks": 12,
+  "issues": [
+    {
+      "pageUrl": "https://worldofwanderlust.com",
+      "linkHref": "https://www.bloglovin.com/blogs/world-wanderlust-4324219",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://worldofwanderlust.com",
+      "linkHref": "https://www.pipdig.co/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://worldofwanderlust.com/",
+      "linkHref": "https://www.bloglovin.com/blogs/world-wanderlust-4324219",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://worldofwanderlust.com/",
+      "linkHref": "https://www.pipdig.co/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://worldofwanderlust.com",
+      "linkHref": "http://www.twitter.com/worldofwlust",
+      "issueType": "SERVER_5XX",
+      "statusCode": 520,
+      "isAffiliate": false,
+      "isNonAffiliate": true,
+      "severity": "Low",
+      "estLossMin": 0,
+      "estLossMax": 0
+    },
+    {
+      "pageUrl": "https://worldofwanderlust.com/",
+      "linkHref": "http://www.twitter.com/worldofwlust",
+      "issueType": "SERVER_5XX",
+      "statusCode": 520,
+      "isAffiliate": false,
+      "isNonAffiliate": true,
+      "severity": "Low",
+      "estLossMin": 0,
+      "estLossMax": 0
+    }
+  ],
+  "stats": {
+    "brokenAffiliateCount": 4,
+    "brokenNonAffiliateCount": 2,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 0,
+    "totalEstLoss": 180,
+    "pagesWithIssues": 2,
+    "affiliateIssueCount": 4,
+    "nonAffiliateIssueCount": 2
+  }
+}

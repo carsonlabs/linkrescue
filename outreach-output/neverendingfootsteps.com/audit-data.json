@@ -1,0 +1,30 @@
+{
+  "domain": "neverendingfootsteps.com",
+  "scannedAt": "2026-03-30T17:49:33.207Z",
+  "pagesScanned": 1,
+  "totalLinks": 2,
+  "issues": [
+    {
+      "pageUrl": "https://neverendingfootsteps.com",
+      "linkHref": "https://twitter.com/nefootsteps",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": true,
+      "severity": "Low",
+      "estLossMin": 0,
+      "estLossMax": 0
+    }
+  ],
+  "stats": {
+    "brokenAffiliateCount": 0,
+    "brokenNonAffiliateCount": 1,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 0,
+    "totalEstLoss": 0,
+    "pagesWithIssues": 1,
+    "affiliateIssueCount": 0,
+    "nonAffiliateIssueCount": 1
+  }
+}

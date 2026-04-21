@@ -1,0 +1,805 @@
+{
+  "domain": "expertvagabond.com",
+  "scannedAt": "2026-03-30T14:13:24.183Z",
+  "pagesScanned": 15,
+  "totalLinks": 167,
+  "issues": [
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "http://amzn.to/1nqSIVH",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": true,
+      "severity": "High",
+      "estLossMin": 60,
+      "estLossMax": 300
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://www.worldnomads.com/Turnstile/AffiliateLink?partnerCode=expvaga&source=&utm_source=expvaga&utm_content=link&path=https://www.worldnomads.com/travel-insurance/",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": true,
+      "severity": "Medium",
+      "estLossMin": 40,
+      "estLossMax": 160
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://www.worldnomads.com/Turnstile/AffiliateLink?partnerCode=expvaga&source=&utm_source=expvaga&utm_content=link&path=https://www.worldnomads.com/travel-insurance/",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": true,
+      "severity": "Medium",
+      "estLossMin": 40,
+      "estLossMax": 160
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://www.worldnomads.com/Turnstile/AffiliateLink?partnerCode=expvaga&source=&utm_source=expvaga&utm_content=link&path=https://www.worldnomads.com/travel-insurance/",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": true,
+      "severity": "Medium",
+      "estLossMin": 40,
+      "estLossMax": 160
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/travel-blog/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/travel-blog/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://www.skyscanner.net/g/referrals/v1/flights/home?associateid=API_B2B_18693_00002&currency=USD&locale=en-US&market=US",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://x.com/intent/tweet?text=Uxmal%20Mayan%20Ruins%20Travel%20Guide%3A%20Tips%20For%20Visiting&url=https%3A%2F%2Fexpertvagabond.com%2Fuxmal-mayan-ruins%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://www.skyscanner.net/g/referrals/v1/flights/home?associateid=API_B2B_18693_00002&currency=USD&locale=en-US&market=US",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://x.com/intent/tweet?text=Ek%20Balam%20Ruins%20In%20Mexico%3A%20Visiting%20Mayan%20Pyramids&url=https%3A%2F%2Fexpertvagabond.com%2Fek-balam-mayan-ruins%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america/",
+      "linkHref": "https://twitter.com/search/realtime?q=%23HitchUSA",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20Across%20America%3A%20One%20Ride%20At%20A%20Time&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-1/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-1/",
+      "linkHref": "http://normasoceandiner.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-1/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20A%20Slow%20Start%20In%20Oregon%20%28Part%201%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-1%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-1/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-2/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-2/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Hopping%20A%20Freight%20Train%20%28Part%202%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-2%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-2/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-3/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-3/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Surfing%20Couches%20In%20Seattle%20%28Part%203%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-3%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-3/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Hot%20Tubs%2C%20Cookie%20Bribes%2C%20%26%20Pancake%20Sandwiches%20%28Part%204%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-4%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Captain%20Kitty%20Litter%20%26%20The%20Motorcycle%20%28Part%205%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-5%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-6/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-6/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Crashing%20A%20Wedding%20in%20Montana%20%28Part%206%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-6%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-6/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-7/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-7/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Trucking%20Across%20the%20Heartland%20%28Part%207%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-7%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-7/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "http://www.hostelworld.com/hosteldetails.php/The-Wayfaring-Buckeye-Hostel/Columbus-OH/44280",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20On%20An%20Airplane%20%28Part%208%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-8%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-10/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-10/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20Sexy%20Stalkers%20%26%20A%20Cruise%20%28Part%2010%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-10%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-10/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-11/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-11/",
+      "linkHref": "http://www.luxist.com/2010/03/01/worlds-fastest-speedboat-unveiled-in-miami/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-11/",
+      "linkHref": "https://x.com/intent/tweet?text=Hitchhiking%20America%3A%20End%20Of%20The%20Road%20%28Part%2011%29&url=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-11%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-11/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://twitter.com/expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "http://www.atidivers.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://www.lonelyplanet.com/thorntree",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://www.skyscanner.net/g/referrals/v1/flights/home?associateid=API_B2B_18693_00002&currency=USD&locale=en-US&market=US",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://x.com/intent/tweet?text=My%20Experience%20Studying%20Spanish%20In%20Guatemala&url=https%3A%2F%2Fexpertvagabond.com%2Fstudy-spanish-guatemala%2F&via=expertvagabond",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://bsky.app/profile/matthewkarsten.bsky.social",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/uxmal-mayan-ruins/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fuxmal-mayan-ruins%2F&t=Uxmal%20Mayan%20Ruins%20Travel%20Guide%3A%20Tips%20For%20Visiting",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/ek-balam-mayan-ruins/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fek-balam-mayan-ruins%2F&t=Ek%20Balam%20Ruins%20In%20Mexico%3A%20Visiting%20Mayan%20Pyramids",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america%2F&t=Hitchhiking%20Across%20America%3A%20One%20Ride%20At%20A%20Time",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-1/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-1%2F&t=Hitchhiking%20America%3A%20A%20Slow%20Start%20In%20Oregon%20%28Part%201%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-2/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-2%2F&t=Hitchhiking%20America%3A%20Hopping%20A%20Freight%20Train%20%28Part%202%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-3/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-3%2F&t=Hitchhiking%20America%3A%20Surfing%20Couches%20In%20Seattle%20%28Part%203%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-4%2F&t=Hitchhiking%20America%3A%20Hot%20Tubs%2C%20Cookie%20Bribes%2C%20%26%20Pancake%20Sandwiches%20%28Part%204%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-5%2F&t=Hitchhiking%20America%3A%20Captain%20Kitty%20Litter%20%26%20The%20Motorcycle%20%28Part%205%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-6/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-6%2F&t=Hitchhiking%20America%3A%20Crashing%20A%20Wedding%20in%20Montana%20%28Part%206%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-7/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-7%2F&t=Hitchhiking%20America%3A%20Trucking%20Across%20the%20Heartland%20%28Part%207%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-8%2F&t=Hitchhiking%20America%3A%20On%20An%20Airplane%20%28Part%208%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-10/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-10%2F&t=Hitchhiking%20America%3A%20Sexy%20Stalkers%20%26%20A%20Cruise%20%28Part%2010%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-11/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fhitchhiking-america-part-11%2F&t=Hitchhiking%20America%3A%20End%20Of%20The%20Road%20%28Part%2011%29",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexpertvagabond.com%2Fstudy-spanish-guatemala%2F&t=My%20Experience%20Studying%20Spanish%20In%20Guatemala",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-3/",
+      "linkHref": "http://capitolhillblockparty.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "http://www.shakespeareintheparks.org/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-8/",
+      "linkHref": "http://www.osuairport.org/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "http://cooperativeschoolsanpedro.edu.gt/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "http://www.atmex.mx/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-4/",
+      "linkHref": "http://ultimatepancakesandwich.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/hitchhiking-america-part-5/",
+      "linkHref": "https://downtownbozeman.org/event/music-on-main",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://expertvagabond.com/study-spanish-guatemala/",
+      "linkHref": "http://guatemalaspanish.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    }
+  ],
+  "stats": {
+    "brokenCount": 54,
+    "expiredCount": 0,
+    "lostParamsCount": 17,
+    "redirectCount": 4,
+    "totalEstLoss": 6250
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "domain": "somtoseeks.com",
+  "scannedAt": "2026-03-30T16:04:51.281Z",
+  "pagesScanned": 2,
+  "totalLinks": 10,
+  "issues": [
+    {
+      "pageUrl": "https://somtoseeks.com",
+      "linkHref": "https://www.salveroma.tv/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://somtoseeks.com/",
+      "linkHref": "https://www.salveroma.tv/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://somtoseeks.com",
+      "linkHref": "https://anarme.gov.mz/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 5,
+      "estLossMax": 25
+    },
+    {
+      "pageUrl": "https://somtoseeks.com/",
+      "linkHref": "https://anarme.gov.mz/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 5,
+      "estLossMax": 25
+    }
+  ],
+  "stats": {
+    "brokenAffiliateCount": 2,
+    "brokenNonAffiliateCount": 0,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 0,
+    "totalEstLoss": 120,
+    "pagesWithIssues": 2,
+    "affiliateIssueCount": 4,
+    "nonAffiliateIssueCount": 0
+  }
+}

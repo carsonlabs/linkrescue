@@ -1,0 +1,18 @@
+{
+  "domain": "breakingaway.me",
+  "scannedAt": "2026-03-30T16:38:15.785Z",
+  "pagesScanned": 0,
+  "totalLinks": 0,
+  "issues": [],
+  "stats": {
+    "brokenAffiliateCount": 0,
+    "brokenNonAffiliateCount": 0,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 0,
+    "totalEstLoss": 0,
+    "pagesWithIssues": 0,
+    "affiliateIssueCount": 0,
+    "nonAffiliateIssueCount": 0
+  }
+}

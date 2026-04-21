@@ -1,0 +1,865 @@
+{
+  "domain": "theblondeabroad.com",
+  "scannedAt": "2026-03-30T13:52:51.108Z",
+  "pagesScanned": 15,
+  "totalLinks": 365,
+  "issues": [
+    {
+      "pageUrl": "https://www.theblondeabroad.com/travel-blog/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/travel-blog/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "http://www.lonelyplanet.com/bolivia/the-southwest/tupiza/restaurants",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "https://twitter.com/intent/tweet?text=A+Year+of+Travel&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fyear-travel%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/san-fermin-festival-day-1/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/san-fermin-festival-day-1/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/san-fermin-festival-day-1/",
+      "linkHref": "https://twitter.com/intent/tweet?text=San+Ferm%C3%ADn+Festival%3A+Opening+Ceremony&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fsan-fermin-festival-day-1%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "https://twitter.com/intent/tweet?text=The+Ultimate+Summer+Soundtrack&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fultimate-summer-soundtrack%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/land-of-smiles-to-the-kingdom-of-wonder/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/land-of-smiles-to-the-kingdom-of-wonder/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/land-of-smiles-to-the-kingdom-of-wonder/",
+      "linkHref": "https://twitter.com/intent/tweet?text=From+the+Land+of+Smiles+to+the+Kingdom+of+Wonder&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fland-of-smiles-to-the-kingdom-of-wonder%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "http://mobstar.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+The+NAVEN+Twins&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-naven-twins%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-anna-cross-swedish-dj/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-anna-cross-swedish-dj/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-anna-cross-swedish-dj/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Anna+Cross%2C+Swedish+DJ&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-anna-cross-swedish-dj%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "http://www.self.com/body/fitness/2014/09/best-bodies-tips-for-success/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Caley+Yoga&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-caley-yoga%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Tara+Gerard%2C+Men%27s+Fashion+Designer&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-tara-gerard-mens-fashion-designer%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "http://blainebowen.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "http://blainebowen.com/collections/wanderlust",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "http://blainebowen.com/collections/simply-gameday-apparel",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "http://blainebowen.com/collections/bowen-fine-jewelry-collection",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Blaine+Muhl%2C+Lifestyle+Brand+Designer&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-blaine-muhl-lifestyle-brand-designer%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "http://www.ramblist.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "http://adventurousappetite.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Kelsey+Minarik&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-kelsey-minarik%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kimberly-roussel-restauranteur-mother-two/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kimberly-roussel-restauranteur-mother-two/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kimberly-roussel-restauranteur-mother-two/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Kicking+the+Cubicle%3A+Kimberly+Roussel%2C+Restauranteur+and+Mother+of+Two&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-kimberly-roussel-restauranteur-mother-two%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-jumping-crocodile-cruise/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-jumping-crocodile-cruise/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-jumping-crocodile-cruise/",
+      "linkHref": "https://twitter.com/intent/tweet?text=VIDEO%3A+Jumping+Crocodile+Cruise&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fvideo-jumping-crocodile-cruise%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-zarb-the-bedouin-bbq/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-zarb-the-bedouin-bbq/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-zarb-the-bedouin-bbq/",
+      "linkHref": "https://twitter.com/intent/tweet?text=VIDEO%3A+Zarb+-+The+Bedouin+BBQ&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fvideo-zarb-the-bedouin-bbq%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "https://twitter.com/theblondeabroad",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "https://www.bloglovin.com/blogs/blonde-abroad-3663186",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "http://www.miamichildrensmuseum.org/exhibits/floorplan.html",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "http://www.mummytravels.com/2014/03/03/a-miami-food-tour-with-a-toddler/graffiti-little-havana-miami-tour/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 401,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "https://twitter.com/intent/tweet?text=Save+on+Sunshine%3A+Miami+with+the+Kids&url=https%3A%2F%2Fwww.theblondeabroad.com%2Fbudget-travel-miami-with-kids%2F",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fyear-travel%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/san-fermin-festival-day-1/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fsan-fermin-festival-day-1%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "https://plus.google.com/106118420000685468873?rel=author",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fultimate-summer-soundtrack%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/land-of-smiles-to-the-kingdom-of-wonder/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fland-of-smiles-to-the-kingdom-of-wonder%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-naven-twins%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-anna-cross-swedish-dj/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-anna-cross-swedish-dj%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-caley-yoga%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-tara-gerard-mens-fashion-designer%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-blaine-muhl-lifestyle-brand-designer/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-blaine-muhl-lifestyle-brand-designer%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "https://plus.google.com/106118420000685468873?rel=author",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kelsey-minarik/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-kelsey-minarik%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-kimberly-roussel-restauranteur-mother-two/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fkicking-cubicle-kimberly-roussel-restauranteur-mother-two%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-jumping-crocodile-cruise/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fvideo-jumping-crocodile-cruise%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/video-zarb-the-bedouin-bbq/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fvideo-zarb-the-bedouin-bbq%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.theblondeabroad.com%2Fbudget-travel-miami-with-kids%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "http://www.tourist2townie.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "http://www.culturalxplorer.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-anna-cross-swedish-dj/",
+      "linkHref": "http://florenciamir.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "http://www.knightfoundation.org/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/budget-travel-miami-with-kids/",
+      "linkHref": "https://debsbug.blogspot.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "http://biblioworks.org/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "http://blogs.que.es/deporteespanol/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/year-travel/",
+      "linkHref": "http://12qw/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/ultimate-summer-soundtrack/",
+      "linkHref": "http://fairverona.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-naven-twins/",
+      "linkHref": "http://www.revolveclothing.com/r/spotlight/lookbooks/nbd.jsp?navsrc=subspotlight_i4",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "http://www.caleyyoga.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-caley-yoga/",
+      "linkHref": "http://www.themochileradiaries.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "http://www.tgprivatelabel.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.theblondeabroad.com/kicking-cubicle-tara-gerard-mens-fashion-designer/",
+      "linkHref": "http://www.tgprivatelabel.com/suit-off-your-back/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    }
+  ],
+  "stats": {
+    "brokenCount": 55,
+    "expiredCount": 0,
+    "lostParamsCount": 16,
+    "redirectCount": 5,
+    "totalEstLoss": 6245
+  }
+}

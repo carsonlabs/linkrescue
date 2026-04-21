@@ -1,0 +1,415 @@
+{
+  "domain": "adventurouskate.com",
+  "scannedAt": "2026-03-30T14:09:07.771Z",
+  "pagesScanned": 15,
+  "totalLinks": 128,
+  "issues": [
+    {
+      "pageUrl": "https://www.adventurouskate.com/blog/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/feast-on-your-life/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/reflections-on-turning-26/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/never-compromise-your-travel-ideals/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/top-5-celebrity-hangouts-in-las-vegas/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-to-couchsurf-without-couchsurfing/",
+      "linkHref": "http://www.couchsurfing.org/safety.html",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-to-couchsurf-without-couchsurfing/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-i-survived-a-mugging/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/my-life-as-a-german-movie-star/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/why-you-no-have-boyfriend/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://travelerahoy.wordpress.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 410,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.travelmedianinja.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.solofemaletraveler.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.marmalade.ca/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://letsgosantabarbara.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/losing-my-fertility-in-cambodia/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-not-to-go-skinny-dipping/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/vang-vieng-tubing-deaths-and-dangers/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/the-hottest-men-in-vang-vieng/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-i-almost-got-banned-from-vietnam/",
+      "linkHref": "http://www.pausethemoment.com/2010/10/03/28-grueling-hours-from-vientiane-to-hanoi-vietnam/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-i-almost-got-banned-from-vietnam/",
+      "linkHref": "http://www.hanoibackpackershostel.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-i-almost-got-banned-from-vietnam/",
+      "linkHref": "https://twitter.com/adventurouskate",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/my-life-as-a-german-movie-star/",
+      "linkHref": "http://www.thrillingheroics.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://camelsandchocolate.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://followmeeverywhere.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.tourabsurd.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://awanderingsole.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.501places.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/how-i-almost-got-banned-from-vietnam/",
+      "linkHref": "http://www.aswetravel.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.hellomeetworld.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.overyonderlust.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.exinkai.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://dreamalittledream.ca/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.mylifeofftherecord.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.wearesolesisters.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.wearesolesisters.com/2010/12/sole-sisters-guide-to-keeping-sane.html",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.smilinginaforeignland.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.travelbllgr.com/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://www.adventurouskate.com/trouble-at-the-laos-cambodia-border/",
+      "linkHref": "http://www.myspace.com/djride",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    }
+  ],
+  "stats": {
+    "brokenCount": 23,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 7,
+    "totalEstLoss": 2685
+  }
+}

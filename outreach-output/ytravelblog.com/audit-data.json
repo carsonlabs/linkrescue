@@ -1,0 +1,63 @@
+{
+  "domain": "ytravelblog.com",
+  "scannedAt": "2026-03-30T16:43:17.876Z",
+  "pagesScanned": 2,
+  "totalLinks": 24,
+  "issues": [
+    {
+      "pageUrl": "https://ytravelblog.com",
+      "linkHref": "https://www.macs-explore.com/empowered-collective",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://ytravelblog.com/",
+      "linkHref": "https://www.macs-explore.com/empowered-collective",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "isNonAffiliate": false,
+      "severity": "High",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://ytravelblog.com",
+      "linkHref": "https://twitter.com/ytravelblog",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": true,
+      "severity": "Low",
+      "estLossMin": 0,
+      "estLossMax": 0
+    },
+    {
+      "pageUrl": "https://ytravelblog.com/",
+      "linkHref": "https://twitter.com/ytravelblog",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "isNonAffiliate": true,
+      "severity": "Low",
+      "estLossMin": 0,
+      "estLossMax": 0
+    }
+  ],
+  "stats": {
+    "brokenAffiliateCount": 2,
+    "brokenNonAffiliateCount": 2,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 0,
+    "totalEstLoss": 90,
+    "pagesWithIssues": 2,
+    "affiliateIssueCount": 2,
+    "nonAffiliateIssueCount": 2
+  }
+}

@@ -1,0 +1,755 @@
+{
+  "domain": "traveltractions.com",
+  "scannedAt": "2026-03-30T14:31:19.984Z",
+  "pagesScanned": 15,
+  "totalLinks": 244,
+  "issues": [
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://www.bluehost.com/?utm_source=%28direct%29&utm_medium=affiliate&utm_campaign=affiliate-link_journalistontherun_notype",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": true,
+      "severity": "High",
+      "estLossMin": 60,
+      "estLossMax": 300
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://www.etsy.com/ExcelWithErika/listing/691905971/digital-blog-post-organizer?utm_source=Copy&utm_medium=ListingManager&utm_campaign=Share&utm_term=so.lmsm&share_time=1553325970203&fbclid=IwAR1nq4s8Cu7RRb2SJLEtXI-LDsjQuCeXm4iLUrRCajj9wQHj0gmfX6rc0vs",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": true,
+      "severity": "High",
+      "estLossMin": 60,
+      "estLossMax": 300
+    },
+    {
+      "pageUrl": "https://traveltractions.com/airbnb-cancelling-associates-affiliate-program/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "http://www.bluehost.com/track/journalistontherun",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/travel-blog-themes-800x472-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/plugins-for-new-travel-blog-800x402-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/Janet-Newenham.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/blog-post.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/keysearch-800x422-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/sheets-2.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/janet-newenham-instagram-800x491-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/janet-facebook-800x497-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/21463309_10155727147886670_6533501714681959655_n-800x600-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://london.wtm.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/janet-newenahm-800x526-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/21731488_157962994786669_413601051470008679_o-800x565-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/travel1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://partner.worldnomads.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 401,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/hotels.com-affilaite-800x288-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/booking-com-affiliates-800x414-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/LOGO-MEDIAVINE.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/222-800x430-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/delete-800x401-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/sponsored-post-800x544-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/fest-800x552-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/destinations.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/tourist.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/biz-class-1-800x600-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/FACEBOOK_Vietnam_competition-800x533-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://www.shutterstock.com/g/janetnewenham",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://ticketsntour.com/wp-content/uploads/2024/08/shutterstock-800x425-1.webp",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-detect-ai-generated-content/",
+      "linkHref": "https://searchengineland.com/can-search-engines-detect-ai-content-430215",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/seo-for-travel-blog/",
+      "linkHref": "https://www.cloudflare.com/learning/performance/why-site-speed-matters/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/hotel-web-advertising/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/hotel-mobile-marketing/",
+      "linkHref": "https://www.thesouthafrican.com/order-klonopin/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 410,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/hotel-mobile-marketing/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/tourism-black-friday-marketing-specials/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/seo-ranking-factors-for-travel-websites/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://unsplash.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 401,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://www.marketshirt.com/xanax-1mg-online/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 404,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://www.pexels.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://pixabay.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/upload-from-google-docs-to-wordpress/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/google-docs-collaboration/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-increase-traffic-to-your-blog/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://neilpatel.com/ubersuggest/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://www.canva.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://pixabay.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://unsplash.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 401,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://www.pexels.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 403,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://app.grammarly.com/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://www.linkedin.com/in/mattgdavison/",
+      "issueType": "BROKEN_4XX",
+      "statusCode": 405,
+      "isAffiliate": false,
+      "severity": "High",
+      "estLossMin": 30,
+      "estLossMax": 150
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://journalistontherun.com/2016/10/22/dream-job-by-accident/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://journalistontherun.com/2016/10/09/i-have-a-confession-to-make/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://journalistontherun.com/2016/04/22/things-i-learned-about-myself-thailand/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://jvz8.com/c/1258687/195039",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://jvz7.com/c/1258687/194909",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://journalistontherun.com/2015/08/24/how-to-get-more-instagram-followers/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/content-marketing-hotels/",
+      "linkHref": "https://jvz6.com/c/2603793/194909",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://hootsuite.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "http://www.hemingwayapp.com/",
+      "issueType": "REDIRECT_TO_HOME",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 15,
+      "estLossMax": 75
+    },
+    {
+      "pageUrl": "https://traveltractions.com/airbnb-cancelling-associates-affiliate-program/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-start-a-travel-blog/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/hotel-web-advertising/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/hotel-mobile-marketing/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/tourism-black-friday-marketing-specials/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/seo-ranking-factors-for-travel-websites/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/free-travel-images/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/upload-from-google-docs-to-wordpress/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/google-docs-collaboration/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/how-to-increase-traffic-to-your-blog/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    },
+    {
+      "pageUrl": "https://traveltractions.com/best-blogging-tools-resources/",
+      "linkHref": "https://instagram/mattgdavison/",
+      "issueType": "TIMEOUT",
+      "statusCode": null,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 10,
+      "estLossMax": 50
+    }
+  ],
+  "stats": {
+    "brokenCount": 54,
+    "expiredCount": 0,
+    "lostParamsCount": 0,
+    "redirectCount": 9,
+    "totalEstLoss": 5775
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "domain": "nomadicmatt.com",
+  "scannedAt": "2026-03-30T13:33:20.267Z",
+  "pagesScanned": 2,
+  "totalLinks": 14,
+  "issues": [
+    {
+      "pageUrl": "https://nomadicmatt.com",
+      "linkHref": "https://www.booking.com/index.html?aid=362916",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 202,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://nomadicmatt.com",
+      "linkHref": "https://skyscanner.pxf.io/c/214481/1027991/13416?subId1=%26currency%3DUSD&associateid=AFF_TRA_19354_00001&u=https%3A%2F%2Fwww.skyscanner.com%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://nomadicmatt.com/",
+      "linkHref": "https://www.booking.com/index.html?aid=362916",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 202,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    },
+    {
+      "pageUrl": "https://nomadicmatt.com/",
+      "linkHref": "https://skyscanner.pxf.io/c/214481/1027991/13416?subId1=%26currency%3DUSD&associateid=AFF_TRA_19354_00001&u=https%3A%2F%2Fwww.skyscanner.com%2F",
+      "issueType": "LOST_PARAMS",
+      "statusCode": 200,
+      "isAffiliate": false,
+      "severity": "Medium",
+      "estLossMin": 20,
+      "estLossMax": 80
+    }
+  ],
+  "stats": {
+    "brokenCount": 0,
+    "expiredCount": 0,
+    "lostParamsCount": 4,
+    "redirectCount": 0,
+    "totalEstLoss": 200
+  }
+}

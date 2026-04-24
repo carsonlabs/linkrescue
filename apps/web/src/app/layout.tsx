@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Suspense } from 'react';
+import { PostHogProvider, PostHogPageView } from '@/components/posthog-provider';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 
@@ -82,6 +84,10 @@ export default function RootLayout({
         )}
       </head>
       <body className={inter.className} suppressHydrationWarning>
+        <PostHogProvider>
+        <Suspense fallback={null}>
+          <PostHogPageView />
+        </Suspense>
         <Toaster position="top-center" />
         {children}
         <script
@@ -161,6 +167,7 @@ export default function RootLayout({
             }),
           }}
         />
+        </PostHogProvider>
       </body>
     </html>
   );

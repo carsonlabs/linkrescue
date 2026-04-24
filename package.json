@@ -8,11 +8,16 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "turbo run type-check",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "agents:setup": "npx tsx agents/setup.ts",
+    "agents:prospect": "npx tsx agents/run-agent.ts prospector"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/pdfkit": "^0.17.5",
     "p-limit": "^7.3.0",
     "prettier": "^3.2.5",
+    "tsx": "^4.21.0",
     "turbo": "^1.12.4",
     "vitest": "^4.0.18"
   },
@@ -28,5 +33,10 @@
       "fast-xml-parser": ">=5.5.7",
       "prismjs": ">=1.30.0"
     }
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.87.0",
+    "@supabase/supabase-js": "^2.49.1",
+    "pdfkit": "^0.18.0"
   }
 }

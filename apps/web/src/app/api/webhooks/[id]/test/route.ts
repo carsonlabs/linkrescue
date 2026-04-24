@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getWebhook } from '@linkrescue/database';
-import { dispatchWebhook } from '@/lib/webhooks';
+import { safeFetch, SsrfError } from '@linkrescue/crawler';
 
 export async function POST(_req: Request, { params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -27,21 +27,25 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
       .update(payload)
       .digest('hex');
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(hook.url, {
+    const res = await safeFetch(hook.url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-LinkRescue-Signature': `sha256=${sig}`,
       },
       body: payload,
-      signal: controller.signal,
+      timeoutMs: 5000,
+      maxRedirects: 0,
     });
-    clearTimeout(timeout);
     statusCode = res.status;
     delivered = res.ok;
-  } catch {
+  } catch (err) {
+    if (err instanceof SsrfError) {
+      return NextResponse.json(
+        { delivered: false, error: `Webhook URL rejected: ${err.reason}` },
+        { status: 400 },
+      );
+    }
     delivered = false;
   }
 

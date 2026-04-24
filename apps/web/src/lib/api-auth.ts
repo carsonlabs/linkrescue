@@ -24,13 +24,19 @@ export interface ApiAuthContext {
  * Returns the full key (to show once) and the hash/prefix for storage
  */
 export function generateApiKey(): { fullKey: string; prefix: string } {
-  const randomPart = Array.from({ length: 32 }, () =>
-    'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
-  ).join('');
-  
+  // 24 random bytes → 32 base32-ish chars. Uses crypto.randomBytes for
+  // CSPRNG-grade entropy (previous Math.random was predictable from PRNG state).
+  const crypto = require('crypto') as typeof import('crypto');
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const bytes = crypto.randomBytes(32);
+  const randomPart = Array.from(bytes)
+    .slice(0, 32)
+    .map((b) => alphabet[b % 36])
+    .join('');
+
   const fullKey = `${API_KEY_PREFIX}${randomPart}`;
   const prefix = fullKey.slice(0, 11); // lr_ + first 8 chars
-  
+
   return { fullKey, prefix };
 }
 

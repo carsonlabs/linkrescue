@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
-import { crawlSite, extractOutboundLinks, checkLink, isAffiliateLink } from '@linkrescue/crawler';
+import { crawlSite, extractOutboundLinks, checkLink, isAffiliateLink, safeFetch, SsrfError } from '@linkrescue/crawler';
 
 export const maxDuration = 120; // 2 minutes max for Vercel
 
@@ -128,12 +128,15 @@ export async function POST(req: NextRequest) {
 
     for (const pageUrl of pageUrls) {
       try {
-        const response = await fetch(pageUrl, {
-          signal: AbortSignal.timeout(10_000),
+        const response = await safeFetch(pageUrl, {
+          timeoutMs: 10_000,
           headers: { 'User-Agent': 'LinkRescue-FreeScan/1.0 (+https://linkrescue.io)' },
+        }).catch((err) => {
+          if (err instanceof SsrfError) return null;
+          throw err;
         });
 
-        if (!response.ok) continue;
+        if (!response || !response.ok) continue;
         const contentType = response.headers.get('content-type') || '';
         if (!contentType.includes('text/html')) continue;
 

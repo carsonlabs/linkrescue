@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { createAdminClient, getWebhooksForEvent, touchWebhook, type Database } from '@linkrescue/database';
 import type { WebhookEvent, WebhookPayload } from '@linkrescue/types';
+import { safeFetch, SsrfError } from '@linkrescue/crawler';
 
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAYS = [0, 60_000, 300_000]; // immediate, 1min, 5min
@@ -27,9 +28,7 @@ async function deliver(
   const signature = signPayload(body, secret);
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
-    const res = await fetch(url, {
+    const res = await safeFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,13 +37,16 @@ async function deliver(
         'X-LinkRescue-Delivery': deliveryId,
       },
       body,
-      signal: controller.signal,
+      timeoutMs: 10_000,
+      maxRedirects: 0, // webhook POST targets should not 3xx-redirect
     });
-    clearTimeout(timeout);
 
     const responseBody = await res.text().catch(() => '');
     return { success: res.ok, statusCode: res.status, responseBody: responseBody.slice(0, 1000) };
   } catch (err) {
+    if (err instanceof SsrfError) {
+      return { success: false, responseBody: `Rejected: ${err.reason}` };
+    }
     return { success: false, responseBody: err instanceof Error ? err.message : 'Unknown error' };
   }
 }

@@ -41,3 +41,16 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Playwright test artifacts
+e2e/html-report/
+e2e/screenshots/
+e2e/test-results/
+
+# Scan-output directories (keep the .sh/.js/.txt inputs, not the outputs)
+data-study/results/
+data-study/curated-results/
+data-study/dogfood-results/
+
+# Outreach PDFs + drafts (per-prospect output)
+outreach-output/

@@ -4,8 +4,9 @@ import { TestEmailButton } from '@/components/dashboard/test-email-button';
 import { ApiKeysSection } from '@/components/dashboard/api-keys-section';
 import { WebhookSettings } from '@/components/dashboard/webhook-settings';
 import { SlackSettings } from '@/components/dashboard/slack-settings';
+import { DismissalsPanel, type DismissalRow } from '@/components/dashboard/dismissals-panel';
 import Link from 'next/link';
-import { User, CreditCard, Bell, Crown, Key, Webhook, MessageSquare } from 'lucide-react';
+import { User, CreditCard, Bell, Crown, Key, Webhook, MessageSquare, BellOff } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,6 +28,26 @@ export default async function SettingsPage() {
   const tierLimits = getTierLimits(plan);
   const hasWebhooks = hasFeature(plan, 'webhooks');
   const hasSlack = hasFeature(plan, 'slack_integration');
+
+  // Per-user dismissals (single-link + pattern-host). Joined to link.href when
+  // applicable so the panel can show a meaningful label.
+  const { data: dismissalRows } = await supabase
+    .from('issue_dismissals')
+    .select(
+      `id, link_id, pattern_host, issue_type, reason, created_at,
+       link:links(href)`,
+    )
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+  const dismissals: DismissalRow[] = ((dismissalRows ?? []) as any[]).map((r) => ({
+    id: r.id,
+    link_id: r.link_id,
+    pattern_host: r.pattern_host,
+    issue_type: r.issue_type,
+    reason: r.reason,
+    created_at: r.created_at,
+    link_href: r.link ? (Array.isArray(r.link) ? r.link[0]?.href ?? null : r.link.href) : null,
+  }));
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -125,6 +146,17 @@ export default async function SettingsPage() {
             </p>
             <TestEmailButton />
           </div>
+        </div>
+      </section>
+
+      {/* Ignored links & hosts */}
+      <section className="border bg-card rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
+          <BellOff className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold text-sm">Ignored links &amp; hosts</h2>
+        </div>
+        <div className="px-6 py-5">
+          <DismissalsPanel dismissals={dismissals} />
         </div>
       </section>
 

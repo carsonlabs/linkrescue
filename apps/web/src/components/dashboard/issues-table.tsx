@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import type { IssueType } from '@linkrescue/types';
 
 interface Issue {
@@ -20,6 +21,14 @@ interface Issue {
   };
 }
 
+function hostFromHref(href: string): string | null {
+  try {
+    return new URL(href).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 const ISSUE_LABELS: Record<string, { label: string; color: string }> = {
   BROKEN_4XX: { label: '4xx Broken', color: 'bg-red-100 text-red-800' },
   SERVER_5XX: { label: '5xx Server Error', color: 'bg-orange-100 text-orange-800' },
@@ -32,15 +41,25 @@ const ISSUE_TYPES = ['BROKEN_4XX', 'SERVER_5XX', 'TIMEOUT', 'REDIRECT_TO_HOME', 
 
 export function IssuesTable({
   issues,
-  siteId,
+  siteId: _siteId,
 }: {
   issues: Issue[];
   siteId: string;
 }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<string>('');
   const [search, setSearch] = useState('');
+  const [dismissing, setDismissing] = useState<Set<string>>(new Set());
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [error, setError] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
 
-  const filtered = issues.filter((issue) => {
+  const visibleIssues = useMemo(
+    () => issues.filter((issue) => !hidden.has(issue.id)),
+    [issues, hidden],
+  );
+
+  const filtered = visibleIssues.filter((issue) => {
     if (filter && issue.issue_type !== filter) return false;
     if (search) {
       const q = search.toLowerCase();
@@ -51,6 +70,56 @@ export function IssuesTable({
     }
     return true;
   });
+
+  async function dismissIssue(issue: Issue, scope: 'single' | 'host') {
+    setError(null);
+    setDismissing((prev) => new Set(prev).add(issue.id));
+
+    try {
+      const res = await fetch('/api/issues/dismiss', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          linkId: issue.link.id,
+          scope,
+          issueType: issue.issue_type,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error || 'Failed to dismiss');
+      }
+
+      if (scope === 'host') {
+        const host = hostFromHref(issue.link.href);
+        setHidden((prev) => {
+          const next = new Set(prev);
+          for (const i of issues) {
+            if (
+              i.issue_type === issue.issue_type &&
+              hostFromHref(i.link.href) === host
+            ) {
+              next.add(i.id);
+            }
+          }
+          return next;
+        });
+      } else {
+        setHidden((prev) => new Set(prev).add(issue.id));
+      }
+
+      startTransition(() => router.refresh());
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to dismiss');
+    } finally {
+      setDismissing((prev) => {
+        const next = new Set(prev);
+        next.delete(issue.id);
+        return next;
+      });
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -89,6 +158,12 @@ export function IssuesTable({
         className="w-full px-3 py-2 border rounded-md bg-background text-sm"
       />
 
+      {error && (
+        <p className="text-xs text-red-500" role="alert">
+          {error}
+        </p>
+      )}
+
       {filtered.length === 0 ? (
         <p className="text-muted-foreground text-sm py-4 text-center">No issues found.</p>
       ) : (
@@ -101,6 +176,7 @@ export function IssuesTable({
                 <th className="text-left p-3 font-medium">Issue</th>
                 <th className="text-left p-3 font-medium">Status</th>
                 <th className="text-left p-3 font-medium">Affiliate</th>
+                <th className="text-right p-3 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +185,8 @@ export function IssuesTable({
                   label: issue.issue_type,
                   color: 'bg-gray-100 text-gray-800',
                 };
+                const host = hostFromHref(issue.link.href);
+                const isDismissing = dismissing.has(issue.id);
                 return (
                   <tr key={issue.id} className="border-b last:border-0 hover:bg-muted/30">
                     <td className="p-3 max-w-xs truncate">
@@ -137,6 +215,28 @@ export function IssuesTable({
                         <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
                           Affiliate
                         </span>
+                      )}
+                    </td>
+                    <td className="p-3 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => dismissIssue(issue, 'single')}
+                        disabled={isDismissing}
+                        className="text-xs px-2 py-1 rounded border hover:bg-accent disabled:opacity-50"
+                        title="Stop alerting on this link"
+                      >
+                        Ignore
+                      </button>
+                      {host && (
+                        <button
+                          type="button"
+                          onClick={() => dismissIssue(issue, 'host')}
+                          disabled={isDismissing}
+                          className="ml-1 text-xs px-2 py-1 rounded border hover:bg-accent disabled:opacity-50"
+                          title={`Stop alerting on ${info.label} for all ${host} links`}
+                        >
+                          Ignore {host}
+                        </button>
                       )}
                     </td>
                   </tr>

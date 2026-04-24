@@ -13,6 +13,7 @@ import {
   Zap,
   Crown,
 } from 'lucide-react';
+import { InsightsPanel, type CuratorInsight } from '@/components/dashboard/insights-panel';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,6 +65,17 @@ export default async function DashboardOverviewPage() {
 
   const firstName = user.email?.split('@')[0] ?? 'there';
 
+  // Curator insights (top 5 active). Populated by the weekly cron; gracefully
+  // empty if the migration hasn't been applied or no runs have completed.
+  const { data: insightRows } = await supabase
+    .from('curator_insights')
+    .select('id, kind, headline, body, created_at')
+    .eq('user_id', user.id)
+    .is('dismissed_at', null)
+    .order('created_at', { ascending: false })
+    .limit(5);
+  const insights = (insightRows ?? []) as unknown as CuratorInsight[];
+
   if ((sites ?? []).length === 0) {
     return <EmptyState plan={plan} />;
   }
@@ -81,6 +93,9 @@ export default async function DashboardOverviewPage() {
             : 'No scans yet — verify a site to get started.'}
         </p>
       </div>
+
+      {/* Curator insights (weekly memory-backed agent output) */}
+      <InsightsPanel insights={insights} />
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

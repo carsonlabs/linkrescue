@@ -47,7 +47,7 @@ export default async function SiteDetailsPage({ params }: { params: { id: string
     ? scoreHistory[scoreHistory.length - 2]?.score ?? null
     : null;
 
-  // Fetch issues from the latest scan
+  // Fetch issues from the latest scan, then drop anything the user has dismissed.
   let issues: any[] = [];
   if (latestScan) {
     const { data } = await supabase
@@ -66,7 +66,46 @@ export default async function SiteDetailsPage({ params }: { params: { id: string
       .order('checked_at', { ascending: false })
       .limit(200);
 
-    issues = data ?? [];
+    const rawIssues = data ?? [];
+
+    const { data: dismissals } = await supabase
+      .from('issue_dismissals')
+      .select('link_id, pattern_host, issue_type')
+      .eq('user_id', user.id);
+
+    const linkDismissals = new Map<string, Set<string | null>>();
+    const hostDismissals = new Map<string, Set<string | null>>();
+    for (const d of dismissals ?? []) {
+      if (d.link_id) {
+        const set = linkDismissals.get(d.link_id) ?? new Set();
+        set.add(d.issue_type ?? null);
+        linkDismissals.set(d.link_id, set);
+      } else if (d.pattern_host) {
+        const set = hostDismissals.get(d.pattern_host) ?? new Set();
+        set.add(d.issue_type ?? null);
+        hostDismissals.set(d.pattern_host, set);
+      }
+    }
+
+    const isDismissed = (issue: any): boolean => {
+      const link = Array.isArray(issue.link) ? issue.link[0] : issue.link;
+      if (!link) return false;
+      const linkSet = linkDismissals.get(link.id);
+      if (linkSet && (linkSet.has(null) || linkSet.has(issue.issue_type))) return true;
+      let host: string | null = null;
+      try {
+        host = new URL(link.href).hostname.toLowerCase();
+      } catch {
+        host = null;
+      }
+      if (host) {
+        const hostSet = hostDismissals.get(host);
+        if (hostSet && (hostSet.has(null) || hostSet.has(issue.issue_type))) return true;
+      }
+      return false;
+    };
+
+    issues = rawIssues.filter((i) => !isDismissed(i));
   }
 
   const verifyMetaTag = `<meta name="linkrescue-site-verification" content="${site.verify_token}" />`;

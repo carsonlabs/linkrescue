@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getUserPlan, getPlanLimits, hasFeature } from '@linkrescue/types';
 import { analyzeDeadLink, matchOffers } from '@linkrescue/ai';
 import type { OfferInput } from '@linkrescue/ai';
+import { buildUserPreferences } from '@/lib/user-preferences';
 
 export async function POST(_req: Request, { params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -56,13 +57,19 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
     tags: o.tags,
   }));
 
+  // Per-user preference memory: applied/rejected offer history + dismissal
+  // patterns. Built once per request and reused across every matchOffers call
+  // in the loop below — prompt caching in matchOffers reuses the cached
+  // system block on calls 2..N.
+  const preferences = await buildUserPreferences(supabase, user.id);
+
   let matchesCreated = 0;
 
   for (const result of brokenResults) {
     const link = result.links as unknown as { href: string };
     try {
       const analysis = await analyzeDeadLink(link.href);
-      const matches = await matchOffers(analysis, offers);
+      const matches = await matchOffers(analysis, offers, preferences);
       const top3 = matches.slice(0, 3);
 
       for (const match of top3) {

@@ -1,10 +1,13 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import { createClient } from '@supabase/supabase-js';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-const BLOG_DIR = path.join(process.cwd(), '..', '..', 'content', 'blog');
+// CMS lives in the AgentReady Supabase project
+const CMS_URL = process.env.CMS_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const CMS_KEY = process.env.CMS_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const SITE_SLUG = 'linkrescue';
+
+const cms = createClient(CMS_URL, CMS_KEY);
 
 export interface BlogPost {
   slug: string;
@@ -21,59 +24,74 @@ export interface BlogPostWithContent extends BlogPost {
   contentHtml: string;
 }
 
-export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const { data, error } = await cms
+    .from('blog_posts')
+    .select('slug, title, published_at, author, tags, category, seo_title, meta_description')
+    .eq('status', 'published')
+    .contains('sites', [SITE_SLUG])
+    .lte('published_at', new Date().toISOString())
+    .order('published_at', { ascending: false });
 
-  const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith('.md'));
+  if (error) {
+    console.error('[CMS] getAllPosts error:', error.message);
+    return [];
+  }
 
-  const posts = files.map((filename) => {
-    const slug = filename.replace(/\.md$/, '');
-    const filePath = path.join(BLOG_DIR, filename);
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const { data } = matter(fileContents);
-
-    return {
-      slug,
-      title: data.title ?? '',
-      date: String(data.date ?? ''),
-      author: data.author ?? '',
-      tags: data.tags ?? [],
-      category: data.category ?? '',
-      seo_title: data.seo_title ?? data.title ?? '',
-      meta_description: data.meta_description ?? '',
-    };
-  });
-
-  // Sort by date descending
-  return posts.sort((a, b) => (a.date > b.date ? -1 : 1));
+  return (data ?? []).map((row) => ({
+    slug: row.slug,
+    title: row.title,
+    date: row.published_at ?? '',
+    author: row.author ?? 'LinkRescue Team',
+    tags: row.tags ?? [],
+    category: row.category ?? '',
+    seo_title: row.seo_title ?? row.title,
+    meta_description: row.meta_description ?? '',
+  }));
 }
 
-export function getAllSlugs(): string[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-  return fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith('.md'))
-    .map((f) => f.replace(/\.md$/, ''));
+export async function getAllSlugs(): Promise<string[]> {
+  const { data, error } = await cms
+    .from('blog_posts')
+    .select('slug')
+    .eq('status', 'published')
+    .contains('sites', [SITE_SLUG])
+    .lte('published_at', new Date().toISOString());
+
+  if (error) {
+    console.error('[CMS] getAllSlugs error:', error.message);
+    return [];
+  }
+  return (data ?? []).map((p) => p.slug);
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
-  const filePath = path.join(BLOG_DIR, `${slug}.md`);
-  if (!fs.existsSync(filePath)) return null;
+  const { data, error } = await cms
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .contains('sites', [SITE_SLUG])
+    .single();
 
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  const { data, content } = matter(fileContents);
+  if (error) {
+    if (error.code !== 'PGRST116') {
+      console.error('[CMS] getPostBySlug error:', error.message);
+    }
+    return null;
+  }
 
-  const processed = await remark().use(html).process(content);
+  const processed = await remark().use(html).process(data.content ?? '');
   const contentHtml = processed.toString();
 
   return {
-    slug,
-    title: data.title ?? '',
-    date: String(data.date ?? ''),
-    author: data.author ?? '',
+    slug: data.slug,
+    title: data.title,
+    date: data.published_at ?? '',
+    author: data.author ?? 'LinkRescue Team',
     tags: data.tags ?? [],
     category: data.category ?? '',
-    seo_title: data.seo_title ?? data.title ?? '',
+    seo_title: data.seo_title ?? data.title,
     meta_description: data.meta_description ?? '',
     contentHtml,
   };

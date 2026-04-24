@@ -58,8 +58,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Blog posts from markdown files
-  const blogPosts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+  // Blog posts from CMS
+  const posts = await getAllPosts();
+  const blogPosts: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${BASE}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,

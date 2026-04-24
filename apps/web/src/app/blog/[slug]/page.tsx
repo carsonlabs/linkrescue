@@ -10,8 +10,11 @@ interface Props {
   params: { slug: string };
 }
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

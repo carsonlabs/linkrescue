@@ -247,13 +247,13 @@ Write sparingly and clearly. These are notes to your FUTURE self, not the user. 
 
 ## Workflow every run
 1. **Read memory first.** List /mnt/memory/ and read every file. Treat it as ground truth unless data clearly contradicts.
-2. **Pull current-period data.** Use get_recent_issues, get_dismissals, get_match_outcomes, get_health_trends for the target user_id (passed in the kickoff message).
-3. **Diff against memory.** What's new this week? Which patterns strengthened, which reversed?
-4. **Surface 1-3 insights max.** Quality over quantity. Publish each via publish_insight with a concrete headline and body. Valid kinds:
+2. **Pull current-period data.** Use get_recent_issues, get_dismissals, get_match_outcomes, get_health_trends, AND get_network_benchmarks for the target user_id (passed in the kickoff message). Always call get_network_benchmarks — it tells you how THIS user's rot rates compare to every other LinkRescue user on the same programs. That comparison is often your best insight.
+3. **Diff against memory.** What's new this week? Which patterns strengthened, which reversed? Which hosts now appear in network anomalies?
+4. **Surface 1-3 insights max.** Quality over quantity. Publish each via publish_insight with a concrete headline and body. Prefer insights grounded in the benchmark data ("your X is Ny× the LinkRescue network average") over generic observations. Valid kinds:
    - summary — "3 broken links fixed this week, 2 new (both Amazon). Health +4 pts."
-   - recommendation — "Your CJ Affiliate links 4x the rot rate of the next program. Consider consolidating to ShareASale replacements."
+   - recommendation — "Your CJ Affiliate rot rate is 4× the LinkRescue network average — consider consolidating to ShareASale replacements."
    - alert_suppression — "You've dismissed 14 amazon.ca 302s. I'll assume these are regional redirects and stop surfacing them."
-   - program_risk — "Impact.com links show 18% rot this month (baseline 4%). Likely platform-level change."
+   - program_risk — "Impact.com rot across the LinkRescue network jumped from 4% to 18% this month. Likely platform-level change — not just you."
 5. **Update memory** with what you learned THIS week. Overwrite, don't append indefinitely.
 6. **Mark run complete** via mark_curator_run.
 
@@ -322,6 +322,18 @@ Write sparingly and clearly. These are notes to your FUTURE self, not the user. 
         type: "custom",
         name: "get_health_trends",
         description: "Get daily health-score snapshots for all of the user's sites over the last 90 days.",
+        input_schema: {
+          type: "object" as const,
+          properties: {
+            user_id: { type: "string", description: "UUID of the target user" },
+          },
+          required: ["user_id"],
+        },
+      },
+      {
+        type: "custom",
+        name: "get_network_benchmarks",
+        description: "Cross-user 30-day rot-rate benchmarks. Returns network_averages (rot rate per host across every LinkRescue user), user_rates (this user's rate per host), and anomalies (hosts where this user's rot rate is ≥1.5× the network average, sorted by severity). Call this every run — it's the richest comparative context you have.",
         input_schema: {
           type: "object" as const,
           properties: {

@@ -71,6 +71,104 @@ export async function getMatchOutcomes(userId: string) {
   }));
 }
 
+/**
+ * Cross-user rot-rate benchmarks. Service-role query across all users;
+ * returns top-volume hosts + the calling user's rates + any hosts where
+ * the user's rate is ≥1.5× network average.
+ */
+export async function getNetworkBenchmarks(userId: string) {
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await app
+    .from('scan_results')
+    .select('issue_type, link:links!inner(href, site:sites!inner(user_id))')
+    .gte('checked_at', since)
+    .limit(50000);
+  if (error) throw error;
+
+  const rootHost = (href: string): string | null => {
+    try {
+      const h = new URL(href).hostname.toLowerCase();
+      const parts = h.split('.');
+      return parts.length >= 2 ? parts.slice(-2).join('.') : h;
+    } catch {
+      return null;
+    }
+  };
+
+  type Bucket = { total: number; broken: number };
+  const network = new Map<string, Bucket>();
+  const user = new Map<string, Bucket>();
+
+  for (const row of data ?? []) {
+    const link: any = Array.isArray((row as any).link) ? (row as any).link[0] : (row as any).link;
+    const host = rootHost(link?.href ?? '');
+    if (!host) continue;
+
+    const n = network.get(host) ?? { total: 0, broken: 0 };
+    n.total++;
+    if (row.issue_type !== 'OK') n.broken++;
+    network.set(host, n);
+
+    const site = Array.isArray(link?.site) ? link.site[0] : link?.site;
+    if (site?.user_id === userId) {
+      const u = user.get(host) ?? { total: 0, broken: 0 };
+      u.total++;
+      if (row.issue_type !== 'OK') u.broken++;
+      user.set(host, u);
+    }
+  }
+
+  const networkAverages = Array.from(network.entries())
+    .filter(([, b]) => b.total >= 50)
+    .map(([host, b]) => ({
+      host,
+      network_checks: b.total,
+      network_rot_rate: +(b.broken / b.total).toFixed(4),
+    }))
+    .sort((a, b) => b.network_checks - a.network_checks)
+    .slice(0, 20);
+
+  const userRates = Array.from(user.entries())
+    .filter(([, b]) => b.total >= 5)
+    .map(([host, b]) => ({
+      host,
+      user_checks: b.total,
+      user_rot_rate: +(b.broken / b.total).toFixed(4),
+    }))
+    .sort((a, b) => b.user_checks - a.user_checks)
+    .slice(0, 20);
+
+  const anomalies = userRates
+    .map((u) => {
+      const n = network.get(u.host);
+      if (!n || n.total < 50) return null;
+      const network_rot = n.broken / n.total;
+      if (network_rot === 0 && u.user_rot_rate === 0) return null;
+      const ratio = network_rot > 0 ? u.user_rot_rate / network_rot : Infinity;
+      return {
+        host: u.host,
+        user_rot_rate: u.user_rot_rate,
+        network_rot_rate: +network_rot.toFixed(4),
+        ratio: isFinite(ratio) ? +ratio.toFixed(2) : null,
+        user_checks: u.user_checks,
+        network_checks: n.total,
+      };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .filter((x) => x.ratio !== null && x.ratio >= 1.5)
+    .sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0));
+
+  return {
+    window_days: 30,
+    total_user_checks: Array.from(user.values()).reduce((s, b) => s + b.total, 0),
+    total_network_checks: Array.from(network.values()).reduce((s, b) => s + b.total, 0),
+    network_averages: networkAverages,
+    user_rates: userRates,
+    anomalies,
+  };
+}
+
 export async function getHealthTrends(userId: string) {
   const { data: sites } = await app
     .from('sites')

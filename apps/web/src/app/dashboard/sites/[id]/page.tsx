@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getLatestScan, getLatestHealthScore, getHealthScoreHistory } from '@linkrescue/database';
 import { getUserPlan, hasFeature, type TierName } from '@linkrescue/types';
 import { IssuesTable } from '@/components/dashboard/issues-table';
+import { ScanSynthesisCard } from '@/components/dashboard/scan-synthesis-card';
 import { VerifyButton, ScanButton } from '@/components/dashboard/scan-status';
 import { HealthScoreGauge } from '@/components/dashboard/health-score-gauge';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, Copy } from 'lucide-react';
@@ -151,6 +152,17 @@ export default async function SiteDetailsPage({ params }: { params: { id: string
           </div>
         </div>
       </div>
+
+      {/* Instant post-scan synthesis — shown whenever we have a scan, before the
+          health gauge, so the first thing a user sees is a one-liner read of
+          what the scan found. Compounds over time with the weekly Curator. */}
+      {site.verified_at && latestScan && (
+        <ScanSynthesisCard
+          issues={issues}
+          siteId={site.id}
+          linksChecked={latestScan.links_checked ?? 0}
+        />
+      )}
 
       {/* Health Score */}
       {site.verified_at && healthScore && (

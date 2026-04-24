@@ -9,6 +9,7 @@ import {
   getDismissals,
   getMatchOutcomes,
   getHealthTrends,
+  getNetworkBenchmarks,
   publishInsight,
   markCuratorRun,
   getOrCreateMemoryStoreId,
@@ -170,6 +171,8 @@ async function dispatchTool(
         return JSON.stringify(await getMatchOutcomes(admin, input.user_id));
       case 'get_health_trends':
         return JSON.stringify(await getHealthTrends(admin, input.user_id));
+      case 'get_network_benchmarks':
+        return JSON.stringify(await getNetworkBenchmarks(admin, input.user_id));
       case 'publish_insight':
         return JSON.stringify(await publishInsight(admin, input));
       case 'mark_curator_run':

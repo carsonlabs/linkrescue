@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Brain, TrendingUp, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { Brain, TrendingUp, ShieldAlert, Sparkles, X, Share2, Check } from 'lucide-react';
 
 export type InsightKind = 'summary' | 'recommendation' | 'alert_suppression' | 'program_risk';
 
@@ -29,7 +29,30 @@ export function InsightsPanel({ insights }: { insights: CuratorInsight[] }) {
   const router = useRouter();
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
   const [, startTransition] = useTransition();
+
+  async function share(id: string) {
+    const url = `${window.location.origin}/i/${id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ url, title: 'LinkRescue Curator insight' });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setCopied(id);
+        setTimeout(() => setCopied((c) => (c === id ? null : c)), 1800);
+      }
+    } catch {
+      // user cancelled or share failed; fall back to clipboard
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(id);
+        setTimeout(() => setCopied((c) => (c === id ? null : c)), 1800);
+      } catch {
+        setError('Could not copy link');
+      }
+    }
+  }
 
   const visible = insights.filter((i) => !hidden.has(i.id));
   if (visible.length === 0) return null;
@@ -99,14 +122,29 @@ export function InsightsPanel({ insights }: { insights: CuratorInsight[] }) {
                   <p className="text-xs text-slate-400 mt-1 leading-relaxed">{insight.body}</p>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => dismiss(insight.id)}
-                aria-label="Dismiss insight"
-                className="text-slate-600 hover:text-slate-300 transition-colors flex-shrink-0"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => share(insight.id)}
+                  aria-label="Copy shareable link"
+                  title={copied === insight.id ? 'Copied!' : 'Copy shareable link'}
+                  className="text-slate-600 hover:text-slate-300 transition-colors p-1"
+                >
+                  {copied === insight.id ? (
+                    <Check className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Share2 className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => dismiss(insight.id)}
+                  aria-label="Dismiss insight"
+                  className="text-slate-600 hover:text-slate-300 transition-colors p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           );
         })}

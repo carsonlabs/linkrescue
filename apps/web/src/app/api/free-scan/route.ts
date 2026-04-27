@@ -10,7 +10,7 @@ export const maxDuration = 120; // 2 minutes max for Vercel
 
 interface FreeScanPayload {
   url: string;
-  email: string;
+  email?: string;
 }
 
 interface BrokenLinkDetail {
@@ -99,8 +99,10 @@ export async function POST(req: NextRequest) {
   if (!rawUrl || typeof rawUrl !== 'string') {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 });
   }
-  if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
-    return NextResponse.json({ error: 'Valid email is required' }, { status: 400 });
+  // Email is optional at scan time — captured post-scan to unlock full report.
+  // If provided, it must be valid.
+  if (email !== undefined && (typeof email !== 'string' || !EMAIL_REGEX.test(email))) {
+    return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
   }
 
   const domain = extractDomain(rawUrl);
@@ -168,22 +170,24 @@ export async function POST(req: NextRequest) {
     const brokenAffiliateCount = allBrokenLinks.filter((l) => l.isAffiliate).length;
     const estimatedLoss = estimateMonthlyLoss(brokenAffiliateCount);
 
-    // 3. Save lead to database
-    try {
-      const db = createAdminClient();
-      // Using type cast because free_scan_leads isn't in generated types yet
-      await (db.from as Function)('free_scan_leads').insert({
-        email: email.toLowerCase().trim(),
-        site_url: rawUrl.trim(),
-        source: 'free-scan',
-        broken_links_count: allBrokenLinks.length,
-        affiliate_issues_count: brokenAffiliateCount,
-        estimated_loss: estimatedLoss,
-        scanned_at: new Date().toISOString(),
-      });
-    } catch (err) {
-      console.error('[free-scan] DB insert failed:', err);
-      // Don't fail the scan — still return results
+    // 3. Save lead to database (only if email was provided up-front; usually captured post-scan via /api/free-scan/lead)
+    if (email) {
+      try {
+        const db = createAdminClient();
+        // Using type cast because free_scan_leads isn't in generated types yet
+        await (db.from as Function)('free_scan_leads').insert({
+          email: email.toLowerCase().trim(),
+          site_url: rawUrl.trim(),
+          source: 'free-scan',
+          broken_links_count: allBrokenLinks.length,
+          affiliate_issues_count: brokenAffiliateCount,
+          estimated_loss: estimatedLoss,
+          scanned_at: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.error('[free-scan] DB insert failed:', err);
+        // Don't fail the scan — still return results
+      }
     }
 
     // 4. Save shareable scan result

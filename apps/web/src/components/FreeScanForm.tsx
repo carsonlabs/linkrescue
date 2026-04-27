@@ -119,15 +119,20 @@ export function FreeScanForm() {
   const [error, setError] = useState<string | null>(null);
   const [progressIdx, setProgressIdx] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [unlockSubmitting, setUnlockSubmitting] = useState(false);
+  const [unlockError, setUnlockError] = useState<string | null>(null);
 
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
-      if (!url.trim() || !email.trim()) return;
+      if (!url.trim()) return;
 
       setState('scanning');
       setError(null);
       setProgressIdx(0);
+      setUnlocked(false);
+      setUnlockError(null);
 
       // Cycle progress messages while scanning
       const interval = setInterval(() => {
@@ -140,7 +145,7 @@ export function FreeScanForm() {
         const res = await fetch('/api/free-scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url.trim(), email: email.trim() }),
+          body: JSON.stringify({ url: url.trim() }),
         });
 
         const data = await res.json();
@@ -160,7 +165,34 @@ export function FreeScanForm() {
         clearInterval(interval);
       }
     },
-    [url, email]
+    [url]
+  );
+
+  const handleUnlock = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!email.trim() || !result?.shareId) return;
+      setUnlockSubmitting(true);
+      setUnlockError(null);
+      try {
+        const res = await fetch('/api/free-scan/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scanId: result.shareId, email: email.trim() }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setUnlockError(data.error || 'Could not save email. Please try again.');
+          return;
+        }
+        setUnlocked(true);
+      } catch {
+        setUnlockError('Network error. Please try again.');
+      } finally {
+        setUnlockSubmitting(false);
+      }
+    },
+    [email, result?.shareId]
   );
 
   /* ---- Idle / Error: Show the form ---- */
@@ -185,25 +217,9 @@ export function FreeScanForm() {
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[hsl(260_20%_18%)] border border-[hsl(260_20%_25%)] text-white placeholder:text-slate-500 focus:outline-none focus:border-[hsl(145_100%_55%/0.5)] focus:ring-1 focus:ring-[hsl(145_100%_55%/0.3)] transition-colors"
               />
             </div>
-          </div>
-
-          {/* Email input */}
-          <div>
-            <label htmlFor="scan-email" className="block text-sm font-medium mb-2 text-slate-300">
-              Email for your report
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                id="scan-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[hsl(260_20%_18%)] border border-[hsl(260_20%_25%)] text-white placeholder:text-slate-500 focus:outline-none focus:border-[hsl(145_100%_55%/0.5)] focus:ring-1 focus:ring-[hsl(145_100%_55%/0.3)] transition-colors"
-              />
-            </div>
+            <p className="text-xs text-slate-500 mt-2">
+              No email required to see your results. We&apos;ll show you what we find first.
+            </p>
           </div>
 
           {/* Error message */}
@@ -225,7 +241,7 @@ export function FreeScanForm() {
         <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-xs text-slate-500">
           <span className="flex items-center gap-1.5">
             <Shield className="w-3.5 h-3.5 text-green-400/70" />
-            No credit card required
+            No credit card. No email upfront.
           </span>
           <span className="flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-green-400/70" />
@@ -344,11 +360,14 @@ export function FreeScanForm() {
             <h3 className="text-xl font-semibold mb-2">Your links look healthy!</h3>
             <p className="text-slate-400 text-sm mb-6">
               We scanned {result.pagesScanned} pages and checked {result.totalLinksChecked} outbound links.
-              No broken links found right now, but links break over time as affiliate programs
-              change URLs and sunset products.
+              No broken links found right now &mdash; but Amazon changed their tag format last March and 12% of
+              affiliate links broke overnight. Programs sunset, URLs change, parameters get stripped silently.
             </p>
-            <Link href={`/signup?email=${encodeURIComponent(email)}`} className="btn-primary justify-center">
-              Set up free monitoring
+            <Link
+              href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+              className="btn-primary justify-center"
+            >
+              Set up free monitoring before your next commission disappears
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -369,8 +388,16 @@ export function FreeScanForm() {
               <BrokenLinkCard key={`${link.href}-${i}`} link={link} />
             ))}
 
-            {/* Hidden links: blurred */}
-            {hasHidden && (
+            {/* Hidden links: blurred OR unblurred after email submit */}
+            {hasHidden && unlocked && (
+              <div className="space-y-4">
+                {hiddenBroken.map((link, i) => (
+                  <BrokenLinkCard key={`unlocked-${i}`} link={link} />
+                ))}
+              </div>
+            )}
+
+            {hasHidden && !unlocked && (
               <div className="relative">
                 {/* Show 2 blurred cards as teasers */}
                 <div className="space-y-4 filter blur-[6px] pointer-events-none select-none" aria-hidden>
@@ -379,45 +406,76 @@ export function FreeScanForm() {
                   ))}
                 </div>
 
-                {/* Gate overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(260_25%_8%/0.7)] backdrop-blur-sm rounded-xl">
-                  <Lock className="w-8 h-8 text-slate-400 mb-3" />
-                  <p className="text-lg font-semibold mb-1">
+                {/* Gate overlay with inline email capture */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(260_25%_8%/0.85)] backdrop-blur-sm rounded-xl p-6">
+                  <Lock className="w-7 h-7 text-slate-400 mb-2" />
+                  <p className="text-lg font-semibold mb-1 text-center">
                     +{hiddenBroken.length} more broken link{hiddenBroken.length !== 1 ? 's' : ''} found
                   </p>
-                  <p className="text-sm text-slate-400 mb-5">
-                    Sign up free to see your full report with fix suggestions
+                  <p className="text-sm text-slate-400 mb-5 text-center max-w-md">
+                    Drop your email to unlock the full list. We&apos;ll also send you the report so you can
+                    forward it to your team.
                   </p>
-                  <Link
-                    href={`/signup?email=${encodeURIComponent(email)}`}
-                    className="btn-primary justify-center"
+                  <form
+                    onSubmit={handleUnlock}
+                    className="w-full max-w-md flex flex-col sm:flex-row gap-2"
                   >
-                    Get Your Full Report Free
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+                    <div className="relative flex-1">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        required
+                        disabled={unlockSubmitting}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-[hsl(260_20%_18%)] border border-[hsl(260_20%_25%)] text-white placeholder:text-slate-500 focus:outline-none focus:border-[hsl(145_100%_55%/0.5)] focus:ring-1 focus:ring-[hsl(145_100%_55%/0.3)] transition-colors disabled:opacity-50"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={unlockSubmitting}
+                      className="btn-primary justify-center disabled:opacity-50"
+                    >
+                      {unlockSubmitting ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          Unlock Full Report
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                  {unlockError && (
+                    <p className="text-xs text-red-400 mt-3">{unlockError}</p>
+                  )}
+                  <p className="text-xs text-slate-500 mt-3">
+                    No spam. One email with your report. Unsubscribe anytime.
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* Bottom CTA if all links shown (3 or fewer broken) */}
-            {!hasHidden && (
-              <div className="gradient-border p-6 text-center mt-6">
-                <p className="font-semibold mb-2">
-                  Links break silently every day.
-                </p>
-                <p className="text-sm text-slate-400 mb-5">
-                  Set up free monitoring and we&apos;ll email you the moment any affiliate link breaks
-                  so you never lose another commission.
-                </p>
-                <Link
-                  href={`/signup?email=${encodeURIComponent(email)}`}
-                  className="btn-primary justify-center"
-                >
-                  Start Free Monitoring
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            )}
+            {/* Bottom CTA — always shown after results, drives signup once user has seen value */}
+            <div className="gradient-border p-6 text-center mt-6">
+              <p className="font-semibold mb-2">
+                {unlocked || !hasHidden
+                  ? 'Don\'t let this pile up again.'
+                  : 'Want continuous monitoring?'}
+              </p>
+              <p className="text-sm text-slate-400 mb-5">
+                LinkRescue checks every affiliate link on your site daily and alerts you the moment
+                anything breaks. Start free with up to 200 pages.
+              </p>
+              <Link
+                href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+                className="btn-primary justify-center"
+              >
+                Start Free Monitoring
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
         )}
       </div>

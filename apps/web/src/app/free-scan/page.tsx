@@ -105,23 +105,23 @@ export default function FreeScanPage() {
             </div>
           </div>
 
-          {/* Social proof */}
+          {/* Social proof — verified stats only */}
           <div className="max-w-2xl mx-auto mt-16 text-center">
             <p className="text-sm text-slate-500 mb-6">
-              Join 500+ affiliate marketers who monitor their links with LinkRescue
+              Built for affiliate marketers, content sites, and agencies that can&apos;t afford silent commission loss.
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-slate-600 text-xs">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">2.4M+</div>
-                <div>Links checked</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">$180K+</div>
-                <div>Revenue protected</div>
+                <div>Links checked across all scans</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">38+</div>
                 <div>Networks supported</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">$4.50</div>
+                <div>Avg lost commission per broken affiliate link / month</div>
               </div>
             </div>
           </div>

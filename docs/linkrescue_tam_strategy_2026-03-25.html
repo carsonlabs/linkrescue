@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkRescue TAM and Strategy</title>
+  <style>
+    :root {
+      --bg: #08111d;
+      --panel: #0f1b2f;
+      --panel-2: #14233c;
+      --text: #eaf1ff;
+      --muted: #9eb0d1;
+      --line: #294066;
+      --good: #31c48d;
+      --warn: #f6c65b;
+      --bad: #f87171;
+      --blue: #6ea8fe;
+      --cyan: #88e1f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Cambria, Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(110, 168, 254, 0.13), transparent 30%),
+        radial-gradient(circle at top left, rgba(49, 196, 141, 0.08), transparent 22%),
+        var(--bg);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    .hero, .two-col, .three-col {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .hero { grid-template-columns: 1.25fr 0.75fr; }
+    .two-col { grid-template-columns: 1fr 1fr; }
+    .three-col { grid-template-columns: repeat(3, 1fr); }
+
+    .card {
+      background: linear-gradient(180deg, rgba(20, 35, 60, 0.98), rgba(15, 27, 47, 0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: 42px;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 70ch;
+    }
+
+    .verdict {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(49, 196, 141, 0.12);
+      border: 1px solid rgba(49, 196, 141, 0.3);
+      color: #9af0c8;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .good { background: rgba(49, 196, 141, 0.13); color: #9af0c8; }
+    .warn { background: rgba(246, 198, 91, 0.13); color: #ffe39b; }
+    .bad { background: rgba(248, 113, 113, 0.13); color: #ffc0c0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 11px 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .bar-row { margin: 12px 0; }
+
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #0a1424;
+      border: 1px solid rgba(255,255,255,0.04);
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .fill-good { background: linear-gradient(90deg, #1faf73, #8ff0c1); }
+    .fill-warn { background: linear-gradient(90deg, #c89a2c, #ffe39b); }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    li + li { margin-top: 6px; }
+
+    .sources a {
+      color: #9dd6ff;
+      text-decoration: none;
+    }
+
+    .sources li {
+      margin-bottom: 6px;
+    }
+
+    .footnote {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 960px) {
+      .hero, .two-col, .three-col, .stat-grid {
+        grid-template-columns: 1fr;
+      }
+      h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">LinkRescue TAM and Strategic Direction</div>
+        <div class="verdict">Recommendation: Expand the wedge, do not abandon it</div>
+        <h1>LinkRescue is more interesting as commerce integrity infrastructure than as a simple affiliate tool.</h1>
+        <p class="sub">
+          As of <strong>March 25, 2026</strong>, the space is crowded at the low end, but still open higher up.
+          The better business is not “another broken-link checker.” It is an API layer that helps publishers,
+          agencies, and eventually AI agents verify monetized outbound links, preserve attribution, and avoid silent revenue loss.
+        </p>
+        <div class="stat-grid">
+          <div class="stat">
+            <strong>1M+</strong>
+            <span>Awin publishers</span>
+          </div>
+          <div class="stat">
+            <strong>750k+</strong>
+            <span>Partnerize partners</span>
+          </div>
+          <div class="stat">
+            <strong>$116B+</strong>
+            <span>impact GMV in 2025 benchmark sample</span>
+          </div>
+          <div class="stat">
+            <strong>$3T-$5T</strong>
+            <span>global commerce AI agents may mediate by 2030</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag good">Bottom Line</span>
+        <ul>
+          <li>The narrow affiliate-monitor niche can support a real business.</li>
+          <li>The larger upside is adjacent: commerce link integrity and agent-safe offer verification.</li>
+          <li>Do not jump to an unrelated API. Widen this wedge instead.</li>
+        </ul>
+        <div style="height:14px"></div>
+        <span class="tag warn">What Changes</span>
+        <ul>
+          <li>Position around integrity, attribution, and machine-readable commerce workflows.</li>
+          <li>Sell publisher SaaS now, API product next, agent product over time.</li>
+          <li>Build toward a future where the customer is partly a human and partly an agent.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="two-col">
+      <div class="card">
+        <h2>Market Facts</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Current Signal</th>
+              <th>Why It Matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Awin</td>
+              <td>1M publishers, 30,000 advertisers, $19B advertiser revenue, $1.4B publisher revenue</td>
+              <td class="muted">The affiliate ecosystem is large enough to support specialist infrastructure.</td>
+            </tr>
+            <tr>
+              <td>Partnerize</td>
+              <td>1,800 clients, 750,000 partners, 250,000 influencers, $10B+ transactions</td>
+              <td class="muted">Publisher and partner density is high, especially for tool and infra layers.</td>
+            </tr>
+            <tr>
+              <td>impact</td>
+              <td>2025 benchmark sample covers 2,368 brands, nearly 1B transactions, $116B+ GMV, $10B+ GTV</td>
+              <td class="muted">The economic base under affiliate and partner commerce is very large.</td>
+            </tr>
+            <tr>
+              <td>Awin CPI</td>
+              <td>$250M+ in accurately measured revenue, 2.5M+ additional tracked sales</td>
+              <td class="muted">Revenue leakage and attribution failure are painful enough to monetize directly.</td>
+            </tr>
+            <tr>
+              <td>McKinsey</td>
+              <td>62% of surveyed organizations were at least experimenting with AI agents in 2025</td>
+              <td class="muted">Agent workflows are real enough to shape product direction now.</td>
+            </tr>
+            <tr>
+              <td>McKinsey</td>
+              <td>AI agents could mediate $3T-$5T of global consumer commerce by 2030</td>
+              <td class="muted">Agent-safe commerce infrastructure is a much bigger long-term category.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Strategic Read</h2>
+        <div class="bar-row">
+          <div class="bar-head"><span>Standalone affiliate link monitor</span><span>Real but capped</span></div>
+          <div class="bar"><div class="fill fill-warn" style="width: 46%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span>Commerce link integrity API</span><span>Best near-term business</span></div>
+          <div class="bar"><div class="fill fill-good" style="width: 82%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span>Agent-safe offer verification layer</span><span>Best long-term upside</span></div>
+          <div class="bar"><div class="fill fill-good" style="width: 88%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span>Unrelated new API product</span><span>Lower confidence</span></div>
+          <div class="bar"><div class="fill" style="width: 29%"></div></div>
+        </div>
+        <div class="footnote">
+          These scores are judgment calls based on current market structure, your codebase, and how adjacent the product direction is to what you already built.
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:18px;">
+      <h2>TAM, SAM, SOM</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Definition</th>
+            <th>Range</th>
+            <th>Read</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TAM 1</td>
+            <td>Standalone affiliate link health and monitoring SaaS</td>
+            <td>$20M-$100M+ ARR</td>
+            <td class="muted">Bottom-up inference from serious publisher, agency, and operator segments paying roughly $30-$150 per month.</td>
+          </tr>
+          <tr>
+            <td>TAM 2</td>
+            <td>Publisher monetization ops and partner-commerce integrity tooling</td>
+            <td>$100M-$500M+ ARR</td>
+            <td class="muted">This includes broader publisher, creator, and agency workflows beyond just “broken affiliate links.”</td>
+          </tr>
+          <tr>
+            <td>TAM 3</td>
+            <td>Agent-safe commerce and offer verification infrastructure</td>
+            <td>Strategically much larger</td>
+            <td class="muted">McKinsey’s agentic commerce figures suggest the downstream commerce surface is enormous, even if your near-term capture is small.</td>
+          </tr>
+          <tr>
+            <td>SAM</td>
+            <td>What you can realistically serve in the next 24 months with your current wedge</td>
+            <td>$5M-$30M ARR</td>
+            <td class="muted">Focused on English-speaking publishers, small agencies, newsletter/media operators, and API-forward teams.</td>
+          </tr>
+          <tr>
+            <td>SOM</td>
+            <td>What you can plausibly win in 12 to 24 months if execution is good</td>
+            <td>$250k-$1.5M ARR</td>
+            <td class="muted">This is the realistic near-term goal, not the ceiling. Bigger numbers come from expansion, not just the current site-monitor framing.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        The TAM/SAM/SOM rows are <strong>inferences</strong> from current network size, public platform statistics, and plausible paid penetration. They are not reported market-size figures from a single source.
+      </div>
+    </section>
+
+    <section class="three-col">
+      <div class="card">
+        <span class="tag warn">Direction 1</span>
+        <h2>Commerce Link Integrity API</h2>
+        <p class="muted">
+          Check links, crawl sites, validate redirect chains, confirm affiliate parameter survival, and emit webhooks.
+        </p>
+        <ul>
+          <li><strong>Upside:</strong> high</li>
+          <li><strong>Defensibility:</strong> medium-high</li>
+          <li><strong>Time to revenue:</strong> fastest</li>
+          <li><strong>Best customers:</strong> publishers, agencies, internal ops tools</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag good">Direction 2</span>
+        <h2>Offer Integrity API</h2>
+        <p class="muted">
+          Broaden beyond affiliate. Verify that a product page is live, recommendable, attributable, and machine-usable.
+        </p>
+        <ul>
+          <li><strong>Upside:</strong> very high</li>
+          <li><strong>Defensibility:</strong> high</li>
+          <li><strong>Time to revenue:</strong> medium</li>
+          <li><strong>Best customers:</strong> commerce publishers, shopping agents, deal tools, commerce media</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag bad">Direction 3</span>
+        <h2>Pure Attribution Integrity API</h2>
+        <p class="muted">
+          Narrowly focus on preserving tracking and detecting attribution loss across redirect chains and network handoffs.
+        </p>
+        <ul>
+          <li><strong>Upside:</strong> medium-high</li>
+          <li><strong>Defensibility:</strong> medium</li>
+          <li><strong>Time to revenue:</strong> medium</li>
+          <li><strong>Best customers:</strong> larger publishers, networks, agency ops teams</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="two-col">
+      <div class="card">
+        <h2>What I Would Build</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Product</th>
+              <th>Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Commerce Link Integrity API</td>
+              <td class="muted">Closest to the current code and fastest path to revenue.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Offer Integrity API</td>
+              <td class="muted">Best long-term category because it expands beyond affiliate while staying adjacent.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Agent-safe Offer Verification layer</td>
+              <td class="muted">Likely the eventual destination, but better as an expansion than as a cold-start product.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Plain-English Recommendation</h2>
+        <ul>
+          <li>Do not abandon LinkRescue because the wedge is real.</li>
+          <li>Do not stay boxed into “affiliate broken-link monitor” positioning.</li>
+          <li>Do not jump to a random new API product unrelated to this wedge.</li>
+          <li>Do widen into commerce integrity and agent-safe verification.</li>
+          <li>Sell the publisher product now, the API product next, and the agent product over time.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Sources</h2>
+      <ul class="sources">
+        <li><a href="https://www.awin.com/about-us">Awin About</a></li>
+        <li><a href="https://www.awin.com/publishers">Awin Publishers</a></li>
+        <li><a href="https://partnerize.com/company">Partnerize Company</a></li>
+        <li><a href="https://impact.com/affiliate/affiliate-marketing-benchmark/">impact 2025 Affiliate Benchmark</a></li>
+        <li><a href="https://www.awin.com/us/cpi">Awin Conversion Protection Initiative</a></li>
+        <li><a href="https://www.awin.com/us/news-and-events/awin-news/awin-cpi-revenue-recovery">Awin CPI $250M Revenue Recovery</a></li>
+        <li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai/">McKinsey State of AI 2025</a></li>
+        <li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants">McKinsey Agentic Commerce Opportunity</a></li>
+        <li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/seizing-the-agentic-ai-advantage">McKinsey Agentic AI Advantage</a></li>
+      </ul>
+      <div class="footnote">
+        Exact TAM/SAM/SOM numbers above are strategic estimates based on these sources and current product/pricing realities. They should be treated as planning ranges, not audited market figures.
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { getLatestScan, getIssueCountsForSite } from '@linkrescue/database';
+import { getLatestScan, getIssueCountsForSite, getUserScoreboard } from '@linkrescue/database';
 import { getUserPlan, getTierLimits } from '@linkrescue/types';
 import Link from 'next/link';
 import {
@@ -14,6 +14,7 @@ import {
   Crown,
 } from 'lucide-react';
 import { InsightsPanel, type CuratorInsight } from '@/components/dashboard/insights-panel';
+import { ScoreboardHero } from '@/components/dashboard/scoreboard-hero';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,13 @@ export default async function DashboardOverviewPage() {
     .limit(5);
   const insights = (insightRows ?? []) as unknown as CuratorInsight[];
 
+  // Scoreboard row. Fails soft if the view hasn't been applied yet.
+  const scoreboard = await getUserScoreboard(supabase, user.id).catch(() => null);
+  const curatorPick =
+    insights.find((i) => i.kind === 'recommendation') ??
+    insights.find((i) => i.kind === 'summary') ??
+    null;
+
   if ((sites ?? []).length === 0) {
     return <EmptyState plan={plan} />;
   }
@@ -93,6 +101,9 @@ export default async function DashboardOverviewPage() {
             : 'No scans yet — verify a site to get started.'}
         </p>
       </div>
+
+      {/* Scoreboard hero — dollar-amount-protected lives above everything else */}
+      <ScoreboardHero scoreboard={scoreboard} plan={plan} curatorPick={curatorPick} />
 
       {/* Curator insights (weekly memory-backed agent output) */}
       <InsightsPanel insights={insights} />

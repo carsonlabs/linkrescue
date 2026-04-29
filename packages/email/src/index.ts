@@ -6,6 +6,9 @@ export { sendWeeklyDigest } from './digest';
 export { sendMonthlyHealthReport } from './monthly-report';
 export { MonthlyHealthReport } from './templates/monthly-health-report';
 export type { MonthlyHealthReportProps } from './templates/monthly-health-report';
+export { sendWeeklyScoreboard } from './weekly-scoreboard';
+export { WeeklyScoreboard } from './templates/weekly-scoreboard';
+export type { WeeklyScoreboardProps } from './templates/weekly-scoreboard';
 
 // Onboarding sequence
 export { OnboardingWelcome } from './templates/onboarding-welcome';

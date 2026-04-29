@@ -13,3 +13,4 @@ export * from './webhook';
 export * from './analytics';
 export * from './schedule';
 export * from './onboarding';
+export * from './scoreboard';

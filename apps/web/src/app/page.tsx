@@ -23,6 +23,7 @@ import { CalculatorTeaser } from '@/components/CalculatorTeaser';
 import { PublicNav } from '@/components/PublicNav';
 import { PublicFooter } from '@/components/PublicFooter';
 import { ParallaxBlobs, ParallaxFloat } from '@/components/HeroParallax';
+import { PublicStatsCounter } from '@/components/PublicStatsCounter';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -151,13 +152,8 @@ export default function HomePage() {
                 keep costing you commissions.
               </p>
 
-              {/* Stat line */}
-              <div className="flex items-center gap-2 text-sm">
-                <TrendingDown className="w-4 h-4 text-red-400 flex-shrink-0" />
-                <span className="text-slate-300">
-                  The average affiliate site loses <span className="font-semibold text-red-400">$1,200/month</span> to broken links and stripped tracking parameters.
-                </span>
-              </div>
+              {/* Live network stats — falls back to static stat when totals are still small */}
+              <PublicStatsCounter />
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">

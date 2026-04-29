@@ -193,6 +193,26 @@ export async function getHealthTrends(userId: string) {
   }));
 }
 
+/**
+ * Per-user scoreboard — surfaces dollar-amount-protected, issues caught/resolved,
+ * top at-risk program, and 7-day health average so the Curator can write
+ * $-quantified summaries.
+ */
+export async function getScoreboard(userId: string) {
+  const { data, error } = await app
+    .from('user_scoreboard')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) {
+    // View may not exist yet (migration unapplied) — return null so the agent skips.
+    if ((error as any).code === '42P01') return null;
+    throw error;
+  }
+  return data;
+}
+
 export async function publishInsight(args: {
   user_id: string;
   kind: 'summary' | 'recommendation' | 'alert_suppression' | 'program_risk';

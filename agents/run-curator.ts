@@ -20,6 +20,7 @@ import {
   getMatchOutcomes,
   getHealthTrends,
   getNetworkBenchmarks,
+  getScoreboard,
   publishInsight,
   markCuratorRun,
   getOrCreateMemoryStoreId,
@@ -51,6 +52,8 @@ async function dispatchTool(toolName: string, input: any): Promise<string> {
         return JSON.stringify(await getHealthTrends(input.user_id));
       case 'get_network_benchmarks':
         return JSON.stringify(await getNetworkBenchmarks(input.user_id));
+      case 'get_user_scoreboard':
+        return JSON.stringify(await getScoreboard(input.user_id));
       case 'publish_insight':
         return JSON.stringify(await publishInsight(input));
       case 'mark_curator_run':

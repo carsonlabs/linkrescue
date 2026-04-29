@@ -1,4 +1,4 @@
-import type { IssueType } from '@linkrescue/types';
+import type { IssueType, EstimatorTier } from '@linkrescue/types';
 
 export interface ExtractedLink {
   href: string;
@@ -27,6 +27,11 @@ export interface ScanOptions {
   sitemapUrl: string | null;
   maxPages: number;
   crawlExclusions?: string[];
+  /**
+   * User's plan tier — drives the per-issue value estimate written to scan_results.
+   * Defaults to 'free' (most conservative) when not provided.
+   */
+  userTier?: EstimatorTier;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any;
 }

@@ -1,0 +1,17 @@
+=== DOGFOOD SCAN started at Thu, Apr 16, 2026  9:54:10 PM ===
+[1] paint-pulse-eight.vercel.app
+  ✅ scanned
+[2] selfheal.dev
+  ✅ scanned
+[3] linkrescue.io
+  ✅ scanned
+[4] yorklivingcost.ca
+  ✅ scanned
+[5] freedomengineers.tech
+  ✅ scanned
+[6] demodraft-gamma.vercel.app
+  ✅ scanned
+[7] agentready.tools
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
+=== DOGFOOD SCAN completed at Thu, Apr 16, 2026  9:57:45 PM ===

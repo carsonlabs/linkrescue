@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { runScan } from '@linkrescue/crawler';
 import { createAdminClient, computeHealthScore, upsertHealthScore } from '@linkrescue/database';
+import { getUserPlan } from '@linkrescue/types';
 import { dispatchWebhook } from '@/lib/webhooks';
 import { notifySlack, formatScanComplete } from '@/lib/slack';
 
@@ -60,6 +61,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: 'skipped', reason: 'scan not in pending state' });
   }
 
+  // Look up user tier so the value-estimator scales the per-issue $ correctly.
+  let userTier: 'free' | 'pro' | 'agency' = 'free';
+  if (userId) {
+    const { data: profile } = await adminDb
+      .from('users')
+      .select('stripe_price_id')
+      .eq('id', userId)
+      .maybeSingle();
+    userTier = getUserPlan(profile?.stripe_price_id ?? null);
+  }
+
   try {
     const scanResult = await runScan({
       scanId,
@@ -68,6 +80,7 @@ export async function POST(request: Request) {
       sitemapUrl: sitemapUrl ?? null,
       maxPages,
       crawlExclusions,
+      userTier,
       supabase: adminDb,
     });
 

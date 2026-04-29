@@ -92,6 +92,13 @@ Return empty array [] if no good matches.`,
     messages: [{ role: 'user', content: userPrompt }],
   });
 
+  if (message.usage) {
+    const u = message.usage as any;
+    console.log(
+      `[linkrescue-match-offers] in=${u.input_tokens} cached=${u.cache_read_input_tokens ?? 0} write=${u.cache_creation_input_tokens ?? 0} out=${u.output_tokens}`,
+    );
+  }
+
   const text = message.content[0].type === 'text' ? message.content[0].text : '[]';
   let results: OfferMatchResult[];
   try {

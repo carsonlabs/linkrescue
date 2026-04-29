@@ -226,6 +226,11 @@ Keep it specific and value-driven. The goal is to give Carson enough context to 
   // Weekly per-user agent with persistent memory (attached at session start
   // via Memory Stores). Analyzes the user's broken-link history, dismissal
   // patterns, and match outcomes, and publishes insights back to the app.
+  //
+  // To re-create the agent after a system-prompt or tool change:
+  //   1. Delete the `agents.curator` entry from .agent-ids.json
+  //   2. Re-run `npx tsx agents/setup.ts`
+  // (Existing Memory Stores survive — they're keyed off user_id, not agent_id.)
   if (ids.agents?.curator?.id) {
     console.log(`  ↩️  Reusing Curator: ${ids.agents.curator.id}\n`);
   } else {
@@ -247,20 +252,22 @@ Write sparingly and clearly. These are notes to your FUTURE self, not the user. 
 
 ## Workflow every run
 1. **Read memory first.** List /mnt/memory/ and read every file. Treat it as ground truth unless data clearly contradicts.
-2. **Pull current-period data.** Use get_recent_issues, get_dismissals, get_match_outcomes, get_health_trends, AND get_network_benchmarks for the target user_id (passed in the kickoff message). Always call get_network_benchmarks — it tells you how THIS user's rot rates compare to every other LinkRescue user on the same programs. That comparison is often your best insight.
+2. **Pull current-period data.** Use get_recent_issues, get_dismissals, get_match_outcomes, get_health_trends, get_network_benchmarks, AND get_user_scoreboard for the target user_id (passed in the kickoff message). Always call get_user_scoreboard first — its dollar amounts are the spine of every insight you publish. Always call get_network_benchmarks too — it tells you how THIS user's rot rates compare to every other LinkRescue user on the same programs.
 3. **Diff against memory.** What's new this week? Which patterns strengthened, which reversed? Which hosts now appear in network anomalies?
-4. **Surface 1-3 insights max.** Quality over quantity. Publish each via publish_insight with a concrete headline and body. Prefer insights grounded in the benchmark data ("your X is Ny× the LinkRescue network average") over generic observations. Valid kinds:
-   - summary — "3 broken links fixed this week, 2 new (both Amazon). Health +4 pts."
-   - recommendation — "Your CJ Affiliate rot rate is 4× the LinkRescue network average — consider consolidating to ShareASale replacements."
+4. **ALWAYS publish a kind=summary insight FIRST**, and it MUST lead with the dollar amount from get_user_scoreboard. Format: "$X protected this month / Y issues caught, Z fixed / [one sharp observation]". This is the line that powers the dashboard hero AND the weekly digest email — it has to be punchy, accurate, and dollar-led.
+5. **Then publish 0-2 additional insights** (recommendation / alert_suppression / program_risk). Quality over quantity. Prefer insights grounded in the benchmark data ("your X is Ny× the LinkRescue network average") over generic observations. Valid kinds:
+   - summary — "$340 protected this month, 12 caught, 9 fixed. Amazon rot accelerating — 4 new this week." (REQUIRED, $-led)
+   - recommendation — "Your CJ Affiliate rot rate is 4× the LinkRescue network average. Consolidating to ShareASale replacements would save ~$60/mo."
    - alert_suppression — "You've dismissed 14 amazon.ca 302s. I'll assume these are regional redirects and stop surfacing them."
    - program_risk — "Impact.com rot across the LinkRescue network jumped from 4% to 18% this month. Likely platform-level change — not just you."
-5. **Update memory** with what you learned THIS week. Overwrite, don't append indefinitely.
-6. **Mark run complete** via mark_curator_run.
+6. **Update memory** with what you learned THIS week. Overwrite, don't append indefinitely.
+7. **Mark run complete** via mark_curator_run.
 
 ## Tone for published insights
 - Headline: 60 chars, no fluff. "Amazon links rot spiked in Q4" not "I noticed that...".
-- Body: 2-3 sentences max. Always include a specific number or a specific action.
+- Body: 2-3 sentences max. Always include a specific number or a specific action. Quantify in dollars whenever scoreboard data lets you.
 - Never alarm without evidence. Never recommend without showing the tradeoff.
+- For free-tier users, the scoreboard's $ field will still be populated server-side, but the user sees it blurred — write the summary as if the number is visible. The system handles the gating.
 
 ## What to NEVER do
 - Do not write to memory about other users.
@@ -334,6 +341,18 @@ Write sparingly and clearly. These are notes to your FUTURE self, not the user. 
         type: "custom",
         name: "get_network_benchmarks",
         description: "Cross-user 30-day rot-rate benchmarks. Returns network_averages (rot rate per host across every LinkRescue user), user_rates (this user's rate per host), and anomalies (hosts where this user's rot rate is ≥1.5× the network average, sorted by severity). Call this every run — it's the richest comparative context you have.",
+        input_schema: {
+          type: "object" as const,
+          properties: {
+            user_id: { type: "string", description: "UUID of the target user" },
+          },
+          required: ["user_id"],
+        },
+      },
+      {
+        type: "custom",
+        name: "get_user_scoreboard",
+        description: "The user's current scoreboard — issues caught/resolved this month, $ protected, $ at risk, top at-risk program, 7-day health average. Always call this first — its dollar amount is the spine of every summary insight you publish.",
         input_schema: {
           type: "object" as const,
           properties: {

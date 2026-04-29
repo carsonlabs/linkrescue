@@ -22,6 +22,13 @@ Respond with a JSON object (no markdown, raw JSON only):
     messages: [{ role: 'user', content: prompt }],
   });
 
+  if (message.usage) {
+    const u = message.usage as any;
+    console.log(
+      `[linkrescue-analyze-link] in=${u.input_tokens} cached=${u.cache_read_input_tokens ?? 0} write=${u.cache_creation_input_tokens ?? 0} out=${u.output_tokens}`,
+    );
+  }
+
   const text = message.content[0].type === 'text' ? message.content[0].text : '';
   return JSON.parse(text) as DeadLinkAnalysis;
 }

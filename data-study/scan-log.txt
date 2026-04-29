@@ -1,0 +1,89 @@
+=== LinkRescue 50-site data study started at Thu, Apr 16, 2026  9:18:51 PM ===
+[1/50] nomadicmatt.com
+  ✅ scanned
+[2/50] expertvagabond.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[3/50] onemileatatime.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[4/50] theplanetd.com
+  ⏱️  TIMEOUT
+[5/50] adventurouskate.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[6/50] travelfreak.com
+  ⏱️  TIMEOUT
+[7/50] financialsamurai.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[8/50] sidehustlenation.com
+  ✅ scanned
+[9/50] makingsenseofcents.com
+  ✅ scanned
+[10/50] millennialmoney.com
+  ⏱️  TIMEOUT
+[11/50] thewaystowealth.com
+  ⏱️  TIMEOUT
+[12/50] mrmoneymustache.com
+  ✅ scanned
+[13/50] ghacks.net
+  ✅ scanned
+[14/50] howtogeek.com
+  ⏱️  TIMEOUT
+[15/50] makeuseof.com
+  ⏱️  TIMEOUT
+[16/50] techboomers.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[17/50] digitaltrends.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[18/50] budgetbytes.com
+  ⏱️  TIMEOUT
+[19/50] thekitchn.com
+  ✅ scanned
+[20/50] cookieandkate.com
+  ⏱️  TIMEOUT
+[21/50] seriouseats.com
+  ✅ scanned
+[22/50] pinchofyum.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[23/50] ana-white.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[24/50] younghouselove.com
+  ✅ scanned
+[25/50] thehandymansdaughter.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[26/50] apartmenttherapy.com
+  ✅ scanned
+[27/50] familyhandyman.com
+  ⏱️  TIMEOUT
+[28/50] nerdfitness.com
+  ⏱️  TIMEOUT
+[29/50] breakingmuscle.com
+  ✅ scanned
+[30/50] stronglifts.com
+  ✅ scanned
+[31/50] cleverhiker.com
+  ⏱️  TIMEOUT
+[32/50] thetrek.co
+  ⏱️  TIMEOUT
+[33/50] pmags.com
+  ⏱️  TIMEOUT
+[34/50] sectionhiker.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ⏱️  TIMEOUT
+[35/50] outdoorgearlab.com
+  ⏱️  TIMEOUT
+[36/50] nichepursuits.com
+  ✅ scanned
+[37/50] authorityhacker.com
+  ✅ scanned
+[38/50] bloggingwizard.com
+  ⏱️  TIMEOUT
+[39/50] smartpassiveincome.com
+[url-safety] DNS resolution unavailable, falling back to hostname check

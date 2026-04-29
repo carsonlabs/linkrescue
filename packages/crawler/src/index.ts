@@ -17,6 +17,7 @@ import {
 } from './crawl-config';
 import type { ScanOptions, ScanSummary } from './types';
 import { createScanSummary } from './types';
+import { estimateValueCents, type IssueTypeKey } from '@linkrescue/types';
 
 export { crawlSite } from './crawl';
 export { fetchSitemap, parseSitemapXml, discoverPages } from './sitemap';
@@ -41,6 +42,7 @@ export async function runScan(options: ScanOptions) {
     sitemapUrl,
     maxPages,
     crawlExclusions = [],
+    userTier = 'free',
     supabase,
   } = options;
   const startTime = Date.now();
@@ -300,6 +302,13 @@ export async function runScan(options: ScanOptions) {
             await supabase.from('links').update(updateData).eq('id', linkRecord.id);
           }
 
+          // Compute estimated $ at risk for this issue (powers the scoreboard).
+          const estimatedValueCents = estimateValueCents({
+            tier: userTier,
+            issueType: finalIssueType as IssueTypeKey,
+            isAffiliate: result.isAffiliate,
+          });
+
           // Store scan result
           await supabase.from('scan_results').insert({
             scan_id: scanId,
@@ -309,6 +318,7 @@ export async function runScan(options: ScanOptions) {
             redirect_hops: result.redirectHops,
             issue_type: finalIssueType,
             wayback_url: waybackUrl,
+            estimated_value_cents: estimatedValueCents,
           });
         }
       } catch (err) {

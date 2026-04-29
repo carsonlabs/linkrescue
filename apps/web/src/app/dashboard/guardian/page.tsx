@@ -63,7 +63,7 @@ export default async function GuardianPage() {
             <tbody>
               {links.map((link) => {
                 const rescues = Array.isArray(link.rescue_logs) ? link.rescue_logs.length : 0;
-                const rescueUrl = `${appUrl}/api/rescue/${link.slug}`;
+                const rescueUrl = `${appUrl}/rescue/${link.slug}`;
                 return (
                   <tr key={link.id} className="border-b last:border-0">
                     <td className="px-4 py-3 font-mono text-xs">{link.slug}</td>

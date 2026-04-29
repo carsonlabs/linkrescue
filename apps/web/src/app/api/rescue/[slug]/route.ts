@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { Database } from '@linkrescue/database';
 import { createAdminClient } from '@linkrescue/database';
 
-export async function GET(_req: Request, { params }: { params: { slug: string } }) {
+export async function GET(req: Request, { params }: { params: { slug: string } }) {
   const adminDb = createAdminClient();
 
   const { data: linkData } = await adminDb
@@ -18,10 +18,6 @@ export async function GET(_req: Request, { params }: { params: { slug: string } 
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  // Minimum bar: only http(s) absolute URLs, no javascript:/data:/file: smuggling.
-  // The link owner chose this URL, but /rescue/[slug] is public — phishing risk
-  // if we blindly 302 anywhere. Future work: serve an interstitial page that
-  // shows the destination and requires a click-through for off-domain targets.
   let backup: URL;
   try {
     backup = new URL(link.backup_url);
@@ -30,6 +26,19 @@ export async function GET(_req: Request, { params }: { params: { slug: string } 
   }
   if (backup.protocol !== 'http:' && backup.protocol !== 'https:') {
     return NextResponse.json({ error: 'Unsupported URL scheme' }, { status: 400 });
+  }
+
+  // Phishing safeguard: if the destination is off-domain and the request did
+  // not come from the interstitial page, bounce to /rescue/[slug] so the user
+  // sees where they're about to land. Same-domain hops auto-redirect since
+  // the link owner controls both ends.
+  const reqUrl = new URL(req.url);
+  const confirmed = reqUrl.searchParams.get('confirmed') === '1';
+  const sameDomain = reqUrl.hostname === backup.hostname;
+
+  if (!confirmed && !sameDomain) {
+    const interstitial = new URL(`/rescue/${params.slug}`, reqUrl.origin);
+    return NextResponse.redirect(interstitial.toString(), { status: 302 });
   }
 
   void Promise.resolve(

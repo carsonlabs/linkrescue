@@ -20,5 +20,5 @@ export async function POST(request: Request) {
   if (!link) return NextResponse.json({ rescueUrl: null });
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? '';
-  return NextResponse.json({ rescueUrl: `${appUrl}/api/rescue/${link.slug}` });
+  return NextResponse.json({ rescueUrl: `${appUrl}/rescue/${link.slug}` });
 }

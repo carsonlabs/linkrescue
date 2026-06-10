@@ -14,11 +14,13 @@ export async function runScan(rawUrl: string, options: CliOptions): Promise<void
     FREE_MAX_PAGES,
   );
 
-  console.log('');
-  console.log(chalk.bold(`\ud83d\udd0d LinkRescue \u2014 Scanning ${chalk.cyan(url)}`));
-  console.log('');
+  if (!options.json) {
+    console.log('');
+    console.log(chalk.bold(`\ud83d\udd0d LinkRescue \u2014 Scanning ${chalk.cyan(url)}`));
+    console.log('');
+  }
 
-  if (requestedMaxPages > FREE_MAX_PAGES) {
+  if (!options.json && requestedMaxPages > FREE_MAX_PAGES) {
     console.log(
       chalk.yellow(
         `  Note: Free CLI is limited to ${FREE_MAX_PAGES} pages. Upgrade at https://linkrescue.io for unlimited scans.`,
@@ -27,24 +29,37 @@ export async function runScan(rawUrl: string, options: CliOptions): Promise<void
     console.log('');
   }
 
+  const budgetSeconds = options.budget ? parseInt(options.budget, 10) : 0;
+  const budgetMs = !isNaN(budgetSeconds) && budgetSeconds > 0 ? budgetSeconds * 1000 : undefined;
+
   const spinner = options.json ? null : ora('Discovering pages...').start();
 
-  const { results, pagesScanned, totalLinks, durationMs } = await scanSite(
-    url,
-    maxPages,
-    (pageCount) => {
-      if (spinner) {
-        spinner.text = `Found ${pageCount} pages. Fetching content...`;
-      }
-    },
-    (checked, total) => {
-      if (spinner) {
-        spinner.text = `Checking links... ${checked}/${total}`;
-      }
-    },
-  );
+  const { results, pagesScanned, totalLinks, durationMs, budgetExhausted, pagesSkippedBudget, linksSkippedBudget } =
+    await scanSite(
+      url,
+      maxPages,
+      (pageCount) => {
+        if (spinner) {
+          spinner.text = `Found ${pageCount} pages. Fetching content...`;
+        }
+      },
+      (checked, total) => {
+        if (spinner) {
+          spinner.text = `Checking links... ${checked}/${total}`;
+        }
+      },
+      budgetMs,
+    );
 
   spinner?.stop();
+
+  if (!options.json && budgetExhausted) {
+    console.log(
+      chalk.yellow(
+        `  Time budget reached — partial results (${pagesSkippedBudget} pages, ${linksSkippedBudget} links skipped).`,
+      ),
+    );
+  }
 
   if (!options.json) {
     console.log(
@@ -61,6 +76,9 @@ export async function runScan(rawUrl: string, options: CliOptions): Promise<void
       totalLinks,
       results,
       durationMs,
+      budgetExhausted,
+      pagesSkippedBudget,
+      linksSkippedBudget,
     },
     options,
   );

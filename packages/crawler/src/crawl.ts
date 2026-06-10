@@ -17,7 +17,8 @@ import {
 export async function crawlSite(
   domain: string,
   maxDepth: number,
-  maxPages: number = 50
+  maxPages: number = 50,
+  deadlineMs?: number
 ): Promise<string[]> {
   const visited = new Set<string>();
   const toVisit: Array<{ url: string; depth: number }> = [
@@ -35,6 +36,9 @@ export async function crawlSite(
       : CRAWL_DELAY_MS;
 
   while (toVisit.length > 0 && visited.size < maxPages) {
+    // Time-budget guard: return whatever we've discovered so far
+    if (deadlineMs !== undefined && Date.now() > deadlineMs) break;
+
     const { url, depth } = toVisit.shift()!;
 
     if (visited.has(url) || depth > maxDepth) continue;

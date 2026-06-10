@@ -81,6 +81,10 @@ export async function POST(request: Request) {
       maxPages,
       crawlExclusions,
       userTier,
+      // 30s under the Vercel maxDuration (300s) so link-heavy sites finish
+      // gracefully with partial results instead of being platform-killed
+      // mid-write (which left scans stuck in 'running' before this).
+      maxDurationMs: 270_000,
       supabase: adminDb,
     });
 

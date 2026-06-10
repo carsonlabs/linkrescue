@@ -110,6 +110,28 @@ function makeResult(
   };
 }
 
+async function fetchHop(url: string, method: 'HEAD' | 'GET'): Promise<Response> {
+  try {
+    return await fetch(url, {
+      method,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
+      headers: { 'User-Agent': CHECKER_USER_AGENT },
+    });
+  } catch (err) {
+    if (method === 'HEAD') {
+      // Network-level HEAD failure — some servers drop HEAD entirely
+      return await fetch(url, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
+        headers: { 'User-Agent': CHECKER_USER_AGENT },
+      });
+    }
+    throw err;
+  }
+}
+
 async function followRedirects(
   url: string
 ): Promise<{ statusCode: number; finalUrl: string; hops: number }> {
@@ -122,23 +144,21 @@ async function followRedirects(
       return { statusCode: 0, finalUrl: currentUrl, hops };
     }
 
-    // Try HEAD first, then GET fallback
-    let response: Response;
-    try {
-      response = await fetch(currentUrl, {
-        method: 'HEAD',
-        redirect: 'manual',
-        signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
-        headers: { 'User-Agent': CHECKER_USER_AGENT },
-      });
-    } catch {
-      // HEAD failed, try GET
-      response = await fetch(currentUrl, {
-        method: 'GET',
-        redirect: 'manual',
-        signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
-        headers: { 'User-Agent': CHECKER_USER_AGENT },
-      });
+    // Try HEAD first, then GET fallback. The fallback must fire on suspicious
+    // 4xx responses too, not just network errors: many servers reject HEAD
+    // outright (405) or bot-block it (403) while serving GET normally.
+    // Without this, HEAD-hostile-but-healthy links get reported as broken.
+    let response = await fetchHop(currentUrl, 'HEAD');
+    if (
+      response.status >= 400 &&
+      response.status !== 404 &&
+      response.status !== 410
+    ) {
+      try {
+        response = await fetchHop(currentUrl, 'GET');
+      } catch {
+        // GET retry failed — keep the HEAD result
+      }
     }
 
     const status = response.status;
@@ -168,12 +188,7 @@ async function followRedirects(
     if (!(await validateFetchUrlWithDns(currentUrl))) {
       return { statusCode: 0, finalUrl: currentUrl, hops };
     }
-    const finalResponse = await fetch(currentUrl, {
-      method: 'HEAD',
-      redirect: 'manual',
-      signal: AbortSignal.timeout(LINK_CHECK_TIMEOUT_MS),
-      headers: { 'User-Agent': CHECKER_USER_AGENT },
-    });
+    const finalResponse = await fetchHop(currentUrl, 'HEAD');
     return { statusCode: finalResponse.status, finalUrl: currentUrl, hops };
   } catch {
     return { statusCode: 0, finalUrl: currentUrl, hops };

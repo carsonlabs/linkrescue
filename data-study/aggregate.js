@@ -9,7 +9,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const RESULTS_DIR = path.join(__dirname, 'results');
+const RESULTS_DIR = process.argv[2] ? path.resolve(process.argv[2]) : path.join(__dirname, 'results');
+const SUMMARY_OUT = process.argv[3] ? path.resolve(process.argv[3]) : path.join(__dirname, 'aggregate-summary.json');
 const SITES_FILE = path.join(__dirname, 'sites.txt');
 
 // Niche classifications (matches sites.txt order-ish)
@@ -98,6 +99,11 @@ function main() {
   let errored = 0;
   let timedOut = 0;
   let zeroBrokenSites = 0;
+  let partialSites = 0;
+  let totalLinksSkipped = 0;
+  let totalLinksFound = 0;
+  let totalBlocked = 0;
+  let totalHard4xx = 0;
   let allRedirectHops = [];
 
   const nicheStats = {}; // niche -> { sites, pages, links, broken, lostParams }
@@ -130,15 +136,43 @@ function main() {
 
     completed++;
     const s = data.summary;
-    const brokenHttp = (s.broken4xx || 0) + (s.server5xx || 0) + (s.timeout || 0);
+
+    // Tally from issue-level data so bot-blocked responses (403/405/429 even
+    // after a GET retry) can be separated from genuinely broken links. A
+    // Cloudflare challenge is not a broken link, and counting it as one
+    // inflated earlier runs badly (run 1: 1,000 of 1,474 "4xx" were 403s).
+    const BLOCKED_STATUSES = new Set([403, 405, 429]);
+    let hard4xx = 0;
+    let blockedCount = 0;
+    for (const iss of data.issues || []) {
+      // New CLI builds emit issueType BLOCKED directly; older result files
+      // classified bot-blocks as BROKEN_4XX — slice those by status code.
+      if (iss.issueType === 'BLOCKED') {
+        blockedCount++;
+      } else if (iss.issueType === 'BROKEN_4XX') {
+        if (BLOCKED_STATUSES.has(iss.status)) blockedCount++;
+        else hard4xx++;
+      }
+    }
+    const brokenHttp = hard4xx + (s.server5xx || 0) + (s.timeout || 0);
     const affiliateIssues = (s.redirectToHome || 0) + (s.lostParams || 0);
     const allIssues = brokenHttp + affiliateIssues;
+    totalBlocked += blockedCount;
+    totalHard4xx += hard4xx;
+
+    // Budgeted scans return partial results: rates must use links CHECKED,
+    // not links FOUND, or partial sites dilute every percentage.
+    const linksSkipped = data.linksSkippedBudget || 0;
+    const linksChecked = Math.max((data.totalLinks || 0) - linksSkipped, 0);
+    if (data.budgetExhausted) partialSites++;
+    totalLinksSkipped += linksSkipped;
+    totalLinksFound += data.totalLinks || 0;
 
     if (brokenHttp === 0) zeroBrokenSites++;
 
     totalPages += data.pagesScanned || 0;
-    totalLinks += data.totalLinks || 0;
-    totalBroken4xx += s.broken4xx || 0;
+    totalLinks += linksChecked;
+    totalBroken4xx += hard4xx;
     totalServer5xx += s.server5xx || 0;
     totalTimeouts += s.timeout || 0;
     totalRedirectHome += s.redirectToHome || 0;
@@ -161,16 +195,19 @@ function main() {
     }
     nicheStats[niche].sites++;
     nicheStats[niche].pages += data.pagesScanned || 0;
-    nicheStats[niche].links += data.totalLinks || 0;
+    nicheStats[niche].links += linksChecked;
     nicheStats[niche].broken += brokenHttp;
     nicheStats[niche].lostParams += affiliateIssues;
 
     perSite.push({
       site,
       status: 'ok',
+      partial: Boolean(data.budgetExhausted),
       pages: data.pagesScanned,
-      links: data.totalLinks,
+      links: linksChecked,
+      linksFound: data.totalLinks,
       brokenHttp,
+      blocked: blockedCount,
       affiliateIssues,
       allIssues,
       durationMs: data.durationMs,
@@ -202,10 +239,11 @@ function main() {
 
   console.log('OVERALL:');
   console.log(`  Sites targeted: 50`);
-  console.log(`  Sites scanned successfully: ${completed}`);
-  console.log(`  Sites timed out (>120s): ${timedOut}`);
+  console.log(`  Sites scanned successfully: ${completed} (${partialSites} partial via time budget)`);
+  console.log(`  Sites timed out / killed: ${timedOut}`);
   console.log(`  Sites errored: ${errored}`);
   console.log(`  Total pages scanned: ${totalPages}`);
+  console.log(`  Total outbound links found: ${totalLinksFound} (${totalLinksSkipped} beyond budget, not checked)`);
   console.log(`  Total outbound links checked: ${totalLinks}`);
   console.log(`  Total HTTP broken links (4xx/5xx/timeout): ${totalBrokenHttp}`);
   console.log(`  Total affiliate issues (redirect-home + lost-params): ${totalAffiliateIssues}`);
@@ -228,6 +266,7 @@ function main() {
   console.log('');
 
   console.log('BROKEN LINK TYPE BREAKDOWN:');
+  console.log(`  Bot-blocked (403/405/429 — EXCLUDED from broken): ${totalBlocked}`);
   console.log(`  4xx Not Found: ${totalBroken4xx} (${((totalBroken4xx / Math.max(totalIssues, 1)) * 100).toFixed(1)}% of issues)`);
   console.log(`  5xx Server Error: ${totalServer5xx} (${((totalServer5xx / Math.max(totalIssues, 1)) * 100).toFixed(1)}%)`);
   console.log(`  Timeout >10s: ${totalTimeouts} (${((totalTimeouts / Math.max(totalIssues, 1)) * 100).toFixed(1)}%)`);
@@ -274,9 +313,12 @@ function main() {
     scanDate: new Date().toISOString(),
     sitesTargeted: 50,
     sitesScanned: completed,
+    sitesPartialBudget: partialSites,
     sitesTimedOut: timedOut,
     sitesErrored: errored,
     totalPages,
+    totalLinksFound,
+    totalLinksSkipped,
     totalLinks,
     totalBrokenHttp,
     totalAffiliateIssues,
@@ -296,6 +338,7 @@ function main() {
       timeout: totalTimeouts,
       redirectToHome: totalRedirectHome,
       lostParams: totalLostParams,
+      blocked: totalBlocked,
     },
     redirectHops: {
       total: allRedirectHops.length,
@@ -308,11 +351,8 @@ function main() {
     perSite,
   };
 
-  fs.writeFileSync(
-    path.join(__dirname, 'aggregate-summary.json'),
-    JSON.stringify(summary, null, 2),
-  );
-  console.log(`\n✅ Machine-readable summary written to: aggregate-summary.json`);
+  fs.writeFileSync(SUMMARY_OUT, JSON.stringify(summary, null, 2));
+  console.log(`\n✅ Machine-readable summary written to: ${SUMMARY_OUT}`);
 }
 
 main();

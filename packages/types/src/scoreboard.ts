@@ -13,7 +13,8 @@ export type IssueTypeKey =
   | 'REDIRECT_TO_HOME'
   | 'LOST_PARAMS'
   | 'SOFT_404'
-  | 'CONTENT_CHANGED';
+  | 'CONTENT_CHANGED'
+  | 'BLOCKED';
 
 // Tier defaults reflect the rough monthly value of one broken affiliate
 // link to a publisher at that scale:
@@ -37,6 +38,9 @@ const ISSUE_TYPE_MULTIPLIER: Record<IssueTypeKey, number> = {
   TIMEOUT: 0.6,
   LOST_PARAMS: 0.8,
   CONTENT_CHANGED: 0.4,
+  // Bot-blocked (403/405/429 after GET retry): the link likely works for
+  // humans — a block is not a break, so it carries no revenue-at-risk value.
+  BLOCKED: 0,
 };
 
 const AFFILIATE_BONUS = 1.25;

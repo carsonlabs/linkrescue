@@ -2,6 +2,7 @@
 
 import { useState, useCallback, type FormEvent } from 'react';
 import Link from 'next/link';
+import { usePostHog } from 'posthog-js/react';
 import {
   Search,
   Mail,
@@ -68,6 +69,8 @@ function issueLabel(issueType: string): string {
       return 'Soft 404';
     case 'CONTENT_CHANGED':
       return 'Content Changed';
+    case 'BLOCKED':
+      return 'Blocked Automated Check';
     default:
       return 'Issue Detected';
   }
@@ -112,6 +115,7 @@ const PROGRESS_MESSAGES = [
 /* ------------------------------------------------------------------ */
 
 export function FreeScanForm() {
+  const posthog = usePostHog();
   const [url, setUrl] = useState('');
   const [email, setEmail] = useState('');
   const [state, setState] = useState<ScanState>('idle');
@@ -133,6 +137,7 @@ export function FreeScanForm() {
       setProgressIdx(0);
       setUnlocked(false);
       setUnlockError(null);
+      posthog?.capture('free_scan_submitted', { domain: url.trim() });
 
       // Cycle progress messages while scanning
       const interval = setInterval(() => {
@@ -153,19 +158,30 @@ export function FreeScanForm() {
         if (!res.ok) {
           setError(data.error || 'Something went wrong. Please try again.');
           setState('error');
+          posthog?.capture('free_scan_failed', { domain: url.trim(), stage: 'api' });
           return;
         }
 
-        setResult(data as ScanResult);
+        const scan = data as ScanResult;
+        setResult(scan);
         setState('done');
+        posthog?.capture('free_scan_completed', {
+          domain: scan.domain,
+          pages_scanned: scan.pagesScanned,
+          links_checked: scan.totalLinksChecked,
+          broken_links: scan.brokenLinksCount,
+          broken_affiliate: scan.brokenAffiliateCount,
+          est_monthly_loss: scan.estimatedMonthlyLoss,
+        });
       } catch {
         setError('Network error. Please check your connection and try again.');
         setState('error');
+        posthog?.capture('free_scan_failed', { domain: url.trim(), stage: 'network' });
       } finally {
         clearInterval(interval);
       }
     },
-    [url]
+    [url, posthog]
   );
 
   const handleUnlock = useCallback(
@@ -186,13 +202,17 @@ export function FreeScanForm() {
           return;
         }
         setUnlocked(true);
+        posthog?.capture('free_scan_email_unlocked', {
+          domain: result?.domain,
+          broken_links: result?.brokenLinksCount,
+        });
       } catch {
         setUnlockError('Network error. Please try again.');
       } finally {
         setUnlockSubmitting(false);
       }
     },
-    [email, result?.shareId]
+    [email, result?.shareId, result?.domain, result?.brokenLinksCount, posthog]
   );
 
   /* ---- Idle / Error: Show the form ---- */
@@ -343,6 +363,7 @@ export function FreeScanForm() {
                   navigator.clipboard.writeText(shareUrl);
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
+                  posthog?.capture('free_scan_share_copied', { domain: result.domain });
                 }}
                 className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors"
               >
@@ -366,6 +387,7 @@ export function FreeScanForm() {
             <Link
               href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
               className="btn-primary justify-center"
+              onClick={() => posthog?.capture('free_scan_signup_clicked', { location: 'healthy' })}
             >
               Set up free monitoring before your next commission disappears
               <ArrowRight className="w-4 h-4" />
@@ -471,6 +493,7 @@ export function FreeScanForm() {
               <Link
                 href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
                 className="btn-primary justify-center"
+                onClick={() => posthog?.capture('free_scan_signup_clicked', { location: 'results_bottom' })}
               >
                 Start Free Monitoring
                 <ArrowRight className="w-4 h-4" />

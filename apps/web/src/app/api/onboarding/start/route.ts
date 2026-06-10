@@ -3,6 +3,10 @@ import { createAdminClient, type Database } from '@linkrescue/database';
 import { runScan } from '@linkrescue/crawler';
 import { z } from 'zod';
 
+// Onboarding runs the first scan inline — give the function room, and budget
+// the scan below it so signup never dies to a platform kill.
+export const maxDuration = 60;
+
 const Schema = z.object({
   email: z.string().email(),
   url: z.string().url(),
@@ -59,6 +63,8 @@ export async function POST(request: Request) {
       domain,
       sitemapUrl: null,
       maxPages: 10,
+      // Keep first-scan-at-signup snappy and safely under maxDuration (60s)
+      maxDurationMs: 45_000,
       supabase: adminDb,
     });
     scanId = result.scanId;

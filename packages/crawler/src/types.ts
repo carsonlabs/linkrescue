@@ -32,6 +32,14 @@ export interface ScanOptions {
    * Defaults to 'free' (most conservative) when not provided.
    */
   userTier?: EstimatorTier;
+  /**
+   * Soft wall-clock budget for the whole scan. When exceeded, the scan stops
+   * starting new work and finalizes gracefully with partial results
+   * (summary.budgetExhausted = true). Set this BELOW the hosting platform's
+   * hard kill limit (e.g. Vercel maxDuration) so scans always finish their
+   * writes instead of dying mid-flight. Unset = unlimited.
+   */
+  maxDurationMs?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any;
 }
@@ -60,6 +68,10 @@ export interface ScanSummary {
   linksTimedOut: number;
   /** Links blocked by SSRF check. */
   linksBlockedSsrf: number;
+  /** Links bot-blocked by the destination (403/405/429 after GET retry) — persisted as OK, counted here. */
+  linksBotBlocked: number;
+  /** True when maxDurationMs cut the scan short — results are partial. */
+  budgetExhausted: boolean;
   /** Domains that returned 429 (rate limit) during link checks. */
   domainsRateLimited: string[];
   /** Count of links delayed by per-domain pacing. */
@@ -80,6 +92,8 @@ export function createScanSummary(): ScanSummary {
     linksRetried: 0,
     linksTimedOut: 0,
     linksBlockedSsrf: 0,
+    linksBotBlocked: 0,
+    budgetExhausted: false,
     domainsRateLimited: [],
     linksDelayedByDomainPacing: 0,
   };

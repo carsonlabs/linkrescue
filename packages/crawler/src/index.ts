@@ -43,10 +43,14 @@ export async function runScan(options: ScanOptions) {
     maxPages,
     crawlExclusions = [],
     userTier = 'free',
+    maxDurationMs,
     supabase,
   } = options;
   const startTime = Date.now();
   const summary = createScanSummary();
+  const deadline = maxDurationMs && maxDurationMs > 0 ? startTime + maxDurationMs : Number.POSITIVE_INFINITY;
+  const budgetExceeded = () => Date.now() > deadline;
+  let budgetLogged = false;
 
   // Clear robots cache at scan start so we get fresh rules
   clearRobotsCache();
@@ -117,6 +121,16 @@ export async function runScan(options: ScanOptions) {
     // 2. For each page, fetch HTML and extract outbound links
     let pageIndex = 0;
     for (const pageUrl of urls) {
+      // Time budget: stop starting new pages, finalize gracefully with
+      // partial results (always better than a platform-level kill).
+      if (budgetExceeded() || summary.budgetExhausted) {
+        summary.budgetExhausted = true;
+        if (!budgetLogged) {
+          budgetLogged = true;
+          await logEvent(supabase, scanId, 'warn', 'Scan time budget reached — finishing with partial results');
+        }
+        break;
+      }
       try {
         // DNS-aware SSRF check on the page URL (pages are user-controlled domains)
         const parsed = await validateFetchUrlWithDns(pageUrl);
@@ -179,6 +193,11 @@ export async function runScan(options: ScanOptions) {
         // Note: outbound link checks do NOT use robots.txt — see link-checker.ts
         // for the reasoning (link validation != crawling).
         for (const extLink of outboundLinks) {
+          // Time budget check per link — the outer page-loop check finalizes.
+          if (budgetExceeded()) {
+            summary.budgetExhausted = true;
+            break;
+          }
           // Upsert link record
           const { data: linkRecord } = await supabase
             .from('links')
@@ -302,10 +321,21 @@ export async function runScan(options: ScanOptions) {
             await supabase.from('links').update(updateData).eq('id', linkRecord.id);
           }
 
+          // Bot-blocked links (403/405/429 after GET retry) almost always work
+          // for human visitors — persist them as OK so customer dashboards,
+          // digests, and health scores don't cry wolf. Tracked in the scan
+          // summary for observability. (Full BLOCKED-in-dashboard visibility
+          // is a follow-up: every `.neq('issue_type','OK')` query site needs
+          // auditing before the type can flow into scan_results.)
+          if (finalIssueType === 'BLOCKED') {
+            summary.linksBotBlocked++;
+          }
+          const persistedIssueType = finalIssueType === 'BLOCKED' ? 'OK' : finalIssueType;
+
           // Compute estimated $ at risk for this issue (powers the scoreboard).
           const estimatedValueCents = estimateValueCents({
             tier: userTier,
-            issueType: finalIssueType as IssueTypeKey,
+            issueType: persistedIssueType as IssueTypeKey,
             isAffiliate: result.isAffiliate,
           });
 
@@ -316,7 +346,7 @@ export async function runScan(options: ScanOptions) {
             status_code: result.statusCode,
             final_url: result.finalUrl,
             redirect_hops: result.redirectHops,
-            issue_type: finalIssueType,
+            issue_type: persistedIssueType,
             wayback_url: waybackUrl,
             estimated_value_cents: estimatedValueCents,
           });

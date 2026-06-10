@@ -152,7 +152,9 @@ export async function POST(req: NextRequest) {
 
           const result = await checkLink(extLink);
 
-          if (result.issueType !== 'OK') {
+          // BLOCKED = the destination refuses automated checks (403/405/429);
+          // the link almost certainly works for humans. Not a broken link.
+          if (result.issueType !== 'OK' && result.issueType !== 'BLOCKED') {
             allBrokenLinks.push({
               href: result.href,
               statusCode: result.statusCode,

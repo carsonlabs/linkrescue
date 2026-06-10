@@ -29,6 +29,9 @@ function renderJson(report: ScanReport, options: CliOptions): void {
     pagesScanned: report.pagesScanned,
     totalLinks: report.totalLinks,
     durationMs: report.durationMs,
+    budgetExhausted: report.budgetExhausted ?? false,
+    pagesSkippedBudget: report.pagesSkippedBudget ?? 0,
+    linksSkippedBudget: report.linksSkippedBudget ?? 0,
     summary: {
       ok: report.results.filter((r) => r.issueType === 'OK').length,
       broken4xx: report.results.filter((r) => r.issueType === 'BROKEN_4XX').length,
@@ -36,6 +39,7 @@ function renderJson(report: ScanReport, options: CliOptions): void {
       timeout: report.results.filter((r) => r.issueType === 'TIMEOUT').length,
       redirectToHome: report.results.filter((r) => r.issueType === 'REDIRECT_TO_HOME').length,
       lostParams: report.results.filter((r) => r.issueType === 'LOST_PARAMS').length,
+      blocked: report.results.filter((r) => r.issueType === 'BLOCKED').length,
     },
     issues: results.map((r) => ({
       page: r.pageUrl,
@@ -65,6 +69,7 @@ function renderPretty(report: ScanReport, options: CliOptions): void {
   const timeouts = results.filter((r) => r.issueType === 'TIMEOUT').length;
   const redirectsHome = results.filter((r) => r.issueType === 'REDIRECT_TO_HOME').length;
   const lostParams = results.filter((r) => r.issueType === 'LOST_PARAMS').length;
+  const blocked = results.filter((r) => r.issueType === 'BLOCKED').length;
   const redirectIssues = redirectsHome + lostParams;
 
   console.log('');
@@ -83,11 +88,16 @@ function renderPretty(report: ScanReport, options: CliOptions): void {
   if (timeouts > 0) {
     console.log(chalk.gray(`  \u23f1\ufe0f  ${timeouts} Timeout`));
   }
+  if (blocked > 0) {
+    console.log(
+      chalk.gray(`  \ud83d\udeab ${blocked} Blocked automated check (likely fine for visitors)`),
+    );
+  }
 
   console.log('');
 
-  // Group issues by page
-  const issueResults = results.filter((r) => r.issueType !== 'OK');
+  // Group issues by page (blocked links are informational, not issues)
+  const issueResults = results.filter((r) => r.issueType !== 'OK' && r.issueType !== 'BLOCKED');
   const brokenResults = issueResults.filter(
     (r) => r.issueType === 'BROKEN_4XX' || r.issueType === 'SERVER_5XX' || r.issueType === 'TIMEOUT',
   );

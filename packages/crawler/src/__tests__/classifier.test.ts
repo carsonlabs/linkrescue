@@ -6,8 +6,20 @@ describe('classifyIssue', () => {
     expect(classifyIssue(404, null, 'https://example.com/link', false)).toBe('BROKEN_4XX');
   });
 
-  it('classifies 403 as BROKEN_4XX', () => {
-    expect(classifyIssue(403, null, 'https://example.com/link', false)).toBe('BROKEN_4XX');
+  it('classifies 403 as BLOCKED (bot-block, not a break)', () => {
+    expect(classifyIssue(403, null, 'https://example.com/link', false)).toBe('BLOCKED');
+  });
+
+  it('classifies 405 as BLOCKED (HEAD rejected)', () => {
+    expect(classifyIssue(405, null, 'https://example.com/link', false)).toBe('BLOCKED');
+  });
+
+  it('classifies 429 as BLOCKED (rate limited)', () => {
+    expect(classifyIssue(429, null, 'https://example.com/link', false)).toBe('BLOCKED');
+  });
+
+  it('still classifies 400 as BROKEN_4XX', () => {
+    expect(classifyIssue(400, null, 'https://example.com/link', false)).toBe('BROKEN_4XX');
   });
 
   it('classifies 410 as BROKEN_4XX', () => {

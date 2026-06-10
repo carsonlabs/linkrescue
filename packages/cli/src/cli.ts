@@ -29,6 +29,7 @@ program
   .command('scan <url>')
   .description('Full scan: discover pages via sitemap/crawl, then check all links')
   .option('--max-pages <n>', 'Limit pages to scan (default: 20, max: 20 for free CLI)', '20')
+  .option('--budget <seconds>', 'Soft time budget; scan returns partial results at the deadline')
   .option('--json', 'Output as JSON instead of pretty terminal')
   .option('--affiliate-only', 'Only show affiliate links')
   .option('--verbose', 'Show all links including OK ones')

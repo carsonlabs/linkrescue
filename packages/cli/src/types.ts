@@ -5,6 +5,8 @@ export interface CliOptions {
   affiliateOnly?: boolean;
   verbose?: boolean;
   maxPages?: string;
+  /** Soft time budget in seconds — scan self-terminates gracefully with partial results. */
+  budget?: string;
 }
 
 export interface CheckedLink {
@@ -23,4 +25,8 @@ export interface ScanReport {
   totalLinks: number;
   results: CheckedLink[];
   durationMs: number;
+  /** True when a time budget cut the scan short — results are partial. */
+  budgetExhausted?: boolean;
+  pagesSkippedBudget?: number;
+  linksSkippedBudget?: number;
 }

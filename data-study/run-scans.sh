@@ -18,8 +18,9 @@ while IFS= read -r site; do
 
   echo "[$count/50] $site" | tee -a "$LOG"
 
-  # Run scan with 120s timeout, JSON output
-  timeout 120 node "$CLI" scan "$site" --json > "$out_file" 2>> "$LOG"
+  # Internal 100s soft budget (graceful partial results) + generous 300s
+  # external kill as a pure safety net for hung processes.
+  timeout 300 node "$CLI" scan "$site" --json --budget 100 > "$out_file" 2>> "$LOG"
   exit_code=$?
 
   if [ $exit_code -eq 0 ]; then

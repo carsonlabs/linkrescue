@@ -69,6 +69,13 @@ export function classifyIssue(
 
   if (statusCode === null) return 'TIMEOUT';
 
+  // Bot-blocks, not breaks: 403 (forbidden to bots), 405 (HEAD rejected),
+  // 429 (rate limited). These survive even the GET retry in the link checker,
+  // but the link almost always works for a human visitor. Reporting them as
+  // broken is crying wolf — June 2026 study run 1 had 1,000 of 1,474 "4xx"
+  // links in this category.
+  if (statusCode === 403 || statusCode === 405 || statusCode === 429) return 'BLOCKED';
+
   if (statusCode >= 400 && statusCode < 500) return 'BROKEN_4XX';
   if (statusCode >= 500) return 'SERVER_5XX';
 

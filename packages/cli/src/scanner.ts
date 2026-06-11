@@ -19,6 +19,21 @@ const LINK_CHECK_CONCURRENCY = 5;
 const PAGE_PHASE_BUDGET_FRACTION = 0.4;
 
 /**
+ * Fraction of the budget URL discovery (sitemap fetching) may consume.
+ * Without this cap a large sitemap index (5 child fetches × 10s timeouts)
+ * can eat the entire page phase before a single page is scanned.
+ */
+const DISCOVERY_BUDGET_FRACTION = 0.15;
+
+/**
+ * Rescue floor: when discovery overruns the page-phase deadline, still
+ * attempt at least this many pages (until the hard cap below) so a slow
+ * sitemap degrades a scan to "few pages", never "zero pages".
+ */
+const MIN_PAGES_WHEN_BUDGETED = 5;
+const PAGE_PHASE_HARD_CAP_FRACTION = 0.7;
+
+/**
  * Quick check: fetch a single page, extract outbound links, check each one.
  */
 export async function checkSinglePage(
@@ -96,8 +111,10 @@ export interface ScanSiteResult {
  *
  * When `budgetMs` is set, the scan self-terminates gracefully at the deadline
  * and returns whatever it has — partial results always beat a killed process.
- * Phase split: page discovery + fetching gets at most 40% of the budget so the
- * link-check phase (the actual payload) is never starved.
+ * Phase split: URL discovery gets at most 15% of the budget, page fetching
+ * runs to the 40% mark (with a rescue floor of a few pages up to 70% when
+ * discovery overran), and the link-check phase (the actual payload) gets the
+ * remainder.
  */
 export async function scanSite(
   url: string,
@@ -114,14 +131,23 @@ export async function scanSite(
     deadline === Number.POSITIVE_INFINITY
       ? Number.POSITIVE_INFINITY
       : startTime + Math.floor((budgetMs as number) * PAGE_PHASE_BUDGET_FRACTION);
+  const discoveryDeadline =
+    deadline === Number.POSITIVE_INFINITY
+      ? undefined
+      : startTime + Math.floor((budgetMs as number) * DISCOVERY_BUDGET_FRACTION);
+  const pageHardCap =
+    deadline === Number.POSITIVE_INFINITY
+      ? Number.POSITIVE_INFINITY
+      : startTime + Math.floor((budgetMs as number) * PAGE_PHASE_HARD_CAP_FRACTION);
 
   // Enforce free CLI limit
   const effectiveMaxPages = Math.min(maxPages, FREE_MAX_PAGES);
 
-  // Discover pages (sitemap first, crawl fallback) — bounded by the page-phase deadline
+  // Discover pages (sitemap first, crawl fallback) — sitemap fetching is
+  // bounded by the discovery deadline so it can't consume the page phase
   let urls: string[] = [];
   try {
-    urls = await discoverPages(domain, null, effectiveMaxPages);
+    urls = await discoverPages(domain, null, effectiveMaxPages, discoveryDeadline);
   } catch {
     // Sitemap failed, fall back to crawl
   }
@@ -152,8 +178,15 @@ export async function scanSite(
 
   for (let i = 0; i < urls.length; i++) {
     if (Date.now() > pageDeadline) {
-      pagesSkippedBudget = urls.length - i;
-      break;
+      // Rescue floor: if discovery overran the page phase, keep attempting
+      // pages (up to the hard cap) until a minimum have been scanned —
+      // otherwise a slow sitemap zeroes out the entire scan.
+      const rescueApplies =
+        pagesScanned < MIN_PAGES_WHEN_BUDGETED && Date.now() <= pageHardCap;
+      if (!rescueApplies) {
+        pagesSkippedBudget = urls.length - i;
+        break;
+      }
     }
     const pageUrl = urls[i];
     try {

@@ -3,9 +3,21 @@ import { PAGE_FETCH_TIMEOUT_MS, CRAWLER_USER_AGENT } from './crawl-config';
 
 const parser = new XMLParser({ ignoreAttributes: false });
 
-export async function fetchSitemap(sitemapUrl: string, maxUrls = 500): Promise<string[]> {
+export async function fetchSitemap(
+  sitemapUrl: string,
+  maxUrls = 500,
+  deadlineMs?: number
+): Promise<string[]> {
+  // Respect the caller's discovery deadline: shrink the fetch timeout to the
+  // remaining window and bail outright once it has passed.
+  const timeoutMs = deadlineMs
+    ? Math.min(PAGE_FETCH_TIMEOUT_MS, deadlineMs - Date.now())
+    : PAGE_FETCH_TIMEOUT_MS;
+  if (timeoutMs <= 0) {
+    throw new Error('Sitemap fetch skipped: discovery deadline reached');
+  }
   const response = await fetch(sitemapUrl, {
-    signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(timeoutMs),
     headers: { 'User-Agent': CRAWLER_USER_AGENT },
   });
 
@@ -58,7 +70,8 @@ export function parseSitemapXml(xml: string, maxUrls = 500): string[] {
 export async function discoverPages(
   domain: string,
   sitemapUrl: string | null,
-  maxPages: number
+  maxPages: number,
+  deadlineMs?: number
 ): Promise<string[]> {
   const urls: string[] = [];
 
@@ -68,17 +81,20 @@ export async function discoverPages(
     : [`https://${domain}/sitemap.xml`];
 
   for (const candidate of sitemapCandidates) {
+    if (deadlineMs && Date.now() > deadlineMs) break;
     try {
-      const found = await fetchSitemap(candidate, maxPages);
+      const found = await fetchSitemap(candidate, maxPages, deadlineMs);
       if (found.length > 0) {
         // Check if these are sub-sitemaps (sitemap index)
         const isSitemapIndex = found.every((u) => u.endsWith('.xml') || u.includes('sitemap'));
 
         if (isSitemapIndex) {
-          // Fetch each sub-sitemap
+          // Fetch each sub-sitemap — bounded by the discovery deadline so a
+          // large sitemap index can never starve the page-scanning phase.
           for (const subUrl of found.slice(0, 5)) {
+            if (deadlineMs && Date.now() > deadlineMs) break;
             try {
-              const subUrls = await fetchSitemap(subUrl, maxPages - urls.length);
+              const subUrls = await fetchSitemap(subUrl, maxPages - urls.length, deadlineMs);
               urls.push(...subUrls);
               if (urls.length >= maxPages) break;
             } catch {

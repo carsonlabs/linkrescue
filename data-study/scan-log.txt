@@ -1,89 +1,130 @@
-=== LinkRescue 50-site data study started at Thu, Apr 16, 2026  9:18:51 PM ===
+=== LinkRescue 50-site data study started at Wed, Jun 10, 2026  6:57:44 PM ===
 [1/50] nomadicmatt.com
   ✅ scanned
 [2/50] expertvagabond.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [3/50] onemileatatime.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [4/50] theplanetd.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [5/50] adventurouskate.com
-[url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [6/50] travelfreak.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [7/50] financialsamurai.com
-[url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [8/50] sidehustlenation.com
   ✅ scanned
 [9/50] makingsenseofcents.com
   ✅ scanned
 [10/50] millennialmoney.com
-  ⏱️  TIMEOUT
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
 [11/50] thewaystowealth.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [12/50] mrmoneymustache.com
   ✅ scanned
 [13/50] ghacks.net
   ✅ scanned
 [14/50] howtogeek.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [15/50] makeuseof.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [16/50] techboomers.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [17/50] digitaltrends.com
-[url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [18/50] budgetbytes.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [19/50] thekitchn.com
   ✅ scanned
 [20/50] cookieandkate.com
-  ⏱️  TIMEOUT
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
 [21/50] seriouseats.com
   ✅ scanned
 [22/50] pinchofyum.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [23/50] ana-white.com
-[url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [24/50] younghouselove.com
   ✅ scanned
 [25/50] thehandymansdaughter.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [26/50] apartmenttherapy.com
   ✅ scanned
 [27/50] familyhandyman.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [28/50] nerdfitness.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [29/50] breakingmuscle.com
   ✅ scanned
 [30/50] stronglifts.com
   ✅ scanned
 [31/50] cleverhiker.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [32/50] thetrek.co
-  ⏱️  TIMEOUT
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
 [33/50] pmags.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [34/50] sectionhiker.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
-  ⏱️  TIMEOUT
+  ✅ scanned
 [35/50] outdoorgearlab.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [36/50] nichepursuits.com
   ✅ scanned
 [37/50] authorityhacker.com
   ✅ scanned
 [38/50] bloggingwizard.com
-  ⏱️  TIMEOUT
+  ✅ scanned
 [39/50] smartpassiveincome.com
 [url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
+[40/50] shoutmeloud.com
+  ✅ scanned
+[41/50] dogfoodadvisor.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
+[42/50] caninejournal.com
+  ✅ scanned
+[43/50] thephoblographer.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
+[44/50] lucieslist.com
+[url-safety] DNS resolution unavailable, falling back to hostname check
+  ✅ scanned
+[45/50] perfectdailygrind.com
+  ✅ scanned
+[46/50] gardeningknowhow.com
+  ✅ scanned
+[47/50] mensjournal.com
+  ✅ scanned
+[48/50] camelsandchocolate.com
+  ✅ scanned
+[49/50] the-sun-and-the-turtle.com
+Failed to crawl https://the-sun-and-the-turtle.com: TypeError: fetch failed
+    at node:internal/deps/undici/undici:15845:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async crawlSite (C:\DEV\linkrescue\packages\cli\dist\cli.js:13087:24)
+    at async scanSite (C:\DEV\linkrescue\packages\cli\dist\cli.js:15827:12)
+    at async runScan (C:\DEV\linkrescue\packages\cli\dist\cli.js:16146:118)
+    at async _Command.<anonymous> (C:\DEV\linkrescue\packages\cli\dist\cli.js:16212:5) {
+  [cause]: Error: getaddrinfo ENOTFOUND the-sun-and-the-turtle.com
+      at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26) {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'the-sun-and-the-turtle.com'
+  }
+}
+  ✅ scanned
+[50/50] mywanderlust.com
+  ✅ scanned
+=== Completed at Wed, Jun 10, 2026  8:04:42 PM ===

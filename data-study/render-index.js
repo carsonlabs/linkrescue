@@ -46,8 +46,13 @@ console.log('');
 console.log(`**Attribution failures alone (stripped params + homepage redirects): ${attributionIssues.toLocaleString()} links - ${pct(attributionIssues)}% of every link checked.** These return healthy status codes. No generic link checker flags them. The commission just quietly stops.\n`);
 
 console.log(`### Per-site reality\n`);
-console.log(`- Median issues per site: **${summary.medianAllIssuesPerSite}**`);
-console.log(`- Sites with zero broken links: **${summary.zeroBrokenSites} of ${summary.sitesScanned}**`);
+// Per-site stats are honest only over sites that actually returned data —
+// counting a bot-walled site as "zero broken links" would flatter the numbers.
+const substantive = summary.crawlGate?.substantiveSites ?? summary.sitesScanned;
+const medianIssues = summary.medianIssuesPerSubstantiveSite ?? summary.medianAllIssuesPerSite;
+const zeroBroken = summary.zeroBrokenSubstantiveSites ?? summary.zeroBrokenSites;
+console.log(`- Median issues per site: **${medianIssues}** (across the ${substantive} sites that returned substantive data)`);
+console.log(`- Sites with zero broken links: **${zeroBroken} of ${substantive}**`);
 console.log(`- Worst site we scanned: **${summary.worstBroken} broken links** (${summary.worstSite})`);
 console.log('');
 
@@ -76,6 +81,9 @@ console.log('');
 
 console.log(`### Methodology\n`);
 console.log(`- ${summary.sitesScanned}/50 target sites scanned (${summary.sitesPartialBudget ?? 0} returned partial results under a 100-second per-site budget).`);
+if (summary.crawlGate) {
+  console.log(`- ${50 - summary.crawlGate.substantiveSites} of 50 panel sites returned little or no crawlable data this month (bot walls, dead domains, or crawl limits). Per-site stats cover the ${summary.crawlGate.substantiveSites} sites with 3+ pages — we publish this number every month.`);
+}
 console.log(`- ${summary.totalLinksFound?.toLocaleString() ?? 'n/a'} outbound links found; ${checked.toLocaleString()} checked within budget. All rates are computed on checked links only.`);
 console.log(`- Every link was requested with HEAD, retried with GET on suspicious responses, redirects followed up to 5 hops, and tracking parameters compared on the final URL.`);
 console.log(`- Bot-blocked responses (403/405/429 after a GET retry) are reported separately and are NOT counted as broken.`);

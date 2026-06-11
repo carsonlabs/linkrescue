@@ -219,6 +219,17 @@ function main() {
   const brokenCounts = sitesWithData.map((r) => r.brokenHttp);
   const allIssueCounts = sitesWithData.map((r) => r.allIssues);
 
+  // Crawl-success gate: a site passes only when it returned substantive data
+  // (>=3 pages). "ok" with zero pages is a silent failure — bot wall, dead
+  // domain, or discovery bug — and must not count toward the 80% gate.
+  const zeroDataSites = sitesWithData.filter((r) => (r.pages || 0) === 0).map((r) => r.site);
+  const thinDataSites = sitesWithData
+    .filter((r) => (r.pages || 0) > 0 && r.pages < 3)
+    .map((r) => r.site);
+  const substantiveRows = sitesWithData.filter((r) => (r.pages || 0) >= 3);
+  const substantiveSites = substantiveRows.length;
+  const gateRatePct = (substantiveSites / Math.max(sites.length, 1)) * 100;
+
   const median = (arr) => {
     if (!arr.length) return 0;
     const sorted = [...arr].sort((a, b) => a - b);
@@ -251,6 +262,14 @@ function main() {
   console.log(`  Overall HTTP broken rate: ${((totalBrokenHttp / Math.max(totalLinks, 1)) * 100).toFixed(2)}%`);
   console.log(`  Overall affiliate issue rate: ${((totalAffiliateIssues / Math.max(totalLinks, 1)) * 100).toFixed(2)}%`);
   console.log(`  Overall any-issue rate: ${((totalIssues / Math.max(totalLinks, 1)) * 100).toFixed(2)}%`);
+  console.log('');
+
+  console.log('CRAWL-SUCCESS GATE (target: >=80% of panel returning substantive data):');
+  console.log(
+    `  Sites with >=3 pages: ${substantiveSites} of ${sites.length} (${gateRatePct.toFixed(1)}%) ${gateRatePct >= 80 ? '✅ PASS' : '❌ FAIL'}`,
+  );
+  console.log(`  Zero-data sites (${zeroDataSites.length}): ${zeroDataSites.join(', ') || 'none'}`);
+  console.log(`  Thin sites, 1-2 pages (${thinDataSites.length}): ${thinDataSites.join(', ') || 'none'}`);
   console.log('');
 
   console.log('PER-SITE DISTRIBUTION (HTTP broken only):');
@@ -347,6 +366,15 @@ function main() {
       threePlusHops: allRedirectHops.filter((h) => h >= 3).length,
       fivePlusHops: allRedirectHops.filter((h) => h >= 5).length,
     },
+    crawlGate: {
+      substantiveSites,
+      gateRatePct,
+      pass: gateRatePct >= 80,
+      zeroDataSites,
+      thinDataSites,
+    },
+    medianIssuesPerSubstantiveSite: median(substantiveRows.map((r) => r.allIssues)),
+    zeroBrokenSubstantiveSites: substantiveRows.filter((r) => r.brokenHttp === 0).length,
     byNiche: nicheStats,
     perSite,
   };

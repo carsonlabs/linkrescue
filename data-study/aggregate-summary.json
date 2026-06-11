@@ -1,366 +1,790 @@
 {
-  "scanDate": "2026-04-17T11:17:01.506Z",
+  "scanDate": "2026-06-11T11:12:27.803Z",
   "sitesTargeted": 50,
-  "sitesScanned": 13,
-  "sitesTimedOut": 25,
-  "sitesErrored": 1,
-  "totalPages": 50,
-  "totalLinks": 264,
-  "totalBrokenHttp": 72,
-  "totalAffiliateIssues": 5,
-  "totalIssues": 77,
-  "overallBrokenRate": 27.27272727272727,
-  "overallAffiliateIssueRate": 1.893939393939394,
-  "overallAnyIssueRate": 29.166666666666668,
-  "medianBrokenPerSite": 2,
-  "meanBrokenPerSite": 5.538461538461538,
-  "zeroBrokenSites": 5,
-  "worstBroken": 24,
-  "worstSite": "breakingmuscle.com",
-  "medianAllIssuesPerSite": 3,
+  "sitesScanned": 50,
+  "sitesPartialBudget": 23,
+  "sitesTimedOut": 0,
+  "sitesErrored": 0,
+  "totalPages": 683,
+  "totalLinksFound": 11676,
+  "totalLinksSkipped": 5126,
+  "totalLinks": 6550,
+  "totalBrokenHttp": 380,
+  "totalAffiliateIssues": 597,
+  "totalIssues": 977,
+  "overallBrokenRate": 5.801526717557252,
+  "overallAffiliateIssueRate": 9.114503816793894,
+  "overallAnyIssueRate": 14.916030534351146,
+  "medianBrokenPerSite": 2.5,
+  "meanBrokenPerSite": 7.6,
+  "zeroBrokenSites": 18,
+  "worstBroken": 31,
+  "worstSite": "theplanetd.com",
+  "medianAllIssuesPerSite": 10,
   "errorBreakdown": {
-    "broken4xx": 72,
-    "server5xx": 0,
-    "timeout": 0,
-    "redirectToHome": 1,
-    "lostParams": 4
+    "broken4xx": 171,
+    "server5xx": 82,
+    "timeout": 127,
+    "redirectToHome": 28,
+    "lostParams": 569,
+    "blocked": 308
   },
   "redirectHops": {
-    "total": 18,
-    "median": 2,
-    "max": 2,
-    "threePlusHops": 0,
-    "fivePlusHops": 0
+    "total": 878,
+    "median": 1,
+    "max": 5,
+    "threePlusHops": 182,
+    "fivePlusHops": 6
   },
+  "crawlGate": {
+    "substantiveSites": 34,
+    "gateRatePct": 68,
+    "pass": false,
+    "zeroDataSites": [
+      "makingsenseofcents.com",
+      "mrmoneymustache.com",
+      "digitaltrends.com",
+      "seriouseats.com",
+      "apartmenttherapy.com",
+      "shoutmeloud.com",
+      "mensjournal.com",
+      "camelsandchocolate.com",
+      "the-sun-and-the-turtle.com",
+      "mywanderlust.com"
+    ],
+    "thinDataSites": [
+      "nomadicmatt.com",
+      "sidehustlenation.com",
+      "ghacks.net",
+      "thekitchn.com",
+      "younghouselove.com",
+      "nichepursuits.com"
+    ]
+  },
+  "medianIssuesPerSubstantiveSite": 27,
+  "zeroBrokenSubstantiveSites": 3,
   "byNiche": {
     "travel": {
-      "sites": 1,
-      "pages": 2,
-      "links": 14,
-      "broken": 0,
-      "lostParams": 4
+      "sites": 8,
+      "pages": 102,
+      "links": 1062,
+      "broken": 88,
+      "lostParams": 134
     },
     "finance": {
-      "sites": 3,
-      "pages": 2,
-      "links": 12,
-      "broken": 6,
-      "lostParams": 0
+      "sites": 6,
+      "pages": 57,
+      "links": 514,
+      "broken": 45,
+      "lostParams": 39
     },
     "tech": {
-      "sites": 1,
-      "pages": 1,
-      "links": 3,
-      "broken": 1,
-      "lostParams": 0
+      "sites": 5,
+      "pages": 61,
+      "links": 798,
+      "broken": 29,
+      "lostParams": 80
     },
     "food": {
-      "sites": 2,
-      "pages": 1,
-      "links": 14,
-      "broken": 3,
-      "lostParams": 0
+      "sites": 5,
+      "pages": 61,
+      "links": 759,
+      "broken": 52,
+      "lostParams": 54
     },
     "home": {
-      "sites": 2,
-      "pages": 2,
-      "links": 34,
-      "broken": 15,
-      "lostParams": 0
+      "sites": 5,
+      "pages": 61,
+      "links": 585,
+      "broken": 30,
+      "lostParams": 24
     },
     "fitness": {
-      "sites": 2,
-      "pages": 20,
-      "links": 87,
-      "broken": 24,
-      "lostParams": 1
+      "sites": 3,
+      "pages": 60,
+      "links": 356,
+      "broken": 8,
+      "lostParams": 0
+    },
+    "outdoor": {
+      "sites": 5,
+      "pages": 100,
+      "links": 906,
+      "broken": 45,
+      "lostParams": 47
     },
     "marketing": {
-      "sites": 2,
-      "pages": 22,
-      "links": 100,
+      "sites": 5,
+      "pages": 62,
+      "links": 568,
       "broken": 23,
-      "lostParams": 0
+      "lostParams": 65
+    },
+    "pet": {
+      "sites": 2,
+      "pages": 40,
+      "links": 375,
+      "broken": 27,
+      "lostParams": 30
+    },
+    "misc": {
+      "sites": 6,
+      "pages": 79,
+      "links": 627,
+      "broken": 33,
+      "lostParams": 124
     }
   },
   "perSite": [
     {
       "site": "nomadicmatt.com",
       "status": "ok",
+      "partial": false,
       "pages": 2,
-      "links": 14,
+      "links": 20,
+      "linksFound": 20,
       "brokenHttp": 0,
-      "affiliateIssues": 4,
-      "allIssues": 4,
-      "durationMs": 11945
+      "blocked": 0,
+      "affiliateIssues": 10,
+      "allIssues": 10,
+      "durationMs": 13465
     },
     {
       "site": "expertvagabond.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 288,
+      "linksFound": 288,
+      "brokenHttp": 30,
+      "blocked": 9,
+      "affiliateIssues": 31,
+      "allIssues": 61,
+      "durationMs": 152129
     },
     {
       "site": "onemileatatime.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 175,
+      "linksFound": 175,
+      "brokenHttp": 17,
+      "blocked": 1,
+      "affiliateIssues": 24,
+      "allIssues": 41,
+      "durationMs": 65165
     },
     {
       "site": "theplanetd.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 225,
+      "linksFound": 299,
+      "brokenHttp": 31,
+      "blocked": 18,
+      "affiliateIssues": 15,
+      "allIssues": 46,
+      "durationMs": 103306
     },
     {
       "site": "adventurouskate.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 129,
+      "linksFound": 129,
+      "brokenHttp": 6,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 6,
+      "durationMs": 100059
     },
     {
       "site": "travelfreak.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 225,
+      "linksFound": 670,
+      "brokenHttp": 4,
+      "blocked": 41,
+      "affiliateIssues": 54,
+      "allIssues": 58,
+      "durationMs": 102806
     },
     {
       "site": "financialsamurai.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 15,
+      "links": 75,
+      "linksFound": 709,
+      "brokenHttp": 2,
+      "blocked": 0,
+      "affiliateIssues": 4,
+      "allIssues": 6,
+      "durationMs": 104715
     },
     {
       "site": "sidehustlenation.com",
       "status": "ok",
+      "partial": false,
       "pages": 2,
       "links": 12,
-      "brokenHttp": 6,
+      "linksFound": 12,
+      "brokenHttp": 2,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 6,
-      "durationMs": 6996
+      "allIssues": 2,
+      "durationMs": 15937
     },
     {
       "site": "makingsenseofcents.com",
       "status": "ok",
+      "partial": false,
       "pages": 0,
       "links": 0,
+      "linksFound": 0,
       "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
       "allIssues": 0,
-      "durationMs": 1199
+      "durationMs": 4241
     },
     {
       "site": "millennialmoney.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 214,
+      "linksFound": 282,
+      "brokenHttp": 16,
+      "blocked": 5,
+      "affiliateIssues": 33,
+      "allIssues": 49,
+      "durationMs": 100547
     },
     {
       "site": "thewaystowealth.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 213,
+      "linksFound": 242,
+      "brokenHttp": 25,
+      "blocked": 7,
+      "affiliateIssues": 2,
+      "allIssues": 27,
+      "durationMs": 153864
     },
     {
       "site": "mrmoneymustache.com",
       "status": "ok",
+      "partial": false,
       "pages": 0,
       "links": 0,
+      "linksFound": 0,
       "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
       "allIssues": 0,
-      "durationMs": 565
+      "durationMs": 1746
     },
     {
       "site": "ghacks.net",
       "status": "ok",
+      "partial": false,
       "pages": 1,
       "links": 3,
-      "brokenHttp": 1,
+      "linksFound": 3,
+      "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 1,
-      "durationMs": 1865
+      "allIssues": 0,
+      "durationMs": 5005
     },
     {
       "site": "howtogeek.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 301,
+      "linksFound": 633,
+      "brokenHttp": 10,
+      "blocked": 0,
+      "affiliateIssues": 39,
+      "allIssues": 49,
+      "durationMs": 153143
     },
     {
       "site": "makeuseof.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 323,
+      "linksFound": 564,
+      "brokenHttp": 16,
+      "blocked": 4,
+      "affiliateIssues": 37,
+      "allIssues": 53,
+      "durationMs": 160522
     },
     {
       "site": "techboomers.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 171,
+      "linksFound": 171,
+      "brokenHttp": 3,
+      "blocked": 1,
+      "affiliateIssues": 4,
+      "allIssues": 7,
+      "durationMs": 82414
     },
     {
       "site": "digitaltrends.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 60882
     },
     {
       "site": "budgetbytes.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 330,
+      "linksFound": 330,
+      "brokenHttp": 1,
+      "blocked": 2,
+      "affiliateIssues": 40,
+      "allIssues": 41,
+      "durationMs": 85743
     },
     {
       "site": "thekitchn.com",
       "status": "ok",
+      "partial": false,
       "pages": 1,
-      "links": 14,
-      "brokenHttp": 3,
+      "links": 15,
+      "linksFound": 15,
+      "brokenHttp": 0,
+      "blocked": 4,
       "affiliateIssues": 0,
-      "allIssues": 3,
-      "durationMs": 8385
+      "allIssues": 0,
+      "durationMs": 9450
     },
     {
       "site": "cookieandkate.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 238,
+      "linksFound": 246,
+      "brokenHttp": 25,
+      "blocked": 2,
+      "affiliateIssues": 13,
+      "allIssues": 38,
+      "durationMs": 107840
     },
     {
       "site": "seriouseats.com",
       "status": "ok",
+      "partial": false,
       "pages": 0,
       "links": 0,
+      "linksFound": 0,
       "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
       "allIssues": 0,
-      "durationMs": 1128
+      "durationMs": 2992
     },
     {
       "site": "pinchofyum.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 176,
+      "linksFound": 547,
+      "brokenHttp": 26,
+      "blocked": 3,
+      "affiliateIssues": 1,
+      "allIssues": 27,
+      "durationMs": 161915
     },
     {
       "site": "ana-white.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 154,
+      "linksFound": 154,
+      "brokenHttp": 1,
+      "blocked": 3,
+      "affiliateIssues": 12,
+      "allIssues": 13,
+      "durationMs": 64887
     },
     {
       "site": "younghouselove.com",
       "status": "ok",
+      "partial": false,
       "pages": 1,
       "links": 20,
-      "brokenHttp": 12,
+      "linksFound": 20,
+      "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 12,
-      "durationMs": 19840
+      "allIssues": 0,
+      "durationMs": 15463
     },
     {
       "site": "thehandymansdaughter.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 83,
+      "linksFound": 218,
+      "brokenHttp": 29,
+      "blocked": 0,
+      "affiliateIssues": 2,
+      "allIssues": 31,
+      "durationMs": 107865
     },
     {
       "site": "apartmenttherapy.com",
       "status": "ok",
-      "pages": 1,
-      "links": 14,
-      "brokenHttp": 3,
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 3,
-      "durationMs": 8192
+      "allIssues": 0,
+      "durationMs": 4892
     },
     {
       "site": "familyhandyman.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 328,
+      "linksFound": 485,
+      "brokenHttp": 0,
+      "blocked": 3,
+      "affiliateIssues": 10,
+      "allIssues": 10,
+      "durationMs": 102372
     },
     {
       "site": "nerdfitness.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 124,
+      "linksFound": 124,
+      "brokenHttp": 6,
+      "blocked": 8,
+      "affiliateIssues": 0,
+      "allIssues": 6,
+      "durationMs": 72716
     },
     {
       "site": "breakingmuscle.com",
       "status": "ok",
+      "partial": false,
       "pages": 20,
       "links": 87,
-      "brokenHttp": 24,
-      "affiliateIssues": 1,
-      "allIssues": 25,
-      "durationMs": 37119
+      "linksFound": 87,
+      "brokenHttp": 2,
+      "blocked": 1,
+      "affiliateIssues": 0,
+      "allIssues": 2,
+      "durationMs": 31253
     },
     {
       "site": "stronglifts.com",
       "status": "ok",
-      "pages": 0,
-      "links": 0,
+      "partial": true,
+      "pages": 20,
+      "links": 145,
+      "linksFound": 265,
       "brokenHttp": 0,
+      "blocked": 6,
       "affiliateIssues": 0,
       "allIssues": 0,
-      "durationMs": 593
+      "durationMs": 103091
     },
     {
       "site": "cleverhiker.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 204,
+      "linksFound": 204,
+      "brokenHttp": 5,
+      "blocked": 20,
+      "affiliateIssues": 41,
+      "allIssues": 46,
+      "durationMs": 71461
     },
     {
       "site": "thetrek.co",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 167,
+      "linksFound": 256,
+      "brokenHttp": 13,
+      "blocked": 3,
+      "affiliateIssues": 0,
+      "allIssues": 13,
+      "durationMs": 112932
     },
     {
       "site": "pmags.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 222,
+      "linksFound": 408,
+      "brokenHttp": 0,
+      "blocked": 46,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 102939
     },
     {
       "site": "sectionhiker.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 154,
+      "linksFound": 192,
+      "brokenHttp": 25,
+      "blocked": 16,
+      "affiliateIssues": 1,
+      "allIssues": 26,
+      "durationMs": 132203
     },
     {
       "site": "outdoorgearlab.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 159,
+      "linksFound": 1046,
+      "brokenHttp": 2,
+      "blocked": 23,
+      "affiliateIssues": 5,
+      "allIssues": 7,
+      "durationMs": 103707
     },
     {
       "site": "nichepursuits.com",
       "status": "ok",
+      "partial": false,
       "pages": 2,
       "links": 10,
-      "brokenHttp": 2,
+      "linksFound": 10,
+      "brokenHttp": 0,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 2,
-      "durationMs": 7304
+      "allIssues": 0,
+      "durationMs": 7542
     },
     {
       "site": "authorityhacker.com",
       "status": "ok",
+      "partial": false,
       "pages": 20,
       "links": 90,
-      "brokenHttp": 21,
+      "linksFound": 90,
+      "brokenHttp": 3,
+      "blocked": 0,
       "affiliateIssues": 0,
-      "allIssues": 21,
-      "durationMs": 64169
+      "allIssues": 3,
+      "durationMs": 50820
     },
     {
       "site": "bloggingwizard.com",
-      "status": "timeout"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 160,
+      "linksFound": 584,
+      "brokenHttp": 5,
+      "blocked": 5,
+      "affiliateIssues": 28,
+      "allIssues": 33,
+      "durationMs": 138309
     },
     {
       "site": "smartpassiveincome.com",
-      "status": "unparseable"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 308,
+      "linksFound": 363,
+      "brokenHttp": 15,
+      "blocked": 4,
+      "affiliateIssues": 37,
+      "allIssues": 52,
+      "durationMs": 126975
     },
     {
       "site": "shoutmeloud.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 2068
     },
     {
       "site": "dogfoodadvisor.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 137,
+      "linksFound": 182,
+      "brokenHttp": 14,
+      "blocked": 20,
+      "affiliateIssues": 4,
+      "allIssues": 18,
+      "durationMs": 132352
     },
     {
       "site": "caninejournal.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 20,
+      "links": 238,
+      "linksFound": 238,
+      "brokenHttp": 13,
+      "blocked": 12,
+      "affiliateIssues": 26,
+      "allIssues": 39,
+      "durationMs": 81366
     },
     {
       "site": "thephoblographer.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 166,
+      "linksFound": 250,
+      "brokenHttp": 14,
+      "blocked": 0,
+      "affiliateIssues": 37,
+      "allIssues": 51,
+      "durationMs": 154505
     },
     {
       "site": "lucieslist.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": true,
+      "pages": 19,
+      "links": 81,
+      "linksFound": 239,
+      "brokenHttp": 13,
+      "blocked": 8,
+      "affiliateIssues": 0,
+      "allIssues": 13,
+      "durationMs": 135971
     },
     {
       "site": "perfectdailygrind.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 177,
+      "linksFound": 495,
+      "brokenHttp": 5,
+      "blocked": 8,
+      "affiliateIssues": 21,
+      "allIssues": 26,
+      "durationMs": 112897
     },
     {
       "site": "gardeningknowhow.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": true,
+      "pages": 20,
+      "links": 203,
+      "linksFound": 431,
+      "brokenHttp": 1,
+      "blocked": 25,
+      "affiliateIssues": 66,
+      "allIssues": 67,
+      "durationMs": 107101
     },
     {
       "site": "mensjournal.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 1784
     },
     {
       "site": "camelsandchocolate.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 2487
     },
     {
       "site": "the-sun-and-the-turtle.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 268
     },
     {
       "site": "mywanderlust.com",
-      "status": "missing"
+      "status": "ok",
+      "partial": false,
+      "pages": 0,
+      "links": 0,
+      "linksFound": 0,
+      "brokenHttp": 0,
+      "blocked": 0,
+      "affiliateIssues": 0,
+      "allIssues": 0,
+      "durationMs": 1593
     }
   ]
 }

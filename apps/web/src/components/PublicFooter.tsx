@@ -27,6 +27,20 @@ export function PublicFooter() {
           </p>
         </div>
         <div className="mt-6 pt-6 border-t border-white/5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-600">
+          <span className="text-slate-500">Compare</span>
+          <Link href="/vs/amz-watcher" className="hover:text-white transition-colors">vs AMZ Watcher</Link>
+          <Link href="/vs/affilimate" className="hover:text-white transition-colors">vs Affilimate</Link>
+          <Link href="/vs/lasso" className="hover:text-white transition-colors">vs Lasso</Link>
+          <Link href="/vs/dr-link-check" className="hover:text-white transition-colors">vs Dr. Link Check</Link>
+          <span className="text-slate-500 md:ml-4">Check your links</span>
+          <Link href="/check/amazon" className="hover:text-white transition-colors">Amazon</Link>
+          <Link href="/check/shareasale" className="hover:text-white transition-colors">ShareASale</Link>
+          <Link href="/check/cj" className="hover:text-white transition-colors">CJ</Link>
+          <Link href="/check/impact" className="hover:text-white transition-colors">Impact</Link>
+          <Link href="/check/awin" className="hover:text-white transition-colors">Awin</Link>
+          <Link href="/check/rakuten-advertising" className="hover:text-white transition-colors">Rakuten</Link>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-600">
           <span className="text-slate-500">More from Freedom Engineers</span>
           <a href="https://yorklivingcost.ca" className="hover:text-white transition-colors">YorkLivingCost</a>
           <a href="https://agentready.tools" className="hover:text-white transition-colors">AgentReady</a>

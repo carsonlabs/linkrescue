@@ -253,7 +253,8 @@ INSERT INTO public.seo_pages (
     {"feature": "Starting price", "linkrescue": "Free / $29/mo", "competitor": "Free / paid plans"}
   ]'::jsonb,
   now()
-);
+)
+ON CONFLICT (page_type, slug) DO NOTHING;
 
 ---------------------------------------------------------------------
 -- NETWORK CHECK PAGES
@@ -366,4 +367,5 @@ INSERT INTO public.seo_pages (
   'Varies by merchant (typically 2-10%)',
   30,
   now()
-);
+)
+ON CONFLICT (page_type, slug) DO NOTHING;

@@ -4,8 +4,8 @@ import { getRobotsRules, isPathAllowed } from './robots';
 import {
   CRAWL_DELAY_MS,
   PAGE_FETCH_TIMEOUT_MS,
-  CRAWLER_USER_AGENT,
 } from './crawl-config';
+import { fetchWithCrawlerFallback } from './browser-fetch';
 
 /**
  * BFS crawl of a single domain to discover pages.
@@ -18,7 +18,8 @@ export async function crawlSite(
   domain: string,
   maxDepth: number,
   maxPages: number = 50,
-  deadlineMs?: number
+  deadlineMs?: number,
+  onFallbackFetch?: (tier: 'browser' | 'headless') => void
 ): Promise<string[]> {
   const visited = new Set<string>();
   const toVisit: Array<{ url: string; depth: number }> = [
@@ -58,10 +59,11 @@ export async function crawlSite(
     }
 
     try {
-      const response = await fetch(url, {
-        signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
-        headers: { 'User-Agent': CRAWLER_USER_AGENT },
+      const { response, usedBrowserFallback, usedHeadlessFallback } = await fetchWithCrawlerFallback(url, {
+        timeoutMs: PAGE_FETCH_TIMEOUT_MS,
       });
+      if (usedBrowserFallback) onFallbackFetch?.('browser');
+      if (usedHeadlessFallback) onFallbackFetch?.('headless');
 
       if (!response.ok) continue;
 

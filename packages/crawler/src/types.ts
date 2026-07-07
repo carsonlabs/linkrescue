@@ -70,6 +70,19 @@ export interface ScanSummary {
   linksBlockedSsrf: number;
   /** Links bot-blocked by the destination (403/405/429 after GET retry) — persisted as OK, counted here. */
   linksBotBlocked: number;
+  /**
+   * Pages that required the browser-profile fallback because the site blocked
+   * the declared crawler UA. >0 means the site "blocks declared crawlers" —
+   * published as a Link Rot Index stat.
+   */
+  pagesFetchedViaBrowserProfile: number;
+  /**
+   * Pages that required the headless-browser tier because the site blocks
+   * plain fetch regardless of headers (TLS-fingerprint wall). >0 means "hard
+   * bot wall" — a separate published Link Rot Index stat. Always 0 unless
+   * BROWSER_API_URL is configured.
+   */
+  pagesFetchedViaHeadless: number;
   /** True when maxDurationMs cut the scan short — results are partial. */
   budgetExhausted: boolean;
   /** Domains that returned 429 (rate limit) during link checks. */
@@ -93,6 +106,8 @@ export function createScanSummary(): ScanSummary {
     linksTimedOut: 0,
     linksBlockedSsrf: 0,
     linksBotBlocked: 0,
+    pagesFetchedViaBrowserProfile: 0,
+    pagesFetchedViaHeadless: 0,
     budgetExhausted: false,
     domainsRateLimited: [],
     linksDelayedByDomainPacing: 0,

@@ -29,4 +29,12 @@ export interface ScanReport {
   budgetExhausted?: boolean;
   pagesSkippedBudget?: number;
   linksSkippedBudget?: number;
+  /** Pages that needed the browser-profile fallback (site blocks declared crawlers). */
+  pagesFetchedViaBrowserProfile?: number;
+  /** True when any page required the browser fallback — published index stat. */
+  blocksDeclaredCrawlers?: boolean;
+  /** Pages that needed the headless tier (TLS-fingerprint bot wall). */
+  pagesFetchedViaHeadless?: number;
+  /** True when any page required the headless tier — "hard bot wall" index stat. */
+  hardBotWall?: boolean;
 }

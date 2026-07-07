@@ -11,10 +11,10 @@ import { checkWaybackArchive } from './wayback';
 import {
   PAGE_FETCH_TIMEOUT_MS,
   CRAWL_DELAY_MS,
-  CRAWLER_USER_AGENT,
   LINK_CHECK_TIMEOUT_MS,
   CHECKER_USER_AGENT,
 } from './crawl-config';
+import { fetchWithCrawlerFallback } from './browser-fetch';
 import type { ScanOptions, ScanSummary } from './types';
 import { createScanSummary } from './types';
 import { estimateValueCents, type IssueTypeKey } from '@linkrescue/types';
@@ -31,6 +31,8 @@ export { DomainLimiter } from './domain-limiter';
 export { detectSoft404 } from './soft-404';
 export { extractTextContent, hashContent, detectContentChange } from './content-hash';
 export { checkWaybackArchive } from './wayback';
+export { fetchWithCrawlerFallback, BROWSER_HEADERS, resetCrawlerFallbackMemory } from './browser-fetch';
+export type { CrawlerFetchOptions, CrawlerFetchResult } from './browser-fetch';
 export type { LinkCheckResult, ExtractedLink, PageLinks, ScanOptions, ScanSummary } from './types';
 export { createScanSummary } from './types';
 
@@ -112,7 +114,10 @@ export async function runScan(options: ScanOptions) {
     }
 
     if (urls.length === 0) {
-      urls = await crawlSite(domain, 2, maxPages);
+      urls = await crawlSite(domain, 2, maxPages, undefined, (tier) => {
+        if (tier === 'browser') summary.pagesFetchedViaBrowserProfile++;
+        else summary.pagesFetchedViaHeadless++;
+      });
       await logEvent(supabase, scanId, 'info', `Crawled ${urls.length} URLs`);
     }
 
@@ -157,10 +162,15 @@ export async function runScan(options: ScanOptions) {
         }
         pageIndex++;
 
-        const response = await fetch(pageUrl, {
-          signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
-          headers: { 'User-Agent': CRAWLER_USER_AGENT },
+        const { response, usedBrowserFallback, usedHeadlessFallback } = await fetchWithCrawlerFallback(pageUrl, {
+          timeoutMs: PAGE_FETCH_TIMEOUT_MS,
         });
+        if (usedBrowserFallback) {
+          summary.pagesFetchedViaBrowserProfile++;
+        }
+        if (usedHeadlessFallback) {
+          summary.pagesFetchedViaHeadless++;
+        }
 
         if (!response.ok) {
           summary.pagesFailedFetch++;

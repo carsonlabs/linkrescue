@@ -4,6 +4,7 @@ import {
   discoverPages,
   crawlSite,
   DomainLimiter,
+  fetchWithCrawlerFallback,
 } from '@linkrescue/crawler';
 import type { CheckedLink } from './types.js';
 
@@ -43,10 +44,10 @@ export async function checkSinglePage(
   const startTime = Date.now();
   const domain = extractDomain(url);
 
-  // Fetch the page
-  const response = await fetch(url, {
-    signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
-    headers: { 'User-Agent': USER_AGENT },
+  // Fetch the page (honest CLI UA first, browser profile on declared-bot block)
+  const { response } = await fetchWithCrawlerFallback(url, {
+    timeoutMs: PAGE_FETCH_TIMEOUT_MS,
+    honestUserAgent: USER_AGENT,
   });
 
   if (!response.ok) {
@@ -104,6 +105,14 @@ export interface ScanSiteResult {
   pagesSkippedBudget: number;
   /** Links found but not checked because the budget ran out. */
   linksSkippedBudget: number;
+  /** Pages that needed the browser-profile fallback (site blocks declared crawlers). */
+  pagesFetchedViaBrowserProfile: number;
+  /** True when any page required the browser fallback — the published index stat. */
+  blocksDeclaredCrawlers: boolean;
+  /** Pages that needed the headless tier (TLS-fingerprint bot wall). */
+  pagesFetchedViaHeadless: number;
+  /** True when any page required the headless tier — the "hard bot wall" index stat. */
+  hardBotWall: boolean;
 }
 
 /**
@@ -143,6 +152,9 @@ export async function scanSite(
   // Enforce free CLI limit
   const effectiveMaxPages = Math.min(maxPages, FREE_MAX_PAGES);
 
+  let pagesFetchedViaBrowserProfile = 0;
+  let pagesFetchedViaHeadless = 0;
+
   // Discover pages (sitemap first, crawl fallback) — sitemap fetching is
   // bounded by the discovery deadline so it can't consume the page phase
   let urls: string[] = [];
@@ -158,6 +170,10 @@ export async function scanSite(
       2,
       effectiveMaxPages,
       pageDeadline === Number.POSITIVE_INFINITY ? undefined : pageDeadline,
+      (tier) => {
+        if (tier === 'browser') pagesFetchedViaBrowserProfile++;
+        else pagesFetchedViaHeadless++;
+      },
     );
   }
 
@@ -190,10 +206,16 @@ export async function scanSite(
     }
     const pageUrl = urls[i];
     try {
-      const response = await fetch(pageUrl, {
-        signal: AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS),
-        headers: { 'User-Agent': USER_AGENT },
+      const { response, usedBrowserFallback, usedHeadlessFallback } = await fetchWithCrawlerFallback(pageUrl, {
+        timeoutMs: PAGE_FETCH_TIMEOUT_MS,
+        honestUserAgent: USER_AGENT,
       });
+      if (usedBrowserFallback) {
+        pagesFetchedViaBrowserProfile++;
+      }
+      if (usedHeadlessFallback) {
+        pagesFetchedViaHeadless++;
+      }
 
       if (!response.ok) continue;
 
@@ -266,6 +288,10 @@ export async function scanSite(
     budgetExhausted: pagesSkippedBudget > 0 || linksSkippedBudget > 0,
     pagesSkippedBudget,
     linksSkippedBudget,
+    pagesFetchedViaBrowserProfile,
+    blocksDeclaredCrawlers: pagesFetchedViaBrowserProfile > 0,
+    pagesFetchedViaHeadless,
+    hardBotWall: pagesFetchedViaHeadless > 0,
   };
 }
 

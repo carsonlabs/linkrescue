@@ -34,7 +34,7 @@ export async function runScan(rawUrl: string, options: CliOptions): Promise<void
 
   const spinner = options.json ? null : ora('Discovering pages...').start();
 
-  const { results, pagesScanned, totalLinks, durationMs, budgetExhausted, pagesSkippedBudget, linksSkippedBudget } =
+  const { results, pagesScanned, totalLinks, durationMs, budgetExhausted, pagesSkippedBudget, linksSkippedBudget, pagesFetchedViaBrowserProfile, blocksDeclaredCrawlers, pagesFetchedViaHeadless, hardBotWall } =
     await scanSite(
       url,
       maxPages,
@@ -79,6 +79,10 @@ export async function runScan(rawUrl: string, options: CliOptions): Promise<void
       budgetExhausted,
       pagesSkippedBudget,
       linksSkippedBudget,
+      pagesFetchedViaBrowserProfile,
+      blocksDeclaredCrawlers,
+      pagesFetchedViaHeadless,
+      hardBotWall,
     },
     options,
   );

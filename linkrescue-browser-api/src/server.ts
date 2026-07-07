@@ -86,12 +86,28 @@ let webkitBrowser: Browser | null = null;
 
 const semaphore = new Semaphore(3);
 
+/** SSRF guard shared by /test and /fetch — rejects private/internal hosts. */
+function isPrivateHostname(hostname: string): boolean {
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    hostname.startsWith('192.168.') ||
+    hostname.startsWith('10.') ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
+    hostname.endsWith('.local') ||
+    hostname.endsWith('.internal')
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Browser lifecycle                                                  */
 /* ------------------------------------------------------------------ */
 
-async function ensureBrowsers(): Promise<void> {
-  if (!chromiumBrowser || !chromiumBrowser.isConnected()) {
+async function ensureBrowsers(
+  engines: Array<'chromium' | 'webkit'> = ['chromium', 'webkit'],
+): Promise<void> {
+  if (engines.includes('chromium') && (!chromiumBrowser || !chromiumBrowser.isConnected())) {
     console.log('[browser] Launching chromium...');
     chromiumBrowser = await chromium.launch({
       headless: true,
@@ -99,7 +115,7 @@ async function ensureBrowsers(): Promise<void> {
     });
     console.log('[browser] Chromium ready');
   }
-  if (!webkitBrowser || !webkitBrowser.isConnected()) {
+  if (engines.includes('webkit') && (!webkitBrowser || !webkitBrowser.isConnected())) {
     console.log('[browser] Launching webkit...');
     webkitBrowser = await webkit.launch({ headless: true });
     console.log('[browser] Webkit ready');
@@ -388,6 +404,84 @@ app.post('/health', (_req: Request, res: Response): void => {
   });
 });
 
+/**
+ * Headless page fetch — tier 3 of the crawler's fetch escalation.
+ *
+ * Sites with TLS-fingerprint bot walls (Cloudflare/DataDome) block plain
+ * `fetch` even with perfect browser headers (verified on apartmenttherapy.com,
+ * 2026-07-06). A real Chromium context is the only header-independent way to
+ * read them. Returns the rendered HTML so the crawler can extract links.
+ */
+app.post('/fetch', async (req: Request, res: Response): Promise<void> => {
+  const body = req.body as Partial<{ url: string; timeoutMs: number }>;
+
+  if (!body.url || typeof body.url !== 'string') {
+    res.status(400).json({ error: 'Missing or invalid "url" field' });
+    return;
+  }
+
+  const urlStr = body.url.trim();
+  let parsed: URL;
+  try {
+    parsed = new URL(urlStr);
+  } catch {
+    res.status(400).json({ error: 'Invalid URL format' });
+    return;
+  }
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    res.status(400).json({ error: 'Only HTTP/HTTPS URLs are supported' });
+    return;
+  }
+  if (isPrivateHostname(parsed.hostname)) {
+    res.status(400).json({ error: 'Private/internal URLs are not allowed' });
+    return;
+  }
+
+  const navTimeoutMs = Math.min(Math.max(body.timeoutMs ?? 20000, 5000), 30000);
+
+  try {
+    // /fetch only needs chromium — don't force a webkit install/launch for it.
+    await ensureBrowsers(['chromium']);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ error: `Browser launch failed: ${message}` });
+    return;
+  }
+
+  const startedAt = Date.now();
+  let context: BrowserContext | null = null;
+  let page: Page | null = null;
+
+  await semaphore.acquire();
+  try {
+    const browser = getBrowser('chromium');
+    context = await browser.newContext({ ignoreHTTPSErrors: true });
+    page = await context.newPage();
+
+    const response = await page.goto(urlStr, {
+      waitUntil: 'domcontentloaded',
+      timeout: navTimeoutMs,
+    });
+    // Give client-side challenges/rendering a brief settle window, then move on.
+    await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {});
+
+    const html = await page.content();
+    res.json({
+      status: response?.status() ?? 0,
+      finalUrl: page.url(),
+      html,
+      durationMs: Date.now() - startedAt,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    res.status(502).json({ error: `Headless fetch failed: ${message}` });
+  } finally {
+    await page?.close().catch(() => {});
+    await context?.close().catch(() => {});
+    semaphore.release();
+  }
+});
+
 app.post('/test', async (req: Request, res: Response): Promise<void> => {
   const body = req.body as Partial<TestRequestBody>;
 
@@ -418,17 +512,7 @@ app.post('/test', async (req: Request, res: Response): Promise<void> => {
   }
 
   // Block private IPs
-  const hostname = parsed.hostname;
-  if (
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname === '0.0.0.0' ||
-    hostname.startsWith('192.168.') ||
-    hostname.startsWith('10.') ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
-    hostname.endsWith('.local') ||
-    hostname.endsWith('.internal')
-  ) {
+  if (isPrivateHostname(parsed.hostname)) {
     res.status(400).json({ error: 'Private/internal URLs are not allowed' });
     return;
   }
@@ -436,9 +520,10 @@ app.post('/test', async (req: Request, res: Response): Promise<void> => {
   // Cap environments to a reasonable limit
   const environments = body.environments.slice(0, 10);
 
-  // Ensure browsers are alive
+  // Ensure only the engines this request actually uses are alive
+  const neededEngines = [...new Set(environments.map((e) => e.playwrightBrowser))];
   try {
-    await ensureBrowsers();
+    await ensureBrowsers(neededEngines);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     res.status(500).json({ error: `Browser launch failed: ${message}` });
@@ -507,8 +592,13 @@ app.use((_req: Request, res: Response): void => {
 async function start(): Promise<void> {
   console.log('[server] Starting LinkRescue Browser API...');
 
-  // Launch browsers on startup for warm starts
-  await ensureBrowsers();
+  // Warm-start chromium (used by /fetch and most /test environments); webkit
+  // launches lazily on the first /test that needs it so a chromium-only box
+  // (or a machine without the webkit download) can still serve /fetch.
+  await ensureBrowsers(['chromium']);
+  ensureBrowsers(['webkit']).catch((err) => {
+    console.warn('[browser] Webkit unavailable (lazy launch will retry):', err?.message ?? err);
+  });
 
   app.listen(PORT, () => {
     console.log(`[server] Listening on port ${PORT}`);

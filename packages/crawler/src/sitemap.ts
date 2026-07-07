@@ -1,5 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
-import { PAGE_FETCH_TIMEOUT_MS, CRAWLER_USER_AGENT } from './crawl-config';
+import { PAGE_FETCH_TIMEOUT_MS } from './crawl-config';
+import { fetchWithCrawlerFallback } from './browser-fetch';
 
 const parser = new XMLParser({ ignoreAttributes: false });
 
@@ -16,9 +17,8 @@ export async function fetchSitemap(
   if (timeoutMs <= 0) {
     throw new Error('Sitemap fetch skipped: discovery deadline reached');
   }
-  const response = await fetch(sitemapUrl, {
-    signal: AbortSignal.timeout(timeoutMs),
-    headers: { 'User-Agent': CRAWLER_USER_AGENT },
+  const { response } = await fetchWithCrawlerFallback(sitemapUrl, {
+    timeoutMs,
   });
 
   if (!response.ok) {

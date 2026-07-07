@@ -32,6 +32,10 @@ function renderJson(report: ScanReport, options: CliOptions): void {
     budgetExhausted: report.budgetExhausted ?? false,
     pagesSkippedBudget: report.pagesSkippedBudget ?? 0,
     linksSkippedBudget: report.linksSkippedBudget ?? 0,
+    pagesFetchedViaBrowserProfile: report.pagesFetchedViaBrowserProfile ?? 0,
+    blocksDeclaredCrawlers: report.blocksDeclaredCrawlers ?? false,
+    pagesFetchedViaHeadless: report.pagesFetchedViaHeadless ?? 0,
+    hardBotWall: report.hardBotWall ?? false,
     summary: {
       ok: report.results.filter((r) => r.issueType === 'OK').length,
       broken4xx: report.results.filter((r) => r.issueType === 'BROKEN_4XX').length,

@@ -64,7 +64,9 @@ const NICHES = {
   'perfectdailygrind.com': 'misc',
   'gardeningknowhow.com': 'misc',
   'mensjournal.com': 'misc',
-  'the-sun-and-the-turtle.com': 'misc',
+  'the-sun-and-the-turtle.com': 'misc', // dead (NXDOMAIN) — replaced Jul 2026, kept for old-run re-aggregation
+  'alongdustyroads.com': 'travel', // panel replacement Jul 2026 (mywanderlust.com parked)
+  'goatsontheroad.com': 'travel', // panel replacement Jul 2026 (the-sun-and-the-turtle.com dead)
 };
 
 function parseJsonFromFile(filepath) {
@@ -211,6 +213,14 @@ function main() {
       affiliateIssues,
       allIssues,
       durationMs: data.durationMs,
+      // Two-tier fetch (Jul 2026+ builds): site served a browser header
+      // profile after 403ing the honest crawler UA — a published index stat.
+      blocksDeclaredCrawlers: Boolean(data.blocksDeclaredCrawlers),
+      pagesFetchedViaBrowserProfile: data.pagesFetchedViaBrowserProfile || 0,
+      // Headless tier (Jul 2026+): site blocks plain fetch regardless of
+      // headers — TLS-fingerprint bot wall, served via headless browser.
+      hardBotWall: Boolean(data.hardBotWall),
+      pagesFetchedViaHeadless: data.pagesFetchedViaHeadless || 0,
     });
   }
 
@@ -270,6 +280,14 @@ function main() {
   );
   console.log(`  Zero-data sites (${zeroDataSites.length}): ${zeroDataSites.join(', ') || 'none'}`);
   console.log(`  Thin sites, 1-2 pages (${thinDataSites.length}): ${thinDataSites.join(', ') || 'none'}`);
+  const uaGatedSites = sitesWithData.filter((r) => r.blocksDeclaredCrawlers).map((r) => r.site);
+  console.log(
+    `  Sites that block declared crawlers but serve browsers (${uaGatedSites.length}): ${uaGatedSites.join(', ') || 'none'}`,
+  );
+  const hardWallSites = sitesWithData.filter((r) => r.hardBotWall).map((r) => r.site);
+  console.log(
+    `  Sites behind hard bot walls, read via headless browser (${hardWallSites.length}): ${hardWallSites.join(', ') || 'none'}`,
+  );
   console.log('');
 
   console.log('PER-SITE DISTRIBUTION (HTTP broken only):');
@@ -372,6 +390,8 @@ function main() {
       pass: gateRatePct >= 80,
       zeroDataSites,
       thinDataSites,
+      blocksDeclaredCrawlersSites: uaGatedSites,
+      hardBotWallSites: hardWallSites,
     },
     medianIssuesPerSubstantiveSite: median(substantiveRows.map((r) => r.allIssues)),
     zeroBrokenSubstantiveSites: substantiveRows.filter((r) => r.brokenHttp === 0).length,

@@ -1,28 +1,24 @@
-# Outreach Email Draft
+# Outreach Email Draft (gift-first — no pitch)
 **To:** [find contact email for nomadicmatt.com]
-**Subject:** I found 4 broken affiliate links on Nomadic Matt
+**Subject:** Your site was in our 50-site link study — 1 affiliate tracking issue worth a look (report attached, free)
 **Attachment:** nomadicmatt.com-audit-report.pdf
 
 ---
 
 Hi there,
 
-I was browsing Nomadic Matt and noticed some of your affiliate links aren't working — 0 broken links that could be costing you around $200/month in lost commissions.
+Nomadic Matt was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Your links mostly resolve fine — the issues found are the sneakier kind: 1 link where the page loads but the affiliate tag gets stripped or the check times out. In the full study, that failure mode outnumbered broken links 1.6 to 1.
 
-I ran a quick audit and put together a free report showing exactly which links are broken, which pages they're on, and how much revenue each one is likely losing. I attached the full report to this email.
+The full per-page breakdown is attached — which links, which pages, what kind of failure. Everything in it is fixable by hand; most people knock out the high-severity ones in an afternoon.
 
-Here's the quick summary:
-- **4 total issues** found across your site
-- **0 broken affiliate links** (404s, timeouts, redirect loops)
-- **~$200/month** estimated revenue at risk
+Quick summary:
+- **1 tracking issues** — the link works but the affiliate tag gets stripped or times out
+- **43 affiliate links land on the merchant's homepage** instead of a specific page — sometimes intended, worth a skim (no revenue claim attached)
+- **1 broken non-affiliate links** (social, editorial — included for completeness)
+- **~$13/month** estimated affiliate revenue at risk (conservative — counts only dead links and stripped tags)
+- 15 links couldn't be verified (their destinations block crawlers) — excluded from every count above
 
-I built a tool called LinkRescue that catches these issues automatically — but honestly, you could fix most of these manually with the report. The important thing is that they get fixed so you stop leaving money on the table.
-
-If you'd like help fixing everything, I offer:
-- **One-time fix ($150–$300)** — I'll fix every issue in the report and verify they're working
-- **Monthly monitoring ($49–$99/mo)** — Ongoing scanning so links never stay broken for more than a day
-
-Either way, the report is yours to keep. Happy to jump on a quick 15-min call if you want to walk through the findings: https://cal.com/carsonroell/linkrescue
+No strings on this — the report is yours, and I'm happy to answer questions about any specific finding. If you'd rather have it checked automatically every month, that's the tool I built the study with (linkrescue.io, free scan any time). And if you want your numbers pulled from July's study when it runs, just say so.
 
 Best,
 Carson Roell
@@ -31,7 +27,7 @@ LinkRescue — linkrescue.io
 ---
 
 ## Notes for Carson
-- Review the PDF report before sending
-- Find the contact email (check the blog's about page, contact page, or Twitter)
 - Personalize the opening — mention a specific post you liked
-- Send from your LinkRescue email, not personal
+- Send from LinkRescue email, not personal
+- Attach the PDF report before sending
+- Gift-first: do NOT add pricing or a call link; the only CTA is "reply"

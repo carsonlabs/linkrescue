@@ -10,7 +10,7 @@ meta_description: "Learn how to audit your affiliate site for broken links. Step
 
 # How to Audit Your Site for Link Rot: A Complete Guide (Manual + Automated)
 
-You know link rot is costing you money. You've seen the estimates — potentially thousands in lost commissions every year. Now comes the important question: how do you actually find and fix these broken links?
+You know link rot is costing you money. You've seen the estimates — potentially thousands in lost commissions every year. And the real numbers back it up: our [June 2026 Link Rot Index](/blog/link-rot-index-june-2026) (50 established affiliate sites, 6,550 links) found a median of **27 link issues per site**, with broken affiliate attribution (9.1%) outweighing visibly broken links (5.8%). Now comes the important question: how do you actually find and fix them?
 
 This guide covers everything from manual audits for small sites to automated solutions for larger operations. By the end, you'll have a clear plan for keeping your affiliate links healthy and your revenue flowing.
 

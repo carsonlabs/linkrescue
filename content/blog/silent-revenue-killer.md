@@ -16,6 +16,8 @@ But here's the uncomfortable truth: you might have earned commissions yesterday.
 
 Welcome to the world of link rot — the silent revenue killer that affects every affiliate marketer, content creator, and niche site owner. And the worst part? Most people don't even know it's happening.
 
+This isn't hypothetical. In our [June 2026 Link Rot Index](/blog/link-rot-index-june-2026) — 50 established affiliate sites, 6,550 links checked — 5.8% of links were flat-out broken and **9.1% had broken affiliate attribution** (the link resolves, the reader lands, the commission never fires). The median site had 27 issues. Only 3 of the 34 fully-crawlable sites were clean.
+
 ## What Exactly Is Link Rot?
 
 Link rot (also called "link death" or "reference rot") is what happens when a hyperlink stops working. The page it pointed to no longer exists, was moved, or is temporarily unavailable. For regular web users, it's an annoyance. For affiliate marketers, it's a direct hit to your bottom line.

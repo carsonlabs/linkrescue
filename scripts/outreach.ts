@@ -20,6 +20,7 @@ import { crawlSite, discoverPages } from "@linkrescue/crawler";
 import { extractOutboundLinks } from "@linkrescue/crawler";
 import { checkLink } from "@linkrescue/crawler";
 import { DomainLimiter } from "@linkrescue/crawler";
+import { fetchWithCrawlerFallback } from "@linkrescue/crawler";
 import PDFDocument from "pdfkit";
 import { createWriteStream, mkdirSync, writeFileSync } from "fs";
 import { resolve } from "path";
@@ -133,12 +134,16 @@ function classifyLink(href: string, crawlerSaysAffiliate: boolean): "affiliate" 
 }
 
 // Revenue estimates per issue type — CONSERVATIVE
-// Only applied to confirmed affiliate links
+// Only applied to confirmed affiliate links.
+// REDIRECT_TO_HOME carries $0 in gift reports: for tracking-hop links
+// (prf.hn/click/…, CJ click URLs, booking.com/index.html?aid=…) landing on the
+// merchant homepage is often the link's intent, so a dollar claim would be an
+// overclaim in front of exactly the audience we need to trust the numbers.
 const REVENUE_ESTIMATES: Record<string, { min: number; max: number; severity: string }> = {
   BROKEN_4XX: { min: 15, max: 60, severity: "High" },
   SERVER_5XX: { min: 10, max: 40, severity: "High" },
   TIMEOUT: { min: 5, max: 20, severity: "Medium" },
-  REDIRECT_TO_HOME: { min: 8, max: 30, severity: "Medium" },
+  REDIRECT_TO_HOME: { min: 0, max: 0, severity: "Review" },
   LOST_PARAMS: { min: 10, max: 35, severity: "Medium" },
   SOFT_404: { min: 12, max: 50, severity: "High" },
   CONTENT_CHANGED: { min: 3, max: 15, severity: "Low" },
@@ -185,16 +190,37 @@ console.log(`   Domain: ${domain}`);
 console.log(`   Max pages: ${maxPages}\n`);
 
 console.log(`[1/4] Discovering pages...`);
+
+// Resolve the canonical host first (apex vs www). The crawler compares
+// hostnames strictly, so crawling "nomadicmatt.com" when the site lives at
+// "www.nomadicmatt.com" makes every internal link look external.
+let canonicalHost = domain;
+try {
+  const { response: homeRes } = await fetchWithCrawlerFallback(`https://${domain}/`, {
+    timeoutMs: 15_000,
+    honestUserAgent: "LinkRescue-Outreach/1.0 (+https://linkrescue.io)",
+  });
+  const finalHost = new URL(homeRes.url).hostname;
+  if (finalHost && finalHost !== canonicalHost) {
+    canonicalHost = finalHost;
+    console.log(`   Canonical host: ${canonicalHost}`);
+  }
+} catch { /* keep the given domain */ }
+
 let urls: string[] = [];
 try {
-  urls = await discoverPages(domain, null, maxPages);
+  urls = await discoverPages(canonicalHost, null, maxPages);
+  if (urls.length === 0) {
+    // Yoast et al. serve a sitemap index instead of /sitemap.xml
+    urls = await discoverPages(canonicalHost, `https://${canonicalHost}/sitemap_index.xml`, maxPages);
+  }
   console.log(`   Found ${urls.length} URLs from sitemap`);
 } catch {
   console.log(`   No sitemap, falling back to crawl...`);
 }
 
 if (urls.length === 0) {
-  urls = await crawlSite(domain, 2, maxPages);
+  urls = await crawlSite(canonicalHost, 2, maxPages);
   console.log(`   Crawled ${urls.length} URLs`);
 }
 
@@ -210,20 +236,21 @@ console.log(`\n[2/4] Checking links across ${urls.length} pages...`);
 const issues: AuditIssue[] = [];
 let totalLinks = 0;
 let pagesScanned = 0;
+let blockedCount = 0; // links whose sites block crawlers — unverifiable, disclosed but not counted
 const domainLimiter = new DomainLimiter();
 
 for (const pageUrl of urls) {
   try {
-    const res = await fetch(pageUrl, {
-      signal: AbortSignal.timeout(10_000),
-      headers: { "User-Agent": "LinkRescue-Outreach/1.0 (+https://linkrescue.io)" },
+    const { response: res } = await fetchWithCrawlerFallback(pageUrl, {
+      timeoutMs: 10_000,
+      honestUserAgent: "LinkRescue-Outreach/1.0 (+https://linkrescue.io)",
     });
     if (!res.ok) continue;
     const ct = res.headers.get("content-type") || "";
     if (!ct.includes("text/html")) continue;
 
     const html = await res.text();
-    const links = extractOutboundLinks(html, domain);
+    const links = extractOutboundLinks(html, canonicalHost);
     totalLinks += links.length;
     pagesScanned++;
 
@@ -244,6 +271,11 @@ for (const pageUrl of urls) {
       } catch { /* skip invalid URLs */ }
 
       const result = await checkLink(link);
+
+      if (result.issueType === "BLOCKED") {
+        blockedCount++;
+        continue;
+      }
 
       if (result.issueType !== "OK") {
         const linkClass = classifyLink(link.href, result.isAffiliate);
@@ -300,6 +332,7 @@ const pagesWithIssues = new Set(issues.map((i) => i.pageUrl)).size;
 
 console.log(`   Affiliate issues: ${affiliateIssues.length} (${brokenAffiliateCount} broken)`);
 console.log(`   Site health issues: ${nonAffiliateIssues.length} (social/editorial broken links)`);
+console.log(`   Unverifiable (bot-blocked): ${blockedCount} links (excluded from counts)`);
 console.log(`   Estimated affiliate revenue at risk: $${totalEstLoss}/mo`);
 
 // ── Step 3: Generate PDF ────────────────────────────────────────────────────
@@ -345,6 +378,8 @@ const emailDraft = generateEmailDraft({
   totalIssueCount: issues.length,
   prospectEmail,
   pagesWithIssues,
+  redirectCount,
+  blockedCount,
 });
 
 const emailPath = resolve(outDir, `email-draft.md`);
@@ -365,6 +400,7 @@ writeFileSync(dataPath, JSON.stringify({
     expiredCount,
     lostParamsCount,
     redirectCount,
+    blockedCount,
     totalEstLoss,
     pagesWithIssues,
     affiliateIssueCount: affiliateIssues.length,
@@ -502,8 +538,8 @@ function generatePDF(path: string, data: PDFData): Promise<void> {
 
     const rows = [
       { cat: "Broken affiliate / partner links", count: data.brokenAffiliateCount, sev: "High", sevColor: "#dc2626", status: "Critical" },
-      { cat: "Missing UTM / tracking parameters", count: data.lostParamsCount, sev: "Medium", sevColor: "#ca8a04", status: "Review" },
-      { cat: "Redirect chain issues (3+ hops)", count: data.redirectCount, sev: "Medium", sevColor: "#ca8a04", status: "Monitor" },
+      { cat: "Stripped tracking parameters", count: data.lostParamsCount, sev: "Medium", sevColor: "#ca8a04", status: "Fix" },
+      { cat: "Links landing on merchant homepage (verify intent)", count: data.redirectCount, sev: "Review", sevColor: "#64748b", status: "Skim" },
       { cat: "Content changed (possible deprecation)", count: data.expiredCount, sev: "Low", sevColor: "#16a34a", status: "Review" },
       { cat: "Broken non-affiliate links (social, editorial)", count: data.brokenNonAffiliateCount, sev: "Low", sevColor: "#64748b", status: "Optional" },
     ];
@@ -578,7 +614,7 @@ function generatePDF(path: string, data: PDFData): Promise<void> {
         doc.fontSize(8).fillColor("#334155").text(formatIssueType(issue.issueType), dCols[2]! + 5, y + 10, { width: 85, lineBreak: false });
 
         // Severity with color
-        const sevColor = issue.severity === "High" ? "#dc2626" : issue.severity === "Medium" ? "#ca8a04" : "#16a34a";
+        const sevColor = issue.severity === "High" ? "#dc2626" : issue.severity === "Medium" ? "#ca8a04" : issue.severity === "Review" ? "#64748b" : "#16a34a";
         doc.fillColor(sevColor).text(issue.severity, dCols[3]! + 5, y + 10, { lineBreak: false });
 
         // Revenue estimate — varied, not flat
@@ -628,30 +664,30 @@ function generatePDF(path: string, data: PDFData): Promise<void> {
       fixY += 60;
     });
 
-    // Pricing CTA
+    // Gift-first close: no consulting pitch — the report is the gift, the
+    // product gets one honest mention (Decision #0001: inbound GTM).
     const ctaY = fixY + 20;
     doc.roundedRect(M, ctaY, CW, 150, 8).fill("#1a2332");
 
-    doc.fontSize(14).fillColor("#2dd4a8").text("What I Can Do For You", M + 25, ctaY + 18);
+    doc.fontSize(14).fillColor("#2dd4a8").text("About This Report", M + 25, ctaY + 18);
 
-    // One-time fix
-    doc.fontSize(22).fillColor("#ffffff").text("$150 - $300", M + 25, ctaY + 45);
-    doc.fontSize(10).fillColor("#94a3b8").text("One-Time Fix", M + 25, ctaY + 72);
-    doc.fontSize(8).fillColor("#64748b")
-      .text("Fix all issues identified in this report.", M + 25, ctaY + 87)
-      .text("Includes verification & testing.", M + 25, ctaY + 99);
+    doc.fontSize(9).fillColor("#e2e8f0").text(
+      "This audit was produced with the same scanner behind the monthly Link Rot Index — a public 50-site study " +
+      "of link and attribution health across established affiliate sites. Every issue listed is fixable by hand " +
+      "using the tables above; nothing in this report requires our tool.",
+      M + 25, ctaY + 42, { width: CW - 50 }
+    );
 
-    // Monthly monitoring
-    doc.fontSize(22).fillColor("#ffffff").text("$49 - $99/mo", M + CW / 2, ctaY + 45);
-    doc.fontSize(10).fillColor("#94a3b8").text("Monthly Monitoring", M + CW / 2, ctaY + 72);
-    doc.fontSize(8).fillColor("#64748b")
-      .text("Ongoing scanning + instant alerts.", M + CW / 2, ctaY + 87)
-      .text("All fixes included. Cancel anytime.", M + CW / 2, ctaY + 99);
+    doc.fontSize(9).fillColor("#94a3b8").text(
+      "If you'd rather it be checked automatically: linkrescue.io monitors your links daily, flags stripped " +
+      "affiliate tags before they cost you commissions, and starts free (Pro from $29/mo).",
+      M + 25, ctaY + 88, { width: CW - 50 }
+    );
 
     // CTA button
     doc.roundedRect(M + 30, ctaY + 120, CW - 60, 22, 4).fill("#2dd4a8");
     doc.fontSize(9).fillColor("#1a2332").text(
-      `Reply to this email or book a 15-min call at ${BRAND.calendarLink}`,
+      `Free scan (no signup): ${BRAND.site}/free-scan  ·  Questions? Just reply to the email.`,
       M + 50, ctaY + 126, { width: CW - 80, align: "center" }
     );
 
@@ -682,8 +718,8 @@ function formatIssueType(issueType: string): string {
     BROKEN_4XX: "Broken link (4xx)",
     SERVER_5XX: "Server error (5xx)",
     TIMEOUT: "Connection timeout",
-    REDIRECT_TO_HOME: "Redirect to homepage",
-    LOST_PARAMS: "Missing tracking params",
+    REDIRECT_TO_HOME: "Lands on homepage",
+    LOST_PARAMS: "Stripped tracking params",
     SOFT_404: "Soft 404 page",
     CONTENT_CHANGED: "Content changed",
   };
@@ -702,40 +738,59 @@ function generateEmailDraft(opts: {
   totalIssueCount: number;
   prospectEmail: string | null;
   pagesWithIssues: number;
+  redirectCount: number;
+  blockedCount: number;
 }): string {
   const { blogName, domain, brokenAffiliateCount, totalEstLoss, affiliateIssueCount, totalIssueCount, pagesWithIssues } = opts;
 
-  // Only mention affiliate issues in the email — that's what they care about
+  // Gift-first framing (Decision #0001: inbound, no cold pitch).
+  // These sites are the June Link Rot Index panel — the email says so honestly,
+  // hands over the report with no strings, and mentions the product exactly once.
   let subjectLine: string;
   let openingLine: string;
 
+  const strippedTagCount = affiliateIssueCount - brokenAffiliateCount - opts.redirectCount;
+
   if (brokenAffiliateCount > 0) {
-    subjectLine = `${brokenAffiliateCount} broken affiliate link${brokenAffiliateCount > 1 ? "s" : ""} on ${blogName} — ~$${totalEstLoss.toLocaleString()}/mo at risk`;
-    openingLine = `I ran a quick link audit on ${blogName} and found ${brokenAffiliateCount} broken affiliate link${brokenAffiliateCount > 1 ? "s" : ""} across ${pagesWithIssues} page${pagesWithIssues > 1 ? "s" : ""}. These are links to affiliate programs and partners that are returning 404 errors, timeouts, or redirect loops — meaning you're likely losing commissions on clicks that should be converting.`;
-  } else if (affiliateIssueCount > 0) {
-    subjectLine = `${affiliateIssueCount} affiliate link issue${affiliateIssueCount > 1 ? "s" : ""} on ${blogName} worth checking`;
-    openingLine = `I ran a quick link audit on ${blogName} and found ${affiliateIssueCount} issue${affiliateIssueCount > 1 ? "s" : ""} with your affiliate links — missing tracking parameters, redirect chains, and other problems that could be costing you around $${totalEstLoss.toLocaleString()}/month in lost or unattributed commissions.`;
+    subjectLine = `Your site was in our 50-site link study — found ${brokenAffiliateCount} broken affiliate link${brokenAffiliateCount > 1 ? "s" : ""} (report attached, free)`;
+    openingLine = `${blogName} was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Rather than leave your numbers buried in aggregate stats, I pulled your full per-site report: ${brokenAffiliateCount} broken affiliate link${brokenAffiliateCount > 1 ? "s" : ""} across ${pagesWithIssues} page${pagesWithIssues > 1 ? "s" : ""} — links returning 404s, timeouts, or redirect loops on clicks that should be earning you commissions.`;
+  } else if (strippedTagCount > 0) {
+    subjectLine = `Your site was in our 50-site link study — ${strippedTagCount} affiliate tracking issue${strippedTagCount > 1 ? "s" : ""} worth a look (report attached, free)`;
+    openingLine = `${blogName} was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Your links mostly resolve fine — the issues found are the sneakier kind: ${strippedTagCount} link${strippedTagCount > 1 ? "s" : ""} where the page loads but the affiliate tag gets stripped or the check times out. In the full study, that failure mode outnumbered broken links 1.6 to 1.`;
+  } else if (opts.redirectCount > 0) {
+    subjectLine = `Your site was in our 50-site link study — ${opts.redirectCount} affiliate link${opts.redirectCount > 1 ? "s" : ""} worth a quick skim (report attached, free)`;
+    openingLine = `${blogName} was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Good news first: nothing broken, no stripped tags. The report lists ${opts.redirectCount} affiliate link${opts.redirectCount > 1 ? "s" : ""} that resolve to the merchant's homepage rather than a specific page — often that's exactly what you intended, but it's worth a two-minute skim to confirm none of them used to point somewhere deeper.`;
+  } else if (totalIssueCount > 0) {
+    subjectLine = `Your site was in our 50-site link study — ${totalIssueCount} broken outbound link${totalIssueCount > 1 ? "s" : ""} (report attached, free)`;
+    openingLine = `${blogName} was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Good news: your affiliate links came back clean. The report covers ${totalIssueCount} broken non-affiliate outbound link${totalIssueCount > 1 ? "s" : ""} (SEO/UX housekeeping, not lost revenue).`;
   } else {
-    // Only non-affiliate issues found — weaker pitch but still useful
-    subjectLine = `${totalIssueCount} broken outbound link${totalIssueCount > 1 ? "s" : ""} on ${blogName}`;
-    openingLine = `I ran a quick link audit on ${blogName} and found ${totalIssueCount} broken outbound link${totalIssueCount > 1 ? "s" : ""}. While these aren't directly affiliate links, broken links hurt your SEO and user experience — and they often signal that affiliate links on the same pages may also need attention.`;
+    // Fully clean — the rarest outcome in the study and the easiest send.
+    subjectLine = `Your site came back clean in our 50-site link study (only 3 of 34 did)`;
+    openingLine = `${blogName} was one of the 50 established affiliate sites in June's Link Rot Index (a monthly study I publish at linkrescue.io). Yours is one of the few that came back fully clean — no broken links, no stripped affiliate tags. Across the whole panel only 3 of the 34 fully-crawlable sites managed that, so consider this email a tip of the hat. Report attached in case you want the receipts.`;
   }
 
   const summaryBullets = [];
   if (brokenAffiliateCount > 0) {
     summaryBullets.push(`- **${brokenAffiliateCount} broken affiliate links** (404s, timeouts, redirect loops)`);
   }
-  if (affiliateIssueCount > brokenAffiliateCount) {
-    summaryBullets.push(`- **${affiliateIssueCount - brokenAffiliateCount} additional tracking/redirect issues** on affiliate links`);
+  const trackingIssueCount = affiliateIssueCount - brokenAffiliateCount - opts.redirectCount;
+  if (trackingIssueCount > 0) {
+    summaryBullets.push(`- **${trackingIssueCount} tracking issue${trackingIssueCount > 1 ? "s" : ""}** — the link works but the affiliate tag gets stripped or times out`);
+  }
+  if (opts.redirectCount > 0) {
+    summaryBullets.push(`- **${opts.redirectCount} affiliate links land on the merchant's homepage** instead of a specific page — sometimes intended, worth a skim (no revenue claim attached)`);
   }
   if (opts.brokenNonAffiliateCount > 0) {
     summaryBullets.push(`- **${opts.brokenNonAffiliateCount} broken non-affiliate links** (social, editorial — included for completeness)`);
   }
   if (totalEstLoss > 0) {
-    summaryBullets.push(`- **~$${totalEstLoss.toLocaleString()}/month** estimated affiliate revenue at risk`);
+    summaryBullets.push(`- **~$${totalEstLoss.toLocaleString()}/month** estimated affiliate revenue at risk (conservative — counts only dead links and stripped tags)`);
+  }
+  if (opts.blockedCount > 0) {
+    summaryBullets.push(`- ${opts.blockedCount} links couldn't be verified (their destinations block crawlers) — excluded from every count above`);
   }
 
-  return `# Outreach Email Draft
+  return `# Outreach Email Draft (gift-first — no pitch)
 **To:** ${opts.prospectEmail ?? `[find contact email for ${domain}]`}
 **Subject:** ${subjectLine}
 **Attachment:** ${domain}-audit-report.pdf
@@ -746,18 +801,12 @@ Hi there,
 
 ${openingLine}
 
-I put together a quick report showing exactly which links are broken, which pages they're on, and how much revenue each one is likely costing you. It's attached.
+The full per-page breakdown is attached — which links, which pages, what kind of failure. Everything in it is fixable by hand; most people knock out the high-severity ones in an afternoon.
 
-Here's the quick summary:
+Quick summary:
 ${summaryBullets.join("\n")}
 
-I built a tool called LinkRescue that monitors affiliate links automatically — but you could fix most of these manually with the report. The important thing is they get fixed before you lose more commissions.
-
-If you'd like help:
-- **One-time fix ($150-$300)** — I'll fix every issue in the report and verify they're working
-- **Monthly monitoring ($49-$99/mo)** — Ongoing scanning so links never stay broken for more than a day
-
-Either way, the report is yours. Happy to walk through the findings on a quick call: ${BRAND.calendarLink}
+No strings on this — the report is yours, and I'm happy to answer questions about any specific finding. If you'd rather have it checked automatically every month, that's the tool I built the study with (linkrescue.io, free scan any time). And if you want your numbers pulled from July's study when it runs, just say so.
 
 Best,
 ${BRAND.name}
@@ -769,5 +818,6 @@ ${BRAND.company} — ${BRAND.site}
 - Personalize the opening — mention a specific post you liked
 - Send from LinkRescue email, not personal
 - Attach the PDF report before sending
+- Gift-first: do NOT add pricing or a call link; the only CTA is "reply"
 `;
 }

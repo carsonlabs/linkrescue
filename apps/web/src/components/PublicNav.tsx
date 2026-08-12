@@ -7,10 +7,8 @@ import { ExternalLink, ArrowRight, Menu, X } from 'lucide-react';
 const NAV_LINKS = [
   { href: '/#features', label: 'Features' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/api-landing', label: 'API' },
   { href: '/link-checker', label: 'Link Checker' },
-  { href: '/affiliate-link-revenue-calculator', label: 'Calculator' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/free-scan', label: 'Free Leak Snapshot' },
 ];
 
 export function PublicNav() {
@@ -45,8 +43,8 @@ export function PublicNav() {
           >
             Sign in
           </Link>
-          <Link href="/signup" className="hidden sm:inline-flex btn-primary text-sm whitespace-nowrap">
-            Get started
+          <Link href="/free-scan" className="hidden sm:inline-flex btn-primary text-sm whitespace-nowrap">
+            Get a snapshot
             <ArrowRight className="w-4 h-4" />
           </Link>
           <button
@@ -77,8 +75,8 @@ export function PublicNav() {
             <Link href="/login" onClick={() => setOpen(false)} className="text-sm text-slate-400 hover:text-white transition-colors py-2">
               Sign in
             </Link>
-            <Link href="/signup" onClick={() => setOpen(false)} className="btn-primary text-sm justify-center">
-              Get started
+            <Link href="/free-scan" onClick={() => setOpen(false)} className="btn-primary text-sm justify-center">
+              Get a snapshot
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

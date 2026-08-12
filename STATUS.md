@@ -1,1 +1,1 @@
-PRODUCTION-READY — linkrescue.io — Broken affiliate link monitor, 3 tiers
+LIVE PILOT - linkrescue.io - service-led affiliate link recovery. Production health and database checks pass; automated scans, billing, and outbound email remain intentionally disabled pending delivery readiness.

@@ -102,7 +102,7 @@ function truncateUrl(url: string, maxLen: number = 60): string {
 const PROGRESS_MESSAGES = [
   'Discovering pages on your site...',
   'Found pages, extracting outbound links...',
-  'Checking affiliate links across 38+ networks...',
+  'Checking visible outbound links and redirect paths...',
   'Following redirect chains...',
   'Detecting broken and stripped parameters...',
   'Almost done, compiling your report...',
@@ -260,11 +260,11 @@ export function FreeScanForm() {
           </span>
           <span className="flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-green-400/70" />
-            Results in under 2 minutes
+            Results depend on the site and its public pages
           </span>
           <span className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-green-400/70" />
-            Checks 38+ affiliate networks
+            Limited public-page review
           </span>
         </div>
       </div>
@@ -374,16 +374,15 @@ export function FreeScanForm() {
             <h3 className="text-xl font-semibold mb-2">Your links look healthy!</h3>
             <p className="text-slate-400 text-sm mb-6">
               We scanned {result.pagesScanned} pages and checked {result.totalLinksChecked} outbound
-              links. No broken links found at the time of this scan. Programs sunset, URLs change,
-              and parameters can be stripped during redirects, so scheduled monitoring still matters
-              for active archives.
+              links. No broken links found at the time of this scan. This is a limited technical
+              snapshot, so it is not evidence that every link or conversion path is healthy.
             </p>
             <Link
-              href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+              href="/pricing"
               className="btn-primary justify-center"
               onClick={() => posthog?.capture('free_scan_signup_clicked', { location: 'healthy' })}
             >
-              Set up free monitoring before your next commission disappears
+              Explore recovery options
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -433,8 +432,8 @@ export function FreeScanForm() {
                     found
                   </p>
                   <p className="text-sm text-slate-400 mb-5 text-center max-w-md">
-                    Drop your email to unlock the full list. We&apos;ll also send you the report so
-                    you can forward it to your team.
+                    Enter your email to unlock the full list in this browser. We save the request
+                    for a potential human follow-up; no report is sent automatically.
                   </p>
                   <form
                     onSubmit={handleUnlock}
@@ -469,7 +468,7 @@ export function FreeScanForm() {
                   </form>
                   {unlockError && <p className="text-xs text-red-400 mt-3">{unlockError}</p>}
                   <p className="text-xs text-slate-500 mt-3">
-                    No spam. One email with your report. Unsubscribe anytime.
+                    No automatic email is sent from this form.
                   </p>
                 </div>
               </div>
@@ -479,21 +478,21 @@ export function FreeScanForm() {
             <div className="gradient-border p-6 text-center mt-6">
               <p className="font-semibold mb-2">
                 {unlocked || !hasHidden
-                  ? "Don't let this pile up again."
-                  : 'Want continuous monitoring?'}
+                  ? "Ready to turn this evidence into repairs?"
+                  : 'Need a deeper recovery review?'}
               </p>
               <p className="text-sm text-slate-400 mb-5">
-                LinkRescue checks every affiliate link on your site daily and alerts you the moment
-                anything breaks. Start free with up to 200 pages.
+                A Recovery Sprint turns a scoped snapshot into a prioritized repair list. Managed
+                monitoring is considered only after a site has passed a readiness review.
               </p>
               <Link
-                href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+                href="/pricing"
                 className="btn-primary justify-center"
                 onClick={() =>
                   posthog?.capture('free_scan_signup_clicked', { location: 'results_bottom' })
                 }
               >
-                Start Free Monitoring
+                View recovery options
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

@@ -14,31 +14,14 @@ export function PublicFooter() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-slate-500">
             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-            <Link href="/api-landing" className="hover:text-white transition-colors">API</Link>
             <Link href="/link-checker" className="hover:text-white transition-colors">Link Checker</Link>
-            <Link href="/affiliate-link-revenue-calculator" className="hover:text-white transition-colors">Calculator</Link>
-            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <Link href="/affiliates" className="hover:text-white transition-colors">Affiliates</Link>
+            <Link href="/free-scan" className="hover:text-white transition-colors">Free Leak Snapshot</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           </div>
           <p className="text-sm text-slate-600">
             &copy; {new Date().getFullYear()} LinkRescue
           </p>
-        </div>
-        <div className="mt-6 pt-6 border-t border-white/5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-600">
-          <span className="text-slate-500">Compare</span>
-          <Link href="/vs/amz-watcher" className="hover:text-white transition-colors">vs AMZ Watcher</Link>
-          <Link href="/vs/affilimate" className="hover:text-white transition-colors">vs Affilimate</Link>
-          <Link href="/vs/lasso" className="hover:text-white transition-colors">vs Lasso</Link>
-          <Link href="/vs/dr-link-check" className="hover:text-white transition-colors">vs Dr. Link Check</Link>
-          <span className="text-slate-500 md:ml-4">Check your links</span>
-          <Link href="/check/amazon" className="hover:text-white transition-colors">Amazon</Link>
-          <Link href="/check/shareasale" className="hover:text-white transition-colors">ShareASale</Link>
-          <Link href="/check/cj" className="hover:text-white transition-colors">CJ</Link>
-          <Link href="/check/impact" className="hover:text-white transition-colors">Impact</Link>
-          <Link href="/check/awin" className="hover:text-white transition-colors">Awin</Link>
-          <Link href="/check/rakuten-advertising" className="hover:text-white transition-colors">Rakuten</Link>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-600">
           <span className="text-slate-500">More from Freedom Engineers</span>

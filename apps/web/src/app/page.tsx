@@ -16,7 +16,6 @@ import {
   TrendingDown,
   Archive,
   DollarSign,
-  Quote,
   TrendingUp,
 } from 'lucide-react';
 import { CalculatorTeaser } from '@/components/CalculatorTeaser';
@@ -574,49 +573,44 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Social Proof Section */}
+      {/* Research evidence section */}
       <section className="relative py-24 md:py-32 border-t border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-green-500/5 to-transparent" />
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
-              Real results from{' '}
-              <span className="text-gradient">real publishers</span>
+              What our June 2026{' '}
+              <span className="text-gradient">research scan found</span>
             </h2>
           </div>
 
-          {/* Case study card */}
+          {/* Research card */}
           <div className="max-w-3xl mx-auto mb-16">
             <div className="glass-card p-8 relative">
-              <Quote className="absolute top-6 left-6 w-8 h-8 text-green-500/20" />
+              <Search className="absolute top-6 left-6 w-8 h-8 text-green-500/20" />
               <div className="pl-6">
                 <p className="text-lg text-slate-300 leading-relaxed mb-6">
-                  Found <span className="font-semibold text-white">47 broken affiliate links</span> on
-                  a 50-page outdoor gear site — recovered{' '}
-                  <span className="font-semibold text-green-400">$2,400/year</span> in lost
-                  commissions. The fix took one weekend.
+                  Across <span className="font-semibold text-white">50 established affiliate sites</span>,
+                  LinkRescue checked <span className="font-semibold text-white">6,550 outbound links</span>.
+                  <span className="font-semibold text-green-400"> 5.8%</span> were visibly broken and
+                  <span className="font-semibold text-green-400"> 9.1%</span> had an attribution failure —
+                  the link resolves, but tracking data does not survive the journey.
                 </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-sm font-bold text-slate-900">
-                    D
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">David, Outdoor Gear Publisher</p>
-                    <p className="text-xs text-slate-500">50-page niche site, 12k monthly sessions</p>
-                  </div>
-                </div>
+                <p className="text-xs text-slate-500">
+                  June 11, 2026 research scan. Rates apply to links checked within the stated crawl budget;
+                  bot-blocked links are reported separately.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Stats bar */}
-          {/* TODO: Replace placeholder numbers with real aggregate data once available */}
+          {/* Research stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { value: '1.2M+', label: 'Links checked', icon: Search },
-              { value: '18,400+', label: 'Issues found', icon: AlertTriangle },
-              { value: '$340K+', label: 'Revenue recovered', icon: DollarSign },
-              { value: '2,100%', label: 'Average ROI', icon: TrendingUp },
+              { value: '50', label: 'Sites in the research scan', icon: Search },
+              { value: '683', label: 'Pages crawled', icon: AlertTriangle },
+              { value: '6,550', label: 'Outbound links checked', icon: DollarSign },
+              { value: '9.1%', label: 'Attribution failures found', icon: TrendingUp },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto mb-3">

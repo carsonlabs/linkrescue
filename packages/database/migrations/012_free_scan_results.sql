@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS free_scan_results (
   total_affiliate_links integer NOT NULL DEFAULT 0,
   broken_links_count integer NOT NULL DEFAULT 0,
   broken_affiliate_count integer NOT NULL DEFAULT 0,
-  estimated_monthly_loss numeric(10,2) NOT NULL DEFAULT 0,
   broken_links jsonb NOT NULL DEFAULT '[]'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now()
 );

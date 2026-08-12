@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
-import { crawlSite, extractOutboundLinks, checkLink, isAffiliateLink, safeFetch, SsrfError } from '@linkrescue/crawler';
+import {
+  crawlSite,
+  extractOutboundLinks,
+  checkLink,
+  isAffiliateLink,
+  safeFetch,
+  SsrfError,
+} from '@linkrescue/crawler';
 
 export const maxDuration = 120; // 2 minutes max for Vercel
 
@@ -38,20 +45,6 @@ function isRateLimited(ip: string): boolean {
   }
   entry.count++;
   return entry.count > RATE_LIMIT;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Revenue loss estimation                                            */
-/* ------------------------------------------------------------------ */
-
-/**
- * Conservative revenue loss estimate based on broken affiliate links.
- * Uses industry average: $2-8 per broken affiliate link per month.
- * We use $4.50 as a middle estimate to be credible.
- */
-function estimateMonthlyLoss(brokenAffiliateCount: number): number {
-  const PER_LINK_MONTHLY_LOSS = 4.5;
-  return Math.round(brokenAffiliateCount * PER_LINK_MONTHLY_LOSS * 100) / 100;
 }
 
 /* ------------------------------------------------------------------ */
@@ -118,7 +111,9 @@ export async function POST(req: NextRequest) {
 
     if (pageUrls.length === 0) {
       return NextResponse.json(
-        { error: 'Could not reach the site or no pages found. Please check the URL and try again.' },
+        {
+          error: 'Could not reach the site or no pages found. Please check the URL and try again.',
+        },
         { status: 422 }
       );
     }
@@ -170,8 +165,6 @@ export async function POST(req: NextRequest) {
     }
 
     const brokenAffiliateCount = allBrokenLinks.filter((l) => l.isAffiliate).length;
-    const estimatedLoss = estimateMonthlyLoss(brokenAffiliateCount);
-
     // 3. Save lead to database (only if email was provided up-front; usually captured post-scan via /api/free-scan/lead)
     if (email) {
       try {
@@ -183,7 +176,6 @@ export async function POST(req: NextRequest) {
           source: 'free-scan',
           broken_links_count: allBrokenLinks.length,
           affiliate_issues_count: brokenAffiliateCount,
-          estimated_loss: estimatedLoss,
           scanned_at: new Date().toISOString(),
         });
       } catch (err) {
@@ -196,16 +188,18 @@ export async function POST(req: NextRequest) {
     let shareId: string | null = null;
     try {
       const db = createAdminClient();
-      const { data: scanRow } = await (db.from as Function)('free_scan_results').insert({
-        domain,
-        pages_scanned: pageUrls.length,
-        total_links_checked: totalLinksChecked,
-        total_affiliate_links: totalAffiliateLinks,
-        broken_links_count: allBrokenLinks.length,
-        broken_affiliate_count: brokenAffiliateCount,
-        estimated_monthly_loss: estimatedLoss,
-        broken_links: allBrokenLinks,
-      }).select('id').single();
+      const { data: scanRow } = await (db.from as Function)('free_scan_results')
+        .insert({
+          domain,
+          pages_scanned: pageUrls.length,
+          total_links_checked: totalLinksChecked,
+          total_affiliate_links: totalAffiliateLinks,
+          broken_links_count: allBrokenLinks.length,
+          broken_affiliate_count: brokenAffiliateCount,
+          broken_links: allBrokenLinks,
+        })
+        .select('id')
+        .single();
       shareId = scanRow?.id ?? null;
     } catch (err) {
       console.error('[free-scan] Failed to save shareable result:', err);
@@ -219,7 +213,6 @@ export async function POST(req: NextRequest) {
       totalAffiliateLinks,
       brokenLinksCount: allBrokenLinks.length,
       brokenAffiliateCount,
-      estimatedMonthlyLoss: estimatedLoss,
       brokenLinks: allBrokenLinks,
       shareId,
     });

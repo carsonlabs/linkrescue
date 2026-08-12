@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   const db = createAdminClient();
   const { data: scan, error: scanErr } = await (db.from as Function)('free_scan_results')
-    .select('domain, broken_links_count, broken_affiliate_count, estimated_monthly_loss')
+    .select('domain, broken_links_count, broken_affiliate_count')
     .eq('id', scanId)
     .single();
 
@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
       source: 'free-scan-postgate',
       broken_links_count: scan.broken_links_count,
       affiliate_issues_count: scan.broken_affiliate_count,
-      estimated_loss: scan.estimated_monthly_loss,
       scanned_at: new Date().toISOString(),
     });
   } catch (err) {

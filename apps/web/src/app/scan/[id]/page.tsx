@@ -6,7 +6,6 @@ import {
   Globe,
   Link2,
   AlertTriangle,
-  DollarSign,
   XCircle,
   ExternalLink,
   CheckCircle2,
@@ -33,29 +32,38 @@ interface ScanData {
   total_affiliate_links: number;
   broken_links_count: number;
   broken_affiliate_count: number;
-  estimated_monthly_loss: number;
   broken_links: BrokenLinkDetail[];
   created_at: string;
 }
 
 function issueLabel(issueType: string): string {
   switch (issueType) {
-    case 'BROKEN_4XX': return '404 Not Found';
-    case 'SERVER_5XX': return 'Server Error';
-    case 'TIMEOUT': return 'Timed Out';
-    case 'REDIRECT_TO_HOME': return 'Redirects to Home';
-    case 'LOST_PARAMS': return 'Params Stripped';
-    case 'SOFT_404': return 'Soft 404';
-    default: return 'Issue Detected';
+    case 'BROKEN_4XX':
+      return '404 Not Found';
+    case 'SERVER_5XX':
+      return 'Server Error';
+    case 'TIMEOUT':
+      return 'Timed Out';
+    case 'REDIRECT_TO_HOME':
+      return 'Redirects to Home';
+    case 'LOST_PARAMS':
+      return 'Params Stripped';
+    case 'SOFT_404':
+      return 'Soft 404';
+    default:
+      return 'Issue Detected';
   }
 }
 
 function issueColor(issueType: string): string {
   switch (issueType) {
     case 'BROKEN_4XX':
-    case 'SERVER_5XX': return 'text-red-400';
-    case 'TIMEOUT': return 'text-amber-400';
-    default: return 'text-orange-400';
+    case 'SERVER_5XX':
+      return 'text-red-400';
+    case 'TIMEOUT':
+      return 'text-amber-400';
+    default:
+      return 'text-orange-400';
   }
 }
 
@@ -77,17 +85,20 @@ async function getScan(id: string): Promise<ScanData | null> {
   }
 }
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ id: string }> }
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
   const scan = await getScan(id);
   if (!scan) return { title: 'Scan Not Found — LinkRescue' };
 
   const title = `${scan.domain} — ${scan.broken_links_count} Broken Links Found | LinkRescue`;
-  const description = scan.broken_links_count > 0
-    ? `We found ${scan.broken_links_count} broken links on ${scan.domain}, including ${scan.broken_affiliate_count} broken affiliate links costing ~$${scan.estimated_monthly_loss}/mo.`
-    : `We scanned ${scan.pages_scanned} pages on ${scan.domain} and checked ${scan.total_links_checked} links. All clear!`;
+  const description =
+    scan.broken_links_count > 0
+      ? `We found ${scan.broken_links_count} broken links on ${scan.domain}, including ${scan.broken_affiliate_count} affiliate links that need review.`
+      : `We scanned ${scan.pages_scanned} pages on ${scan.domain} and checked ${scan.total_links_checked} links. All clear!`;
 
   return {
     title,
@@ -107,11 +118,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function SharedScanPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function SharedScanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const scan = await getScan(id);
   if (!scan) notFound();
@@ -162,12 +169,6 @@ export default async function SharedScanPage({
               value={scan.broken_affiliate_count.toString()}
               color={scan.broken_affiliate_count > 0 ? 'text-orange-400' : 'text-green-400'}
             />
-            <SummaryCard
-              icon={<DollarSign className="w-5 h-5" />}
-              label="Est. Monthly Loss"
-              value={scan.estimated_monthly_loss > 0 ? `$${Number(scan.estimated_monthly_loss).toFixed(0)}` : '$0'}
-              color={scan.estimated_monthly_loss > 0 ? 'text-red-400' : 'text-green-400'}
-            />
           </div>
 
           {/* Stats bar */}
@@ -183,8 +184,8 @@ export default async function SharedScanPage({
               <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">All links look healthy!</h3>
               <p className="text-slate-400 text-sm mb-6">
-                We scanned {scan.pages_scanned} pages and checked {scan.total_links_checked} outbound links.
-                No broken links found at the time of this scan.
+                We scanned {scan.pages_scanned} pages and checked {scan.total_links_checked}{' '}
+                outbound links. No broken links found at the time of this scan.
               </p>
             </div>
           )}
@@ -201,7 +202,10 @@ export default async function SharedScanPage({
 
               {/* Show top 5 for public view */}
               {scan.broken_links.slice(0, 5).map((link, i) => (
-                <div key={`${link.href}-${i}`} className="glass-card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div
+                  key={`${link.href}-${i}`}
+                  className="glass-card p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+                >
                   <div className="shrink-0">
                     <XCircle className={`w-5 h-5 ${issueColor(link.issueType)}`} />
                   </div>
@@ -211,7 +215,9 @@ export default async function SharedScanPage({
                         {truncateUrl(link.href)}
                       </span>
                       {link.isAffiliate && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">Affiliate</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          Affiliate
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -245,12 +251,9 @@ export default async function SharedScanPage({
 
           {/* CTA */}
           <div className="gradient-border p-8 text-center">
-            <h3 className="text-xl font-semibold mb-2">
-              Want to scan your own site?
-            </h3>
+            <h3 className="text-xl font-semibold mb-2">Want to scan your own site?</h3>
             <p className="text-sm text-slate-400 mb-6">
-              Run a free scan on your website and find every broken affiliate link
-              that&apos;s costing you commissions.
+              Run a free scan on your website and review the broken affiliate links in your archive.
             </p>
             <Link href="/free-scan" className="btn-primary justify-center">
               Scan My Site Free

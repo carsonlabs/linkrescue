@@ -20,6 +20,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     plan = getUserPlan(profile?.stripe_price_id ?? null);
   }
   const tierLimits = getTierLimits(plan);
+  const ownerEmail = process.env.LEAD_NOTIFICATION_EMAIL?.trim().toLowerCase();
+  const isOwner = Boolean(ownerEmail && user?.email?.trim().toLowerCase() === ownerEmail);
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,7 +36,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <span className="font-display font-bold text-lg tracking-tight">LinkRescue</span>
           </Link>
 
-          <DashboardNav />
+          <DashboardNav isOwner={isOwner} />
 
           {/* Upgrade nudge for free users */}
           {plan === 'free' && (
@@ -92,6 +94,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link href="/dashboard/settings" className="text-slate-400 hover:text-white">
               Settings
             </Link>
+            {isOwner && (
+              <Link href="/dashboard/leads" className="text-slate-400 hover:text-white">
+                Leads
+              </Link>
+            )}
           </nav>
         </div>
       </header>

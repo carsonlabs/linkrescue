@@ -9,10 +9,19 @@ export async function sendEmail({
   subject: string;
   react: React.ReactElement;
 }) {
-  // Lazily construct so the missing key throws at call-time, not module load.
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured');
+  }
+  if (!from) {
+    throw new Error('RESEND_FROM_EMAIL is not configured');
+  }
+
+  // Lazily construct so configuration failures are isolated to email delivery.
+  const resend = new Resend(apiKey);
   const { data, error } = await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL || 'LinkRescue <noreply@linkrescue.com>',
+    from,
     to,
     subject,
     react,

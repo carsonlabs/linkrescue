@@ -95,6 +95,8 @@ pnpm dev
 | `STRIPE_PRO_PRICE_ID` | Stripe > Products > Pro price ID |
 | `STRIPE_AGENCY_PRICE_ID` | Stripe > Products > Agency price ID |
 | `RESEND_API_KEY` | Resend > API Keys |
+| `RESEND_FROM_EMAIL` | A verified Resend sender, e.g. `LinkRescue <hello@linkrescue.io>` |
+| `LEAD_NOTIFICATION_EMAIL` | Owner inbox for pilot enquiries, e.g. `hello@freedomengineers.tech` |
 | `ANTHROPIC_API_KEY` | Anthropic > API Keys |
 | `CRON_SECRET` | Generate: `openssl rand -base64 32` |
 | `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` or production URL |

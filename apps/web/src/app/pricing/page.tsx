@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, HelpCircle } from 'lucide-react';
 import { PublicNav } from '@/components/PublicNav';
 import { PublicFooter } from '@/components/PublicFooter';
+import { RecoveryInquiryForm } from '@/components/RecoveryInquiryForm';
 
 export const metadata: Metadata = {
   title: 'Recovery Services',
@@ -26,8 +27,8 @@ const offers = [
     price: '$499',
     detail: 'A focused, human-led review for a single affiliate site after the free snapshot.',
     points: ['Prioritized repair list', 'Redirect and tracking review', 'Implementation notes', 'Clear scope before work begins'],
-    href: '/free-scan',
-    cta: 'Start with a snapshot',
+    href: null,
+    cta: 'Request a Recovery Sprint',
     featured: true,
   },
   {
@@ -35,8 +36,8 @@ const offers = [
     price: '$149/mo',
     detail: 'Managed monitoring for sites that have completed a readiness review.',
     points: ['One site', 'Human-reviewed issue queue', 'Monthly action summary', 'Available after approval'],
-    href: '/free-scan',
-    cta: 'Check readiness',
+    href: null,
+    cta: 'Request a monitoring review',
     featured: false,
   },
 ];
@@ -72,10 +73,14 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href={offer.href} className={offer.featured ? 'btn-primary w-full justify-center' : 'btn-secondary w-full justify-center'}>
-                {offer.cta}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {offer.href ? (
+                <Link href={offer.href} className={offer.featured ? 'btn-primary w-full justify-center' : 'btn-secondary w-full justify-center'}>
+                  {offer.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <RecoveryInquiryForm interest={offer.name === 'Monitoring Desk' ? 'monitoring-desk' : 'recovery-sprint'} />
+              )}
             </section>
           ))}
         </div>

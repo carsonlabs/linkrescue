@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
+import { sendLeadNotification } from '@linkrescue/email';
 
 interface LeadPayload {
   email: string;
@@ -54,6 +55,17 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[link-checker-lead] DB insert failed:', err);
     // Don't fail the request — still return ok
+  }
+
+  try {
+    await sendLeadNotification({
+      email: email.toLowerCase().trim(),
+      siteUrl: siteUrl?.trim() || null,
+      source: source || 'link-checker',
+      details: 'Lead captured from the header-based link checker',
+    });
+  } catch (err) {
+    console.error('[link-checker-lead] Owner notification failed:', err);
   }
 
   console.log('[link-checker-lead] Lead captured successfully');

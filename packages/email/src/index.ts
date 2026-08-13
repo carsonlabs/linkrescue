@@ -1,4 +1,7 @@
 export { sendEmail } from './send';
+export { sendLeadNotification } from './lead-notification';
+export { LeadNotification } from './templates/lead-notification';
+export type { LeadNotificationProps } from './templates/lead-notification';
 export { RevenueLeakReport } from './templates/revenue-leak-report';
 export { WelcomeEmail } from './templates/welcome';
 export { OnboardingScanEmail } from './templates/onboarding-scan';

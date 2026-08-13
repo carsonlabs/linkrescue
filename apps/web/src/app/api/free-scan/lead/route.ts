@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
+import { sendLeadNotification } from '@linkrescue/email';
 
 export const maxDuration = 30;
 
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await (db.from as Function)('free_scan_leads').insert({
+    const { error: insertError } = await (db.from as Function)('free_scan_leads').insert({
       email: email.toLowerCase().trim(),
       site_url: scan.domain,
       source: 'free-scan-postgate',
@@ -46,9 +47,21 @@ export async function POST(req: NextRequest) {
       affiliate_issues_count: scan.broken_affiliate_count,
       scanned_at: new Date().toISOString(),
     });
+    if (insertError) throw insertError;
   } catch (err) {
     console.error('[free-scan-lead] DB insert failed:', err);
     return NextResponse.json({ error: 'Could not save email. Please try again.' }, { status: 500 });
+  }
+
+  try {
+    await sendLeadNotification({
+      email: email.toLowerCase().trim(),
+      siteUrl: scan.domain ?? null,
+      source: 'free-scan-postgate',
+      details: `${scan.broken_links_count ?? 0} broken links; ${scan.broken_affiliate_count ?? 0} affiliate issues in the limited snapshot`,
+    });
+  } catch (err) {
+    console.error('[free-scan-lead] Owner notification failed:', err);
   }
 
   return NextResponse.json({ ok: true });

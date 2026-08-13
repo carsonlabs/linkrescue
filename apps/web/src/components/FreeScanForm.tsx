@@ -433,7 +433,7 @@ export function FreeScanForm() {
                   </p>
                   <p className="text-sm text-slate-400 mb-5 text-center max-w-md">
                     Enter your email to unlock the full list in this browser. We save the request
-                    for a potential human follow-up; no report is sent automatically.
+                    for a potential human follow-up. No automatic customer email is sent.
                   </p>
                   <form
                     onSubmit={handleUnlock}
@@ -468,7 +468,7 @@ export function FreeScanForm() {
                   </form>
                   {unlockError && <p className="text-xs text-red-400 mt-3">{unlockError}</p>}
                   <p className="text-xs text-slate-500 mt-3">
-                    No automatic email is sent from this form.
+                    By unlocking, you agree that LinkRescue may contact you personally about this enquiry.
                   </p>
                 </div>
               </div>

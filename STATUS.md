@@ -1,1 +1,1 @@
-LIVE PILOT - linkrescue.io - service-led affiliate link recovery. Production health and database checks pass; automated scans, billing, and outbound email remain intentionally disabled pending delivery readiness.
+LIVE PILOT - linkrescue.io - service-led affiliate link recovery. Production health, database capture, and owner-only enquiry notifications are deployed. Resend sender-domain DNS verification is the remaining activation step; automated scans, billing, and visitor email remain intentionally disabled.

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
-import { sendLeadNotification } from '@linkrescue/email';
 
 export const maxDuration = 30;
 
@@ -51,17 +50,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[free-scan-lead] DB insert failed:', err);
     return NextResponse.json({ error: 'Could not save email. Please try again.' }, { status: 500 });
-  }
-
-  try {
-    await sendLeadNotification({
-      email: email.toLowerCase().trim(),
-      siteUrl: scan.domain ?? null,
-      source: 'free-scan-postgate',
-      details: `${scan.broken_links_count ?? 0} broken links; ${scan.broken_affiliate_count ?? 0} affiliate issues in the limited snapshot`,
-    });
-  } catch (err) {
-    console.error('[free-scan-lead] Owner notification failed:', err);
   }
 
   return NextResponse.json({ ok: true });

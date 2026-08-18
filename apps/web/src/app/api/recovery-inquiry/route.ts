@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
-import { sendLeadNotification } from '@linkrescue/email';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const rateMap = new Map<string, { count: number; resetAt: number }>();
@@ -40,17 +39,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[recovery-inquiry] DB insert failed:', err);
     return NextResponse.json({ error: 'Could not save your request. Please try again.' }, { status: 500 });
-  }
-
-  try {
-    await sendLeadNotification({
-      email,
-      siteUrl: siteUrl || null,
-      source: `pricing-${interest}`,
-      details: interest === 'monitoring-desk' ? 'Requested a managed monitoring readiness review' : 'Requested a Recovery Sprint scope review',
-    });
-  } catch (err) {
-    console.error('[recovery-inquiry] Owner notification failed:', err);
   }
 
   return NextResponse.json({ ok: true });

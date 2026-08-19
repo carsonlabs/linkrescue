@@ -6,13 +6,14 @@
   "types": "./src/index.ts",
   "scripts": {
     "build": "echo 'No build needed'",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@linkrescue/types": "workspace:*",
     "@react-email/components": "^0.0.15",
     "react": "^18.2.0",
-    "resend": "^3.2.0"
+    "resend": "6.12.3"
   },
   "devDependencies": {
     "@linkrescue/config": "workspace:*",

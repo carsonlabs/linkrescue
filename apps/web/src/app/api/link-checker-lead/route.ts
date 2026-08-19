@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
+import { sendLeadNotification } from '@linkrescue/email';
 
 interface LeadPayload {
   email: string;
@@ -42,18 +43,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
   }
 
+  let leadId: string | null = null;
   try {
     const db = createAdminClient();
-    const { error: dbErr } = await (db.from as Function)('free_scan_leads').insert({
-      email: email.toLowerCase().trim(),
-      site_url: siteUrl?.trim() || null,
-      source: source || 'link-checker',
-      referrer: req.headers.get('referer') ?? null,
-    });
-    if (dbErr) throw dbErr;
+    const { data: lead, error: dbErr } = await (db.from as Function)('free_scan_leads')
+      .insert({
+        email: email.toLowerCase().trim(),
+        site_url: siteUrl?.trim() || null,
+        source: source || 'link-checker',
+        referrer: req.headers.get('referer') ?? null,
+      })
+      .select('id')
+      .single();
+    if (dbErr || !lead?.id) throw dbErr ?? new Error('Lead insert returned no id');
+    leadId = lead.id;
   } catch (err) {
     console.error('[link-checker-lead] DB insert failed:', err);
     // Don't fail the request — still return ok
+  }
+
+  if (leadId) {
+    try {
+      await sendLeadNotification({
+        leadId,
+        email: email.toLowerCase().trim(),
+        siteUrl: siteUrl?.trim() || null,
+        source: source || 'link-checker',
+        details: 'Lead captured from the header-based link checker',
+      });
+    } catch (err) {
+      console.error('[link-checker-lead] Owner notification failed:', err);
+    }
   }
 
   console.log('[link-checker-lead] Lead captured successfully');

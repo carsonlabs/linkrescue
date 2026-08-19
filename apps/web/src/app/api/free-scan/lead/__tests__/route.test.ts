@@ -5,19 +5,25 @@ const database = vi.hoisted(() => {
   const scanSingle = vi.fn();
   const scanEq = vi.fn(() => ({ single: scanSingle }));
   const scanSelect = vi.fn(() => ({ eq: scanEq }));
-  const leadInsert = vi.fn();
+  const leadSingle = vi.fn();
+  const leadSelect = vi.fn(() => ({ single: leadSingle }));
+  const leadInsert = vi.fn(() => ({ select: leadSelect }));
   const from = vi.fn((table: string) => {
     if (table === 'free_scan_results') return { select: scanSelect };
     if (table === 'free_scan_leads') return { insert: leadInsert };
     throw new Error(`Unexpected table: ${table}`);
   });
 
-  return { from, leadInsert, scanSingle };
+  return { from, leadInsert, leadSingle, scanSingle };
 });
+
+const email = vi.hoisted(() => ({ sendLeadNotification: vi.fn() }));
 
 vi.mock('@linkrescue/database', () => ({
   createAdminClient: () => ({ from: database.from }),
 }));
+
+vi.mock('@linkrescue/email', () => email);
 
 import { POST } from '../route';
 
@@ -46,7 +52,8 @@ beforeEach(() => {
     },
     error: null,
   });
-  database.leadInsert.mockResolvedValue({ error: null });
+  database.leadSingle.mockResolvedValue({ data: { id: 'lead-123' }, error: null });
+  email.sendLeadNotification.mockResolvedValue({ id: 'email-123' });
 });
 
 afterEach(() => {
@@ -70,6 +77,13 @@ describe('POST /api/free-scan/lead', () => {
       affiliate_issues_count: 2,
       scanned_at: expect.any(String),
     });
+    expect(email.sendLeadNotification).toHaveBeenCalledWith({
+      leadId: 'lead-123',
+      email: 'publisher@example.com',
+      siteUrl: 'publisher.example',
+      source: 'free-scan-postgate',
+      details: '4 broken links; 2 affiliate issues in the limited snapshot',
+    });
   });
 
   it('stores a null referrer when the browser does not send one', async () => {
@@ -79,5 +93,23 @@ describe('POST /api/free-scan/lead', () => {
     expect(database.leadInsert).toHaveBeenCalledWith(
       expect.objectContaining({ referrer: null }),
     );
+  });
+
+  it('keeps the successful lead response when the owner alert fails', async () => {
+    email.sendLeadNotification.mockRejectedValueOnce(new Error('Resend unavailable'));
+
+    const response = await post();
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: true });
+  });
+
+  it('does not attempt an alert when the lead insert fails', async () => {
+    database.leadSingle.mockResolvedValueOnce({ data: null, error: new Error('DB unavailable') });
+
+    const response = await post();
+
+    expect(response.status).toBe(500);
+    expect(email.sendLeadNotification).not.toHaveBeenCalled();
   });
 });

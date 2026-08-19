@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
+import { sendLeadNotification } from '@linkrescue/email';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const rateMap = new Map<string, { count: number; resetAt: number }>();
@@ -27,18 +28,37 @@ export async function POST(req: NextRequest) {
   const interest = body.interest === 'monitoring-desk' ? 'monitoring-desk' : 'recovery-sprint';
   if (!emailPattern.test(email)) return NextResponse.json({ error: 'Enter a valid email address.' }, { status: 400 });
 
+  let leadId: string;
   try {
     const db = createAdminClient();
-    const { error } = await (db.from as Function)('free_scan_leads').insert({
-      email,
-      site_url: siteUrl || null,
-      source: `pricing-${interest}`,
-      referrer: req.headers.get('referer') ?? null,
-    });
-    if (error) throw error;
+    const { data: lead, error } = await (db.from as Function)('free_scan_leads')
+      .insert({
+        email,
+        site_url: siteUrl || null,
+        source: `pricing-${interest}`,
+        referrer: req.headers.get('referer') ?? null,
+      })
+      .select('id')
+      .single();
+    if (error || !lead?.id) throw error ?? new Error('Lead insert returned no id');
+    leadId = lead.id;
   } catch (err) {
     console.error('[recovery-inquiry] DB insert failed:', err);
     return NextResponse.json({ error: 'Could not save your request. Please try again.' }, { status: 500 });
+  }
+
+  try {
+    await sendLeadNotification({
+      leadId,
+      email,
+      siteUrl: siteUrl || null,
+      source: `pricing-${interest}`,
+      details: interest === 'monitoring-desk'
+        ? 'Requested a managed monitoring readiness review'
+        : 'Requested a Recovery Sprint scope review',
+    });
+  } catch (err) {
+    console.error('[recovery-inquiry] Owner notification failed:', err);
   }
 
   return NextResponse.json({ ok: true });

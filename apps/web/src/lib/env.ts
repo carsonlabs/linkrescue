@@ -14,6 +14,8 @@ const envSchema = z.object({
   // Email
   RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
   RESEND_FROM_EMAIL: z.string().optional(),
+  LEAD_NOTIFICATION_EMAIL: z.string().email().optional(),
+  LEAD_NOTIFICATION_ENABLED: z.enum(['true', 'false']).optional(),
 
   // Cron
   CRON_SECRET: z.string().min(1, 'CRON_SECRET is required'),

@@ -1,4 +1,8 @@
-# LinkRescue Affiliate Marketing Assets
+# Archived: Legacy LinkRescue Affiliate Marketing Assets
+
+> **Do not publish or send this material.** It predates the current service-led pilot and describes unavailable self-serve plans, affiliate commissions, automatic scans, and unsupported revenue claims.
+>
+> Use [FIRST_WEEK_DISTRIBUTION_KIT.md](FIRST_WEEK_DISTRIBUTION_KIT.md) for current campaign copy and [PILOT_OPERATING_PLAYBOOK.md](PILOT_OPERATING_PLAYBOOK.md) for qualified-lead handling.
 
 > Ready-to-use copy and creative briefs for LinkRescue affiliates.
 > Affiliate program: 30% recurring, 12 months, 90-day cookie.

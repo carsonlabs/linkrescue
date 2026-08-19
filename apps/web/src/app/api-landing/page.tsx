@@ -168,7 +168,7 @@ export default function ApiLandingPage() {
             Built for developers who manage links at scale
           </h2>
           <p className="text-slate-400 text-center max-w-lg mx-auto mb-12">
-            Whether you're an affiliate site, SEO tool, or content platform — broken links cost money.
+            Whether you&apos;re an affiliate site, SEO tool, or content platform — broken links cost money.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             {USE_CASES.map((uc) => (

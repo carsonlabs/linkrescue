@@ -2,22 +2,31 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
   lint-and-typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
-      - uses: actions/setup-node@v4
+          version: 10.33.1
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
           cache: 'pnpm'
-      - run: pnpm install
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm type-check
+      - name: Build SDK package
+        run: pnpm --filter @linkrescue/sdk build
+      - name: Build GitHub Action package
+        run: pnpm --filter @linkrescue/github-action build
+      - run: pnpm test

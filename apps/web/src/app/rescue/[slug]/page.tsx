@@ -50,14 +50,14 @@ export default async function RescueInterstitialPage({
             <div>
               <h1 className="text-xl font-bold">Rescued by LinkRescue</h1>
               <p className="text-sm text-muted-foreground">
-                The original link was unavailable. We're sending you to the backup.
+                The original link was unavailable. We&apos;re sending you to the backup.
               </p>
             </div>
           </div>
 
           <div className="border rounded-lg bg-muted/40 p-4 mb-5">
             <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5">
-              You'll be redirected to
+              You&apos;ll be redirected to
             </p>
             <p className="font-mono text-sm break-all">{destination.hostname}</p>
             <p className="font-mono text-xs text-muted-foreground break-all mt-1">

@@ -46,6 +46,8 @@ export default function OGImage() {
           style={{
             fontSize: '56px',
             fontWeight: 800,
+            display: 'flex',
+            flexWrap: 'wrap',
             color: '#f8fafc',
             lineHeight: 1.15,
             letterSpacing: '-1.5px',

@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       email: email.toLowerCase().trim(),
       site_url: scan.domain,
       source: 'free-scan-postgate',
+      referrer: req.headers.get('referer') ?? null,
       broken_links_count: scan.broken_links_count,
       affiliate_issues_count: scan.broken_affiliate_count,
       scanned_at: new Date().toISOString(),

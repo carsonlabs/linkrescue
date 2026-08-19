@@ -174,6 +174,7 @@ export async function POST(req: NextRequest) {
           email: email.toLowerCase().trim(),
           site_url: rawUrl.trim(),
           source: 'free-scan',
+          referrer: req.headers.get('referer') ?? null,
           broken_links_count: allBrokenLinks.length,
           affiliate_issues_count: brokenAffiliateCount,
           scanned_at: new Date().toISOString(),

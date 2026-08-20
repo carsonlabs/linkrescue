@@ -1,279 +1,170 @@
-# LinkRescue.io — Development Guide
+# LinkRescue — Development Guide
 
-## Project Context
-This is LinkRescue.io — a broken affiliate link monitoring SaaS for affiliate marketers.
-Stack: Next.js (App Router) + Supabase + Stripe + Vercel
-Business context: An independent audit identified critical structural weaknesses in pricing, churn risk, and missing features. The following changes need to be implemented in priority order.
-Owner: Carson (solo founder, micro-SaaS studio)
+**Last reconciled:** 2026-08-19. This file previously described a three-tier self-serve SaaS
+build-out. That plan is superseded — see [Superseded plan](#superseded-plan--do-not-build-from-this)
+before acting on any older instruction you find in this repo.
 
-## Phase 0: Full Codebase Audit
-Before writing ANY code, complete this audit. Read every file and present your findings.
-What to audit:
+## What LinkRescue is now
 
-- **Directory structure** — Map the full project tree. Identify all source directories, config files, and entry points.
-- **Database schema** — Find and document all Supabase tables, columns, relationships, and RLS policies. Check for:
-  - `supabase/migrations/` directory
-  - Any schema files or type definitions
-  - The Supabase client setup file
-- **Stripe integration** — Find and document:
-  - Current products and price IDs (check env files and code)
-  - Webhook handler location and events handled
-  - Subscription status check logic
-  - Checkout flow
-- **Auth flow** — Map: signup → verify → onboard → dashboard
-- **Crawler engine** — Understand:
-  - How site scanning works (job queue, scheduling, link checking logic)
-  - Where scan results are stored
-  - How scan frequency is controlled per tier
-- **Email system** — What provider, what templates, what triggers them
-- **Tier/plan gating** — Find every place the app checks the user's plan or enforces limits. Search for hardcoded values like 50, 500, 5 sites, weekly, etc.
+A **service-led affiliate revenue recovery desk**. Humans do the audit; the software is the
+instrument, not the product. Owner: Carson (solo founder, micro-SaaS studio).
 
-**Deliverable:**
-Present a summary before proceeding:
-- Architecture overview
-- Database schema
-- Current tier limits and where they're enforced
-- Technical debt or bugs spotted
-- Any blockers for the changes below
+The delivery ladder, as reflected on the live `/pricing` page:
 
-Ask me to confirm before moving to Phase 1.
+| Offer | Price | What it is |
+|---|---|---|
+| **Free Leak Snapshot** | $0 | Limited, browser-based review of publicly reachable pages. Evidence only. |
+| **Recovery Sprint** | $499 one-time | Human-led archive audit, prioritised repair map, replacement research. |
+| **Monitoring Desk** | $149/mo per site | Recurring checks, human-reviewed issue queue, monthly action summary. |
+| **Agency Revenue Desk** | $499/mo, up to 5 sites | Recurring monitoring with a client-ready report. Founder pricing — test it. |
 
-## Phase 1: Pricing Restructure (HIGHEST PRIORITY)
+Nothing is self-serve. Checkout is intentionally off. Every engagement starts with a snapshot and
+a human readiness review.
 
-### 1.1 — New Tier Limits
-Create a central config file. Replace ALL hardcoded tier checks with references to this config:
+### The wedge: dropped attribution, not broken links
 
-```typescript
-// lib/config/tiers.ts
-export const TIER_LIMITS = {
-  free: {
-    name: 'Starter',
-    price: 0,
-    sites: 1,
-    pagesPerScan: 200,
-    scanFrequency: 'weekly',
-    features: ['basic_alerts', 'monthly_digest']
-  },
-  pro: {
-    name: 'Pro',
-    price: 29,
-    annualPrice: 290, // 2 months free
-    sites: 5,
-    pagesPerScan: 2000,
-    scanFrequency: 'daily',
-    features: ['basic_alerts', 'weekly_digest', 'revenue_estimates', 'fix_suggestions']
-  },
-  agency: {
-    name: 'Agency',
-    price: 79,
-    annualPrice: 790, // 2 months free
-    sites: 25,
-    pagesPerScan: Infinity,
-    scanFrequency: 'hourly',
-    features: [
-      'basic_alerts', 'realtime_alerts', 'revenue_estimates', 'fix_suggestions',
-      'api_access', 'webhooks', 'whitelabel_reports', 'slack_integration', 'priority_support'
-    ]
-  }
-} as const;
+From our own June 2026 study, **569 of 597 affiliate issues were `LOST_PARAMS`** — a redirect
+strips the tracking parameter and the link still returns HTTP 200. The page loads, the reader buys,
+and the click is attributed to nobody. Broken-link checkers pass it. So does clicking it yourself.
 
-export type TierName = keyof typeof TIER_LIMITS;
+Broken links are a commodity category owned by free tools. The silent attribution drop is not.
+Position new work on the tag drop.
 
-export function hasFeature(tier: TierName, feature: string): boolean {
-  return TIER_LIMITS[tier].features.includes(feature);
-}
+## Hard rules
 
-export function getTierLimits(tier: TierName) {
-  return TIER_LIMITS[tier];
-}
+These are not style preferences. They are the operating constraints of the product.
+
+1. **Never estimate or claim revenue.** No dollar loss, no revenue recovered, no ROI, no
+   "commissions protected" figure — not in public copy, not in the dashboard, not in email, not in
+   a report. See `docs/CLAIM_SAFETY_AUDIT_2026-08.md`. A claim about a customer's income needs a
+   dated customer record, the underlying calculation, and written permission to publish. None
+   exists yet.
+2. **The only approved evidence is the June study**, with its stated limitations intact:
+   > On June 11, 2026, LinkRescue scanned 50 well-known affiliate sites: 683 pages and 6,550
+   > outbound links checked within the crawl budget. 5.8% of checked links were visibly broken.
+   > Attribution failures affected 597 links, or 9.1% of checked links.
+
+   Never expand this into a dollar figure or a universal incidence claim. It is a research sample,
+   not a customer-outcome study.
+3. **No testimonials or case studies** until a real customer has bought, received the work, and
+   approved the exact wording in writing. `content/blog/case-study-revenue-recovery.md` is a
+   fabricated draft — internal example only, never publish, never import to a CMS.
+4. **Outward-facing actions need Carson's explicit go**: posting, sending email, contacting anyone,
+   `git push`, production deploys, enabling billing.
+5. **Deliberately disabled — leave off** unless separately approved, each on its own gate:
+   Stripe checkout/billing, visitor-facing email, scheduled scans (`apps/web/vercel.json` declares
+   an empty `crons` array on purpose), and the legacy seed/import scripts.
+   `scripts/GO-LIVE-PASTE-2026-07-02.sql` and `scripts/insert-agency-posts.sql` would revive the
+   fabricated case study — do not run them.
+6. **`LEAD_NOTIFICATION_ENABLED`** gates the internal owner alert on a new lead. It is the only
+   email path that is on. It notifies Carson; it never emails the visitor.
+
+## Stack and architecture
+
+pnpm + Turborepo monorepo, `packageManager: pnpm@10.33.1`.
+
+- **`apps/web`** — Next.js App Router. Public marketing site, free-scan flow, owner-authenticated
+  dashboard, and API routes. Deployed to Vercel at `https://www.linkrescue.io`.
+- **`packages/`** — `ai`, `cli`, `config`, `crawler`, `database`, `email`, `github-action`,
+  `governance`, `sdk`, `types`.
+- **Database** — Supabase project `jjbyctthsxfivwvkkmfq`, running the **safe core schema** only
+  (`scripts/SAFE-RECOVERY-PASTE-2026-08.sql`). The historical SEO, scoreboard, and money-modelled
+  views were deliberately excluded. Code that queries them must treat a missing relation
+  (PostgreSQL `42P01` / PostgREST `PGRST205`) as a zero-state — there are regression tests for this.
+- **Observability** — Sentry via the Next.js instrumentation entry points. CI runs on `master`:
+  frozen install, lint, all workspace type checks, SDK + GitHub Action builds, tests.
+
+### Commands
+
+```bash
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm build
+pnpm lint
+pnpm type-check
+pnpm test
 ```
 
-Search the entire codebase for hardcoded tier values and replace them.
+Verification bar before proposing any release: lint clean, all workspace type checks pass, full
+test suite passes, `git diff --check` passes, and a production web build completes.
 
-### 1.2 — Stripe Changes
-- Note which Stripe products/prices need to be created (I'll create them manually in the Stripe dashboard)
-- Add support for monthly AND annual billing in the checkout flow
-- Update the webhook handler for upgrades, downgrades, and tier changes
-- Update subscription status checks to support three tiers
+## Superseded plan — do not build from this
 
-### 1.3 — Pricing Page Redesign
-- Three-column layout, Pro highlighted as "Most Popular"
-- Monthly/annual toggle with "Save 17%" badge
-- Feature comparison table below the cards
-- Social proof near pricing
-- FAQ section addressing objections
+The former Phase 0–6 plan (self-serve pricing restructure, anti-churn engine, on-demand scanning,
+API/webhook tiers, affiliate program, programmatic SEO) was executed against a self-serve SaaS
+model the product has since left. Its code is still in the tree. Treat it as legacy surface area,
+not as a specification.
 
-### 1.4 — Gate Features by Tier
-Update all feature gates throughout the app to use the central config. Every check should go through `hasFeature()` or `getTierLimits()`.
+Specifically retired:
 
-**After completing Phase 1:**
-- List all new env vars needed
-- List exact Stripe products/prices I need to create
-- Verify the app runs without errors
-- Suggest a commit message
+- **Three-tier self-serve pricing as the live model.** `packages/types/src/tiers.ts` still exports
+  `TIER_LIMITS` with free / pro $29 / agency $79 and a `hasFeature()` helper. Note it lives in
+  `packages/types`, not the `lib/config/tiers.ts` path the old doc named. It still drives internal
+  quota and gating logic, so **do not delete it** — but it is not the pricing model. `/pricing`
+  sells the service ladder above. Don't reconcile the public page to this config; reconcile new
+  work to the page.
+- **The `revenue_estimates` feature flag** and everything downstream of it. Retired by rule 1.
+- **"Estimated revenue protected" in the monthly email** (old Phase 2.2). Retired.
+- **The "revenue saved" dashboard stat card** (old Phase 2.3). Retired.
+- **Programmatic SEO route templates** (old Phase 6.2) — `/check/[network]`, `/vs/[competitor]`,
+  `/guides/[slug]`, `/rescue/[slug]`. These are built and shipping, so leave them running, but the
+  studio concluded programmatic SEO is structurally declining (see the StackPick decision in
+  `C:\DEV\_ai_context\BOARD.md`). **Do not extend this surface or plan growth on it.**
 
-Ask me to confirm before moving to Phase 2.
+## Known dormant claim surfaces
 
-## Phase 2: Anti-Churn Engine
+Audited 2026-08-19. These survived the claim-safety pass because they sit behind auth or a dead
+schema object. They are not public, but they are live code — read this before touching the
+dashboard, the scoreboard, or the email package.
 
-### 2.1 — Site Health Score
-Add a 0–100 health score per site:
-- Formula: healthy link ratio (40%) + scan coverage (20%) + days since last critical issue (20%) + affiliate param integrity rate (20%)
-- Display as a prominent gauge/ring on the dashboard
-- Store daily snapshots in a new `site_health_scores` table
-- Show trend arrow (improving/declining)
+- `apps/web/src/components/dashboard/scan-synthesis-card.tsx` — **renders a hardcoded dollar
+  estimate** ("Est. revenue at risk: ~$X/mo") from a fixed $1,440/mo assumption and a
+  5%-per-broken-link factor, on the live site-detail page. No visitor input. This is the same
+  pattern that was deleted from the free-scan flow. Highest-priority cleanup.
+- `apps/web/src/components/dashboard/scoreboard-hero.tsx` — hero "commissions protected" dollar
+  figure. Dormant only because `user_scoreboard` is absent from the safe core schema, so it falls to
+  its empty state.
+- `apps/web/src/app/api/public/stats/route.ts` — public endpoint still shaped with
+  `total_revenue_protected_cents`. Hardcoded to `0`; `network_stats_public` is absent from the schema.
+- `apps/web/src/app/api/cron/monthly-report/route.ts` — gated on `hasFeature(plan, 'revenue_estimates')`.
+  Unreachable while `crons` is empty and `CRON_SECRET` is required.
+- `apps/web/src/app/affiliate-link-revenue-calculator/` + `src/components/RevenueCalculator.tsx` —
+  visitor-slider calculator. The audit permitted estimates built from the visitor's own assumptions,
+  but this one bakes in an uncited 20% "industry" attribution-strip rate. Treat as unresolved.
+- `apps/web/src/components/dashboard/revenue-calculator.tsx` and `src/components/CalculatorTeaser.tsx`
+  are dead code — nothing renders them.
 
-### 2.2 — Monthly Link Health Report Email
-Automated monthly email for ALL users (including free):
-- Pages scanned, links checked, issues found/resolved
-- Health score + month-over-month comparison
-- Estimated revenue protected (Pro/Agency only)
-- Soft upsell CTA for free tier users
-- "View full report" button driving re-engagement
+## Implementation rules
 
-### 2.3 — Historical Trend Dashboard
-New dashboard section:
-- Line chart: health score over time (30/60/90 day views)
-- Bar chart: broken links per month
-- Table: which affiliate programs have the most link rot
-- Stat cards: total links monitored, issues caught, revenue saved
+1. Don't break existing functionality. Test after each change.
+2. Match existing patterns and code style.
+3. Central config over hardcoded values.
+4. Proper SQL migration files for new tables — and check the live schema before writing DDL; the
+   migration history table is not a reliable record of what was applied.
+5. Full TypeScript types, no `any`.
+6. Error handling on every API route.
+7. Loading and empty states on every new data-fetching UI.
+8. Mobile responsive; check at 375px.
+9. Small, reviewable commits with an exact stated path scope.
 
-Create the necessary database tables and views.
+## Where the real record lives
 
-### 2.4 — Network Intelligence Schema (DB only)
-Set up tables for future cross-user intelligence:
-- `affiliate_programs` — known programs and URL patterns
-- `program_health` — aggregated rot rates per program
-- `network_alerts` — cross-user early warning alerts
+- **Operating history and current state:** `C:\DEV\_ai_context\tasks\linkrescue-international-launch-2026-08.md`
+  — the authoritative log. Read it before planning anything.
+- **Claim rules:** `docs/CLAIM_SAFETY_AUDIT_2026-08.md`
+- **GTM strategy:** `docs/RECOVERY_DESK_BLUEPRINT_2026-08.html` — competitive map, ICPs, Sprint
+  delivery framework.
+- **Acceptance evidence:** `docs/PRODUCTION_ACCEPTANCE_TEST_2026-08-14.md`
+- **Distribution copy:** `docs/FIRST_WEEK_DISTRIBUTION_KIT.md`
+- **Studio board:** `C:\DEV\_ai_context\BOARD.md`
 
-Don't build UI — just schema and a basic aggregation query.
+### Open items
 
-**After completing Phase 2:**
-- List new Supabase tables and migration SQL
-- Verify app runs without errors
-- Suggest a commit message
-
-Ask me to confirm before moving to Phase 3.
-
-## Phase 3: On-Demand Scanning
-
-### 3.1 — Manual Scan Trigger
-- "Scan Now" button on each site card
-- API endpoint: `POST /api/sites/[siteId]/scan`
-- Rate limits: Pro = 1/hour, Agency = 1/15min, Free = none
-- Real-time progress indicator (Supabase Realtime or polling)
-- Dashboard updates in real-time when scan completes
-
-### 3.2 — Webhook-Triggered Scans (Agency Only)
-- Endpoint: `POST /api/webhooks/scan`
-- Validates API key against Agency subscription
-- Queues scan identical to manual trigger
-- Simple API docs page
-
-**After completing Phase 3:**
-- Verify app runs without errors
-- Suggest a commit message
-
-Ask me to confirm before moving to Phase 4.
-
-## Phase 4: API & Webhook Infrastructure (Agency Tier)
-
-### 4.1 — API Key Management
-- "API Keys" section in Agency settings
-- Generate/revoke keys (store hashed in Supabase)
-- Keys scoped to user's sites only
-
-### 4.2 — Outbound Webhooks
-- Webhook settings for Agency users
-- Configurable URLs for events: `scan.completed`, `link.broken`, `link.fixed`
-- Webhook delivery with retry (3 attempts, exponential backoff)
-- "Test webhook" button
-
-### 4.3 — Slack Integration (Agency)
-- Incoming webhook integration (user provides Slack webhook URL)
-- Sends formatted messages on: new broken links, weekly summary, scan complete
-- Settings page with test message button
-
-**After completing Phase 4:**
-- Verify app runs without errors
-- Suggest a commit message
-
-Ask me to confirm before moving to Phase 5.
-
-## Phase 5: Affiliate Program Setup
-
-### 5.1 — Rewardful Integration
-- Tracking script in `<head>` on all pages
-- Pass referral data through Stripe checkout
-- Create `/affiliates` page:
-  - 30% recurring commission, 12 months, 90-day cookie
-  - Signup link to Rewardful dashboard
-  - Marketing assets and sample copy
-  - Program FAQ
-
-If Rewardful isn't set up yet, create page structure with TODO placeholders.
-
-**After completing Phase 5:**
-- List any third-party accounts/keys needed
-- Verify app runs without errors
-- Suggest a commit message
-
-Ask me to confirm before moving to Phase 6.
-
-## Phase 6: Landing Page & SEO Infrastructure
-
-### 6.1 — Landing Page Updates
-- Update pricing section for three tiers
-- Add "Affiliate Program" to footer + nav
-- Add testimonial/social proof section (placeholder)
-- Add "For Agencies" benefits section
-- Improve "How it works" with 4th step about health reports
-
-### 6.2 — Programmatic SEO Templates
-Create reusable dynamic route templates:
-- `/check/[network]` — "[Network] Affiliate Link Checker"
-- `/vs/[competitor]` — "LinkRescue vs [Competitor]"
-- `/guides/[slug]` — Blog/guide template
-
-For each:
-- Next.js dynamic route with proper metadata/SEO tags
-- Content schema in Supabase
-- ISR with 24h revalidation
-- Open Graph tags, canonical URLs, JSON-LD structured data
-
-Don't populate content — just build the infrastructure.
-
-**After completing Phase 6:**
-- Verify app runs without errors
-- Suggest a commit message
-
-## Implementation Rules
-Follow these strictly throughout ALL phases:
-
-1. **Don't break existing functionality.** Test after each phase.
-2. **Match existing patterns.** Use the current code style and conventions.
-3. **Central config over hardcoded values.** All tier limits and feature flags in config files.
-4. **Database migrations.** Create proper SQL migration files for any new tables.
-5. **Type safety.** Full TypeScript types, no `any`.
-6. **Error handling.** All API routes need proper error handling.
-7. **Loading states.** All new data-fetching UI needs loading + empty states.
-8. **Mobile responsive.** Test at 375px width.
-9. **Small commits.** After each phase, give me a clear commit message.
-
-## Session Management
-If we hit context limits or need to continue in a new session:
-- This CLAUDE.md file persists — Claude Code will re-read it automatically
-- Just tell me which phase and step to resume from
-- I'll re-read the relevant files and continue
-
-## Current Progress
-- [x] Phase 0: Full Codebase Audit
-- [x] Phase 1: Pricing Restructure
-- [x] Phase 2: Anti-Churn Engine
-- [x] Phase 3: On-Demand Scanning
-- [x] Phase 4: API & Webhook Infrastructure
-- [x] Phase 5: Affiliate Program Setup
-- [x] Phase 6: Landing Page & SEO Infrastructure
+1. One unfired action: a single organic LinkedIn post from Carson's profile. Needs his explicit go.
+   Rewrite the hook around the tag-drop finding first.
+2. Publish the June study as a public methodology page — currently it only lives in a JSON file.
+3. Build the 10-minute qualification pre-check before selling any Sprint. The June crawl gate was
+   68%; an unqualified site breaks the 2.5h Sprint budget.
 
 ## Agent Learning
 

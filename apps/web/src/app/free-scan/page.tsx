@@ -11,7 +11,7 @@ const PAGE_URL = `${SITE_URL}/free-scan`;
 export const metadata: Metadata = {
   title: 'Free Affiliate Link Leak Snapshot',
   description:
-    'Get a limited, browser-based snapshot of broken outbound affiliate links. Free and no credit card required.',
+    'A working affiliate link can still lose its tracking parameter in a redirect. Get a limited, browser-based snapshot of dropped attribution and broken outbound links. Free, no credit card.',
   alternates: { canonical: PAGE_URL },
 };
 
@@ -20,7 +20,8 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'Free Affiliate Link Leak Snapshot',
   url: PAGE_URL,
-  description: 'A limited browser-based review for broken outbound links and redirect problems.',
+  description:
+    'A limited browser-based review for dropped tracking parameters, broken outbound links, and redirect problems.',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -40,11 +41,18 @@ export default function FreeScanPage() {
               Free Leak Snapshot
             </div>
             <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-6">
-              Get a scoped <span className="text-gradient">affiliate link leak snapshot</span>
+              Your affiliate links work.{' '}
+              <span className="text-gradient">That doesn&apos;t mean they pay.</span>
             </h1>
             <p className="text-lg text-slate-400 leading-relaxed">
+              When a redirect strips your tracking parameter, the link still returns a normal 200.
+              The page loads, the reader buys, and the click is attributed to nobody. A broken-link
+              checker passes it. So does clicking it yourself.
+            </p>
+            <p className="text-base text-slate-500 leading-relaxed mt-5">
               Enter a site to run a limited review of publicly reachable pages and outbound links.
-              It highlights technical issues for a human follow-up; it does not estimate revenue.
+              It reports what is observable and hands you the evidence. It does not estimate lost
+              revenue &mdash; no scanner can see your commission rates or conversion data.
             </p>
           </div>
 
@@ -54,10 +62,10 @@ export default function FreeScanPage() {
             <h2 className="font-display text-xl font-semibold text-center mb-8">What gets checked</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
+                { title: 'Dropped tracking parameters', desc: 'Links that still return 200 but arrive without the affiliate parameter they started with.' },
+                { title: 'Redirect chains', desc: 'Multi-hop redirects, including where in the chain a parameter stops being visible.' },
+                { title: 'Homepage redirects', desc: 'Deep product links quietly rerouted to a merchant homepage — a 200 response, not an error.' },
                 { title: 'Dead links (4xx/5xx)', desc: 'Outbound links returning 404, 410, 500, or other error codes.' },
-                { title: 'Redirect chains', desc: 'Multi-hop redirects that may make a link harder to verify or repair.' },
-                { title: 'Parameter visibility', desc: 'Checks for standard tracking parameters present in the URL after redirects.' },
-                { title: 'Publisher-oriented checks', desc: 'Built to make common affiliate URLs and redirect paths easier to review.' },
               ].map((item) => (
                 <div key={item.title} className="glass-card p-5">
                   <CheckCircle2 className="w-5 h-5 text-green-400 mb-3" />
@@ -73,8 +81,8 @@ export default function FreeScanPage() {
               June 2026 research scan: 50 established affiliate sites, 683 pages, and 6,550 outbound links reviewed.
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-slate-600 text-xs">
-              <div><div className="text-2xl font-bold text-white">5.8%</div><div>Visibly broken in the research scan</div></div>
               <div><div className="text-2xl font-bold text-white">9.1%</div><div>Attribution failures in the research scan</div></div>
+              <div><div className="text-2xl font-bold text-white">5.8%</div><div>Visibly broken in the research scan</div></div>
               <div><div className="text-2xl font-bold text-white">27</div><div>Median issues per site in the research scan</div></div>
             </div>
           </section>

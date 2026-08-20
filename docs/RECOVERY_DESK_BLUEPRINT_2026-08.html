@@ -1,0 +1,906 @@
+<title>The Attribution Leak Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+  :root {
+    --ground:        #F2F4F4;
+    --surface:       #FFFFFF;
+    --surface-sunk:  #E7EBEB;
+    --rule:          #C9D3D3;
+    --rule-soft:     #DCE3E3;
+    --ink:           #12201F;
+    --ink-soft:      #455856;
+    --ink-faint:     #6C807E;
+    --accent:        #0B6E72;
+    --accent-soft:   #E0EEEE;
+    --sev-crit:      #A32017;
+    --sev-crit-bg:   #F7E4E2;
+    --sev-warn:      #8A5300;
+    --sev-warn-bg:   #F7EBD9;
+    --sev-mute:      #4E6472;
+    --sev-mute-bg:   #E4EAEE;
+    --sev-good:      #2F6A33;
+    --sev-good-bg:   #E3EFE3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:        #0D1514;
+      --surface:       #141F1E;
+      --surface-sunk:  #0A1110;
+      --rule:          #2B3A38;
+      --rule-soft:     #1F2C2B;
+      --ink:           #E4EDEC;
+      --ink-soft:      #A2B4B2;
+      --ink-faint:     #728784;
+      --accent:        #4FC0B8;
+      --accent-soft:   #17302F;
+      --sev-crit:      #F08076;
+      --sev-crit-bg:   #341A17;
+      --sev-warn:      #E0A94F;
+      --sev-warn-bg:   #33260F;
+      --sev-mute:      #93A9B5;
+      --sev-mute-bg:   #1B262C;
+      --sev-good:      #7FC183;
+      --sev-good-bg:   #172A18;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:        #0D1514;
+    --surface:       #141F1E;
+    --surface-sunk:  #0A1110;
+    --rule:          #2B3A38;
+    --rule-soft:     #1F2C2B;
+    --ink:           #E4EDEC;
+    --ink-soft:      #A2B4B2;
+    --ink-faint:     #728784;
+    --accent:        #4FC0B8;
+    --accent-soft:   #17302F;
+    --sev-crit:      #F08076;
+    --sev-crit-bg:   #341A17;
+    --sev-warn:      #E0A94F;
+    --sev-warn-bg:   #33260F;
+    --sev-mute:      #93A9B5;
+    --sev-mute-bg:   #1B262C;
+    --sev-good:      #7FC183;
+    --sev-good-bg:   #172A18;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 20px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .prose { max-width: 68ch; }
+
+  h1, h2, h3, h4, .lbl, th, .num {
+    font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 56px 0 22px;
+    margin-bottom: 48px;
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+  }
+  h1 {
+    font-size: clamp(38px, 6.4vw, 62px);
+    line-height: 1.02;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 60ch;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    letter-spacing: .03em;
+  }
+  .meta-row b { color: var(--ink-soft); font-weight: 500; }
+
+  /* ---------- sections ---------- */
+  section { margin: 0 0 72px; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-top: 1px solid var(--ink);
+    padding-top: 14px;
+    margin-bottom: 28px;
+  }
+  .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .08em;
+    flex: none;
+    padding-top: 4px;
+  }
+  h2 {
+    font-size: clamp(27px, 3.6vw, 36px);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -.005em;
+    margin: 44px 0 12px;
+    text-wrap: balance;
+  }
+  h4 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 32px 0 10px;
+  }
+
+  p { margin: 0 0 18px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  ul, ol { margin: 0 0 18px; padding-left: 22px; }
+  li { margin-bottom: 9px; }
+  li::marker { color: var(--ink-faint); }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .86em;
+  }
+  p code, li code, td code {
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule-soft);
+    border-radius: 2px;
+    padding: 1px 5px;
+  }
+
+  /* ---------- data tables ---------- */
+  .scroller {
+    overflow-x: auto;
+    margin: 0 0 24px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: "IBM Plex Sans Condensed", sans-serif;
+    font-size: 14.5px;
+    line-height: 1.42;
+    min-width: 560px;
+  }
+  th {
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--surface-sunk);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: bottom;
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  td:first-child { color: var(--ink); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ---------- severity chips ---------- */
+  .chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .crit { background: var(--sev-crit-bg); color: var(--sev-crit); }
+  .warn { background: var(--sev-warn-bg); color: var(--sev-warn); }
+  .mute { background: var(--sev-mute-bg); color: var(--sev-mute); }
+  .good { background: var(--sev-good-bg); color: var(--sev-good); }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin: 0 0 26px;
+  }
+  .callout.hard { border-left-color: var(--sev-crit); }
+  .callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+  .lbl {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .callout.hard .lbl { color: var(--sev-crit); }
+
+  /* ---------- evidence strip ---------- */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 0 0 28px;
+  }
+  .stat { background: var(--surface); padding: 16px 18px; }
+  .stat .v {
+    font-family: "IBM Plex Sans Condensed", sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .stat .k {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    line-height: 1.35;
+    letter-spacing: .04em;
+    color: var(--ink-faint);
+    display: block;
+  }
+
+  /* ---------- email templates ---------- */
+  .email {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 0;
+    margin: 0 0 26px;
+  }
+  .email-head {
+    background: var(--surface-sunk);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 20px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .email-head .fld { display: block; margin-bottom: 3px; }
+  .email-head .fld:last-child { margin-bottom: 0; }
+  .email-head span.k { color: var(--ink-faint); }
+  .email-body {
+    padding: 20px 24px;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .email-body p { margin: 0 0 14px; }
+  .email-body p:last-child { margin-bottom: 0; }
+  .email-body .var { color: var(--accent); font-style: italic; }
+  .why {
+    border-top: 1px dashed var(--rule);
+    padding: 14px 24px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    background: var(--surface-sunk);
+  }
+  .why b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- time budget ---------- */
+  .budget { margin: 0 0 24px; border: 1px solid var(--rule); background: var(--surface); }
+  .brow {
+    display: grid;
+    grid-template-columns: 74px 1fr 92px;
+    gap: 14px;
+    align-items: start;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .brow:last-child { border-bottom: none; }
+  .brow.total { background: var(--surface-sunk); border-top: 1px solid var(--rule); }
+  .btime {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: 2px;
+  }
+  .btask { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 15px; line-height: 1.4; }
+  .btask b { display: block; font-weight: 600; margin-bottom: 2px; }
+  .btask span { color: var(--ink-faint); font-size: 13.5px; }
+  .bwho { text-align: right; padding-top: 3px; }
+
+  hr.rule { border: none; border-top: 1px solid var(--rule); margin: 40px 0; }
+
+  .footnote {
+    font-size: 14px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-top: 60px;
+  }
+  .footnote a { color: var(--ink-soft); }
+
+  @media (max-width: 600px) {
+    body { font-size: 16px; padding: 0 14px 80px; }
+    .brow { grid-template-columns: 62px 1fr; }
+    .bwho { grid-column: 2; text-align: left; padding-top: 0; }
+    .masthead { padding-top: 36px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="kicker">LinkRescue · Strategy Blueprint · Aug 2026</p>
+  <h1>The Attribution Leak Thesis</h1>
+  <p class="standfirst">Every competitor sells software that watches links it already knows about. Nobody sells labour to the publisher side. That is the whole business — and one number in your own scan data proves it.</p>
+  <div class="meta-row">
+    <span><b>Evidence base:</b> June 2026 scan, 50 sites</span>
+    <span><b>Offer:</b> Free Snapshot → $499 Sprint → Desk</span>
+    <span><b>Status:</b> live, claim-safe, zero customers</span>
+  </div>
+</header>
+
+<!-- ============ 0 ============ -->
+<section>
+  <div class="sec-head"><span class="num">00</span><h2>The read, before the strategy</h2></div>
+
+  <div class="prose">
+    <p>Three things are true at once, and the plan has to hold all three.</p>
+    <p><strong>One: the product is not the problem.</strong> Production is healthy, the database is recovered, the acceptance test passed, and the public copy is claim-safe. Nothing in the next fifty paragraphs is blocked on engineering.</p>
+    <p><strong>Two: you are sitting on better proof than your competitors publish.</strong> The June scan is original primary research on 50 real publisher sites. Lasso and Geniuslink have marketing pages. You have a dataset with a stated methodology.</p>
+    <p><strong>Three: you have never performed a single distribution action.</strong> Zero posts, zero sends. Every strategic word below is worth exactly nothing until that changes.</p>
+  </div>
+
+  <div class="callout hard">
+    <span class="lbl">The one finding that reorganises everything</span>
+    <p>Of 597 affiliate issues found in the June scan, <strong>569 were lost tracking parameters</strong> — not broken links. Those links return <code>200 OK</code>. The page loads. The reader buys. <em>The commission goes nowhere.</em></p>
+    <p>A broken-link checker marks that link healthy. A VA clicking through marks it healthy. Google Analytics marks it healthy. It is invisible to every instrument the publisher currently owns, and it is <strong>95% of the affiliate-specific damage you detect</strong>.</p>
+  </div>
+
+  <div class="strip">
+    <div class="stat"><span class="v">569</span><span class="k">LOST_PARAMS<br>of 597 affiliate issues</span></div>
+    <div class="stat"><span class="v">182</span><span class="k">links routed through<br>3+ redirect hops</span></div>
+    <div class="stat"><span class="v">27</span><span class="k">median issues per<br>fully-crawlable site</span></div>
+    <div class="stat"><span class="v">9.1%</span><span class="k">attribution failure<br>rate, all links</span></div>
+  </div>
+
+  <div class="prose">
+    <p>Stop selling broken links. Broken links are a commodity — free plugins find them, Search Console finds them, and the publisher already believes they are handled. <strong>Sell the silent tag drop.</strong> It is the only failure mode in your taxonomy that is simultaneously expensive, invisible, and unowned by any incumbent.</p>
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section>
+  <div class="sec-head"><span class="num">01</span><h2>Competitive landscape and the shape of the gap</h2></div>
+
+  <div class="prose">
+    <p>The publisher-side tooling market is crowded and yet leaves a specific hole. Read the last column of this table — it is the only column that matters.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr><th>Player</th><th>What it actually sells</th><th class="n">Price</th><th>What it structurally cannot see</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lasso</td>
+          <td>WordPress affiliate display + link management, broken-link alerts</td>
+          <td class="n">$39 / $99 / $299 mo</td>
+          <td>Any link not migrated into Lasso. Your 200 legacy posts with hardcoded <code>&lt;a href&gt;</code> are invisible until someone re-enters them by hand.</td>
+        </tr>
+        <tr>
+          <td>Geniuslink</td>
+          <td>Geo-routing and cloaking for links you wrap in its shortener</td>
+          <td class="n">$29 / $79 mo + ~$2/1k clicks</td>
+          <td>Unwrapped links — i.e. the archive. It also <em>creates</em> redirect hops, the exact mechanism that strips parameters.</td>
+        </tr>
+        <tr>
+          <td>Affilimate</td>
+          <td>Cross-network revenue attribution analytics for large media</td>
+          <td class="n">Custom quote, enterprise</td>
+          <td>Causation. It reports that revenue on a page fell; it does not tell you a redirect stripped <code>?tag=</code>. Also prices out every site under enterprise scale — <strong>that exclusion is your floor.</strong></td>
+        </tr>
+        <tr>
+          <td>Ahrefs / Screaming Frog</td>
+          <td>Technical SEO site audit at scale</td>
+          <td class="n">SF ~£199/yr; Ahrefs $129+/mo</td>
+          <td>Affiliate semantics. A <code>200 OK</code> with a stripped tag is a <em>pass</em>. They audit for Google, not for the merchant ledger.</td>
+        </tr>
+        <tr>
+          <td>WP Broken Link Checker / Jetpack</td>
+          <td>404 detection inside WordPress</td>
+          <td class="n">Free</td>
+          <td>Parameter integrity entirely. Generates false positives from bot-<code>BLOCKED</code> responses, which trains owners to ignore it.</td>
+        </tr>
+        <tr>
+          <td>Offshore VA</td>
+          <td>Human clicking, ~15–25 hrs for 200 articles</td>
+          <td class="n">$6–15/hr</td>
+          <td>The tag drop, definitionally. The VA clicks, the page loads, they mark it green. <strong>A human eye is the worst possible detector for this failure.</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">Where the money actually is today</span>
+    <p>Search for "affiliate audit" as a paid service and every result is <strong>merchant-side</strong> — brands paying agencies to audit their partner programs, commission structures and attribution logic. That market is mature and well-priced.</p>
+    <p>The publisher side has <em>no</em> equivalent. Publishers get software and are expected to supply their own labour. You are not competing with Lasso for the plugin budget. You are opening a services line that does not currently exist on this side of the transaction.</p>
+  </div>
+
+  <h3>The anti-SaaS positioning matrix</h3>
+  <div class="prose">
+    <p>The question to answer is not "why is LinkRescue better than a $39/mo plugin." It is <strong>"why is a one-time repair a different category of purchase from ongoing software."</strong> Frame it as a liability clearance, not a tool.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr><th>Job to be done</th><th>$39/mo plugin</th><th>Offshore VA</th><th>$499 Recovery Sprint</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Watch links added from today onward</td>
+          <td><span class="chip good">Solved</span> This is what it is for</td>
+          <td><span class="chip mute">Wasteful</span></td>
+          <td><span class="chip mute">Not the job</span></td>
+        </tr>
+        <tr>
+          <td>Find rot across 200 legacy articles never touched by the plugin</td>
+          <td><span class="chip crit">Blind</span> Requires manual migration first</td>
+          <td><span class="chip warn">Slow</span> 15–25 hrs, error-prone</td>
+          <td><span class="chip good">This is the job</span></td>
+        </tr>
+        <tr>
+          <td>Detect a live link that lost its tag mid-redirect</td>
+          <td><span class="chip crit">Blind</span></td>
+          <td><span class="chip crit">Blind</span></td>
+          <td><span class="chip good">Core detection</span></td>
+        </tr>
+        <tr>
+          <td>Decide what to fix first out of 27 findings</td>
+          <td><span class="chip mute">Dumps a list</span></td>
+          <td><span class="chip crit">No judgement</span></td>
+          <td><span class="chip good">Ranked, with reasoning</span></td>
+        </tr>
+        <tr>
+          <td>Find what a dead merchant page should now point to</td>
+          <td><span class="chip crit">Never</span></td>
+          <td><span class="chip warn">Sometimes</span> at 20 hrs</td>
+          <td><span class="chip good">Archive research included</span></td>
+        </tr>
+        <tr>
+          <td>Owner's time cost</td>
+          <td><span class="chip warn">Install + migrate + triage</span></td>
+          <td><span class="chip crit">Manage the VA</span></td>
+          <td><span class="chip good">One call, one document</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">The line to memorise</span>
+    <p>"A plugin monitors the links you gave it. Your problem is the links you never gave it."</p>
+  </div>
+
+  <h3>Five real objections, and the exact counter</h3>
+
+  <h4>1 — "I already have Lasso / Broken Link Checker"</h4>
+  <div class="prose">
+    <p><strong>Counter:</strong> "Both are good at what they do — they watch the links they manage. My snapshot ran against your published HTML, not your plugin database, so it sees the raw <code>href</code>s in posts from before you installed it. If those two sets match, you'll see a near-empty report and you should keep your money. On the sites I scanned, they never matched."</p>
+    <p>Note the move: you are not attacking the tool, you are <strong>redefining the scope of the audit</strong> so the tool is genuinely out of frame. And you offer them the exit, which is what makes it credible.</p>
+  </div>
+
+  <h4>2 — "How much money am I actually losing?" <span class="chip crit">hardest</span></h4>
+  <div class="prose">
+    <p>This is the one that will kill deals, because your claim-safety rule <em>forbids</em> you from answering it the way they want. Do not fudge it. Convert the question:</p>
+    <p><strong>Counter:</strong> "I won't give you a number, and I'd be careful with anyone who does — they can't see your commission rates or your conversion data, so it's a guess with a dollar sign on it. What I can give you is exposure: <span class="var">N</span> links on <span class="var">N</span> pages that currently earn you nothing when someone clicks them, and which pages those are. You know your RPM better than I ever will. Multiply it yourself."</p>
+    <p>This converts a weakness into the most trustworthy thing in the conversation. In a category full of inflated ROI calculators, <strong>refusing to estimate is a differentiator.</strong> Say it out loud.</p>
+  </div>
+
+  <h4>3 — "Your scan only found four things"</h4>
+  <div class="prose">
+    <p>The real risk, and it is an operations problem, not a sales one. In the June scan <strong>68% of sites cleared the crawl gate</strong> — 10 of 50 yielded zero data and 6 more were thin, largely from bot-blocking. A thin snapshot is worse than no snapshot: it actively tells the prospect they are fine.</p>
+    <p><strong>Counter (pre-emptive, before you ever send a thin report):</strong> "Your site blocks automated requests, which is normally a good thing. It means my free snapshot can only see <span class="var">N</span> pages and you should not read anything into that number. If you want real coverage I'd need you to allow my crawler for 48 hours, or I do the archive section by hand as part of a Sprint."</p>
+    <p>Bot-blocking is a <strong>qualification signal, not a failure</strong> — a site defended enough to block you is a site with something worth defending. Route it to a conversation, never to a report.</p>
+  </div>
+
+  <h4>4 — "I'll have my VA do it"</h4>
+  <div class="prose">
+    <p><strong>Counter:</strong> "For the dead links, honestly, yes — a VA can do that, and if that's the whole job you should use them. The part they can't do is the one that matters: when a link still works but drops your tag somewhere in the redirect chain, it looks perfect to a person clicking it. Half the links I flagged in my study were that. Your VA will mark every one of them green."</p>
+    <p>Conceding the commodity half is what makes the second half land.</p>
+  </div>
+
+  <h4>5 — "Who are you? I see no case studies."</h4>
+  <div class="prose">
+    <p>You removed the fabricated testimonials, which was correct, and it leaves you naked. Do not fill the space with vagueness — fill it with method.</p>
+    <p><strong>Counter:</strong> "None yet — you'd be early, and I'd rather say that than invent one. What I have instead is the study: 50 publisher sites, 683 pages, 6,550 links checked in June, methodology published. That's what I'm using to find people worth talking to. If the work isn't useful to you, don't pay for it."</p>
+    <p>Then add the structural fix: <strong>make your first three Sprints cheap in exchange for a named, quotable result.</strong> Price is recoverable. A permanent absence of proof is not.</p>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <div class="sec-head"><span class="num">02</span><h2>Who actually buys, and where they already are</h2></div>
+
+  <h3>Persona A — the portfolio publisher</h3>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Dimension</th><th>Profile</th></tr></thead>
+      <tbody>
+        <tr><td>Shape</td><td>1–4 content sites, 150–800 published articles, 3–10 years old. Often one flagship plus two neglected ones. The neglected ones are your best argument.</td></tr>
+        <tr><td>Revenue band</td><td>$5k–$50k/mo affiliate. Below $5k they will not pay $499. Above $50k they have staff and buy Affilimate.</td></tr>
+        <tr><td>Stack</td><td>WordPress on Kinsta/WP Engine/Cloudways; Rank Math or Yoast; Lasso, AAWP or ThirstyAffiliates; increasingly Ghost or Astro for newer builds. Amazon Associates plus 3–8 direct or network programs (Impact, ShareASale, CJ, Awin).</td></tr>
+        <tr><td>The five real failure events</td><td>
+          1. Amazon <code>?tag=</code> lost through a OneLink geo-redirect.<br>
+          2. Merchant replatforms; every deep product URL 301s to the homepage — <code>REDIRECT_TO_HOME</code>, which returns 200 and looks fine.<br>
+          3. Network changes deep-link format; old tracking URLs resolve but no longer attribute.<br>
+          4. Seasonal or expired offer pages, live but converting nothing.<br>
+          5. HTTPS or CDN rules silently dropping query strings.
+        </td></tr>
+        <tr><td>Emotional trigger</td><td>Not greed — <em>dread</em>. "My revenue dropped 20% and I don't know why" is the state they buy in. They will blame an algorithm update first. Your pitch is: check the plumbing before you rewrite 200 posts.</td></tr>
+        <tr><td>Where they are</td><td>r/juststart, r/Affiliatemarketing, r/blogging · Fat Stacks and Authority Hacker communities · Niche Pursuits · Superpath (content) · Traffic Think Tank · affiliate-industry newsletters · a dense, reachable X/LinkedIn cluster of named site owners.</td></tr>
+        <tr><td>Buying trigger</td><td>Post-Core-Update revenue dip; acquiring a site and needing diligence; preparing to sell and needing clean books.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">Under-used asset</span>
+    <p>You already scanned <strong>50 named publisher sites</strong> and hold specific, dated, factual findings for each. That is not a cold list — it is 50 conversations where you can open with something true about <em>their</em> site instead of a pitch. Nobody else contacting them can do that.</p>
+    <p>Handle with care: lead with the finding, offer to send the detail, never attach a price in the first message.</p>
+  </div>
+
+  <h3>Persona B — the agency account manager</h3>
+
+  <div class="prose">
+    <p>Structurally the better buyer, and the board already says so: one yes is worth roughly $6k/yr rather than $499. Their pain is not link rot. It is <strong>an unexplained revenue dip on a client account they cannot diagnose before the renewal call.</strong></p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Dimension</th><th>Profile</th></tr></thead>
+      <tbody>
+        <tr><td>Shape</td><td>Boutique SEO/content agency, 4–25 people, 6–30 clients, several with affiliate or commerce content.</td></tr>
+        <tr><td>Operational pain</td><td>Historical link audits are unbillable overhead. Nobody has scoped them, so nobody does them, so they surface as a surprise mid-quarter.</td></tr>
+        <tr><td>Commercial pain</td><td>Client revenue falls → client blames the agency's SEO → churn. The agency has no instrument that proves the drop was mechanical rather than editorial.</td></tr>
+        <tr><td>Your framing</td><td><strong>Revenue retention evidence, white-labelled.</strong> Not "we monitor links" — "you walk into the QBR with a document showing exactly which merchant changes cost the client traffic value, and what you already fixed."</td></tr>
+        <tr><td>Their economics</td><td>They bill the client $1,200–2,000 for a technical audit and pay you $499. You are a supplier with a margin, not a vendor with a subscription. <em>Say the margin out loud</em> — it is the fastest yes in this entire document.</td></tr>
+        <tr><td>Where they are</td><td>LinkedIn, overwhelmingly. Agency-owner communities, SEO Slack/Discords, local agency meetups, conference speaker lists.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <div class="sec-head"><span class="num">03</span><h2>The outbound engine</h2></div>
+
+  <div class="callout hard">
+    <span class="lbl">Read this before the templates</span>
+    <p>Your own operating record says eight consecutive lanes stalled at the identical step: <strong>contacting a stranger.</strong> You lifted that constraint yourself on 2026-08-07, so the templates below are written as asked and are yours to send.</p>
+    <p>But do not make cold email the engine. Build it as the <em>second</em> motion behind a channel that does not require you to initiate with a stranger — because on nine attempts, that is the step that has never once survived contact with a Tuesday. The board already has the first action staged and unfired: <strong>one LinkedIn post, from your own profile, with the campaign URL that is already verified live.</strong> Post it, then run outbound into the audience it surfaces.</p>
+  </div>
+
+  <div class="prose">
+    <p>Every template obeys three rules: <strong>the evidence is the offer</strong>, the price is never in message one, and the exit is always visible. You are selling a look at the finding — nothing else.</p>
+  </div>
+
+  <h3>Template 1 — independent publisher</h3>
+
+  <div class="email">
+    <div class="email-head">
+      <span class="fld"><span class="k">to:</span> publisher</span>
+      <span class="fld"><span class="k">subject:</span> 3 links on <span class="var">[site.com]</span> that load fine but don't track</span>
+    </div>
+    <div class="email-body">
+      <p>Hi <span class="var">[name]</span> —</p>
+      <p>I ran a technical scan across 50 affiliate sites in June to study how outbound links fail over time. <span class="var">[site.com]</span> was in the set.</p>
+      <p>The thing that surprised me wasn't dead links. It was links that still return a normal 200 — the page loads, the reader can buy — but the tracking parameter gets dropped somewhere in the redirect chain. On your <span class="var">[specific post title]</span> post I logged <span class="var">[N]</span> of those.</p>
+      <p>Those don't show up in a broken link checker, and they look completely fine if you click them yourself.</p>
+      <p>Want the list? It's about a page, it's free, and there's nothing to sign up for. If it's useful we can talk about the rest of the archive; if not, delete this and no hard feelings.</p>
+      <p><span class="var">[Carson]</span></p>
+    </div>
+    <div class="why">
+      <b>Why this works:</b> the subject line is a factual claim about their property, not a benefit statement. The mechanism is explained in one sentence so the reader learns something even if they never reply. The ask is "want the list," which costs them nothing and is not a meeting.
+      <br><br><b>Do not send</b> without a real post title and a real count. Generic personalisation is worse than none — it announces a template.
+    </div>
+  </div>
+
+  <h3>Template 2 — agency</h3>
+
+  <div class="email">
+    <div class="email-head">
+      <span class="fld"><span class="k">to:</span> head of content / SEO director</span>
+      <span class="fld"><span class="k">subject:</span> when a client's affiliate revenue drops and it isn't SEO</span>
+    </div>
+    <div class="email-body">
+      <p>Hi <span class="var">[name]</span> —</p>
+      <p>Question for you, since you run content sites for clients.</p>
+      <p>When a client's affiliate revenue falls and the rankings haven't moved, how do you currently rule out the mechanical causes — merchant replatforms, changed deep-link formats, tracking parameters dropped in a redirect?</p>
+      <p>I ask because I scanned 50 publisher sites in June and the attribution failures were roughly ten times more common than outright dead links. Every one of them returns a healthy 200, so a normal site audit passes them.</p>
+      <p>I run those audits as fixed-scope work for agencies — white-labelled, your logo, delivered as a client-ready document. Most of my agency conversations start with one client site as a test.</p>
+      <p>If it's useful I'll run a free snapshot on any one client property this week and send you what it finds. No charge and no obligation — I'd mainly like to know whether the output is something you could actually hand to a client.</p>
+      <p><span class="var">[Carson]</span></p>
+    </div>
+    <div class="why">
+      <b>Why this works:</b> opens on their process, not your product — a genuine question an operator can answer. "Ten times more common" is your own measured data, not a market statistic. The free snapshot is framed as <em>you</em> asking <em>them</em> for a quality judgement, which reverses the status of the ask.
+      <br><br><b>The margin line goes in the reply, not here.</b> Message one must not read as a reseller pitch.
+    </div>
+  </div>
+
+  <h3>Template 3 — re-engagement after a free snapshot</h3>
+
+  <div class="email">
+    <div class="email-head">
+      <span class="fld"><span class="k">to:</span> lead who ran a snapshot and went quiet</span>
+      <span class="fld"><span class="k">subject:</span> re-checked <span class="var">[site.com]</span> — two of those moved</span>
+    </div>
+    <div class="email-body">
+      <p>Hi <span class="var">[name]</span> —</p>
+      <p>You ran a snapshot on <span class="var">[site.com]</span> a few weeks back. I re-ran it this morning out of curiosity.</p>
+      <p><span class="var">[N]</span> of the issues are still open, and <span class="var">[N]</span> new ones appeared — the <span class="var">[merchant]</span> links on <span class="var">[section]</span> now redirect to their homepage rather than the product page.</p>
+      <p>That's the part I find most people underestimate: this isn't a backlog you clear once. Merchants change things on their schedule, not yours.</p>
+      <p>No pitch attached. If you want the updated list, say the word and I'll send it. If you've already handled it internally, tell me and I'll stop re-scanning.</p>
+      <p><span class="var">[Carson]</span></p>
+    </div>
+    <div class="why">
+      <b>Why this works:</b> it is the only follow-up that carries <em>new information</em> rather than new pressure. It also demonstrates the recurring nature of the problem through evidence instead of argument — which is the exact case for the Monitoring Desk, made without mentioning it.
+      <br><br><b>Operational note:</b> this template is why the Day-30 re-verify in §04 exists. The follow-up writes itself only if the re-scan is already scheduled.
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">Sequence discipline</span>
+    <p>One follow-up after four business days, then stop — as your own distribution kit already specifies. Do not build a five-touch sequence. At this volume the marginal reply is not worth the reputational cost, and a solo operator cannot defend a large send.</p>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <div class="sec-head"><span class="num">04</span><h2>The $499 Sprint: delivery under 2.5 hours</h2></div>
+
+  <div class="prose">
+    <p>$499 at 2.5 hours is roughly $200/hour, which works — but only if the time is <em>defended</em>. The margin does not die in the analysis. It dies in unqualified sites, scope creep, and hand-written reports. Three fixed rules protect it.</p>
+  </div>
+
+  <div class="callout hard">
+    <span class="lbl">The three margin rules</span>
+    <ul>
+      <li><strong>Never start a Sprint before the crawl gate passes.</strong> 32% of sites in your study yielded thin or no data. An unqualified site is a five-hour Sprint at best and a refund at worst.</li>
+      <li><strong>The report is assembled, never written.</strong> Eight fixed modules, same order every time. Your judgement goes into module 4 and nowhere else.</li>
+      <li><strong>You deliver a repair map. You never touch their site.</strong> The moment you edit a client's WordPress you own every subsequent bug on it, and the 2.5 hours becomes unbounded.</li>
+    </ul>
+  </div>
+
+  <h3>The time budget</h3>
+
+  <div class="budget">
+    <div class="brow">
+      <span class="btime">0:10</span>
+      <span class="btask"><b>Qualification crawl</b><span>Ten-page probe. Check robots, bot-blocking, sitemap, affiliate link density. Gate: ≥30 substantive pages and ≥50 outbound affiliate links, or decline.</span></span>
+      <span class="bwho"><span class="chip crit">Never skip</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:00</span>
+      <span class="btask"><b>Full archive crawl</b><span>Unattended. Runs against published HTML: six issue classes — <code>BROKEN_4XX</code>, <code>SERVER_5XX</code>, <code>TIMEOUT</code>, <code>REDIRECT_TO_HOME</code>, <code>LOST_PARAMS</code>, <code>BLOCKED</code> — plus redirect-hop counts and soft-404 detection.</span></span>
+      <span class="bwho"><span class="chip good">Machine</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:25</span>
+      <span class="btask"><b>Normalisation and triage</b><span>Strip <code>BLOCKED</code> false positives. Cluster by merchant and by failure class — one merchant replatform typically explains dozens of findings and collapses the list.</span></span>
+      <span class="bwho"><span class="chip warn">Assisted</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:30</span>
+      <span class="btask"><b>Manual attribution verification</b><span>The irreplaceable step. Trace the top 20 revenue-weighted links hop by hop and confirm which parameter dies where. This is what they are actually paying for.</span></span>
+      <span class="bwho"><span class="chip crit">Human only</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:35</span>
+      <span class="btask"><b>Replacement research</b><span>For dead merchant pages, find the current destination — archive lookup for what the page was, then the live equivalent. Cap at 25 links; overflow is scoped as additional work.</span></span>
+      <span class="bwho"><span class="chip warn">Assisted</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:25</span>
+      <span class="btask"><b>Report assembly</b><span>Populate the eight modules from the existing <code>docs/client-templates</code> file. Prose is pre-written except the executive read.</span></span>
+      <span class="bwho"><span class="chip good">Template</span></span>
+    </div>
+    <div class="brow">
+      <span class="btime">0:15</span>
+      <span class="btask"><b>Walkthrough recording</b><span>Screen recording over the report. Highest perceived-value-per-minute item in the whole delivery — and it is what gets forwarded internally.</span></span>
+      <span class="bwho"><span class="chip crit">Human only</span></span>
+    </div>
+    <div class="brow total">
+      <span class="btime">2:20</span>
+      <span class="btask"><b>Total attended time</b><span>Ten minutes of buffer against the 2.5-hour ceiling. If a Sprint exceeds it, the qualification gate failed — fix the gate, not the delivery.</span></span>
+      <span class="bwho"><span class="chip good">≈$214/hr</span></span>
+    </div>
+  </div>
+
+  <h3>The eight report modules</h3>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th class="n">#</th><th>Module</th><th>Contains</th><th>Effort</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>Scope and method</td><td>Pages crawled, links checked, date, what was and was not reachable. Stated limitations up front.</td><td><span class="chip good">Auto</span></td></tr>
+        <tr><td class="n">2</td><td>Exposure summary</td><td>Counts by failure class. Links that earn nothing when clicked. <strong>No dollar estimate, and say why not.</strong></td><td><span class="chip good">Auto</span></td></tr>
+        <tr><td class="n">3</td><td>Attribution failures</td><td>The centrepiece. Each traced link: original URL → hop chain → final URL, with the dropped parameter marked.</td><td><span class="chip warn">Semi</span></td></tr>
+        <tr><td class="n">4</td><td>Root-cause clusters</td><td>Your analysis. "These 34 findings are one merchant migration." This module is why it isn't a plugin.</td><td><span class="chip crit">Manual</span></td></tr>
+        <tr><td class="n">5</td><td>Prioritised repair queue</td><td>Ranked by traffic × failure severity. Every row: current URL, replacement URL, page location, effort tier.</td><td><span class="chip warn">Semi</span></td></tr>
+        <tr><td class="n">6</td><td>Implementation SOP</td><td>Step-by-step for their dev or VA, written so a non-technical person can execute it. Reusable across every client.</td><td><span class="chip good">Boilerplate</span></td></tr>
+        <tr><td class="n">7</td><td>Blind spots</td><td>What the crawl could not reach and why. Builds trust and pre-frames the monitoring conversation.</td><td><span class="chip good">Auto</span></td></tr>
+        <tr><td class="n">8</td><td>Re-verification schedule</td><td>The Day-30 re-scan, included in the price. <strong>The retainer mechanism — see §05.</strong></td><td><span class="chip good">Fixed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">Perceived value per hour spent</span>
+    <p>Module 5 (a queue their VA can execute without thinking) and the walkthrough recording carry most of the felt value. Modules 1, 2 and 7 cost you nothing and do most of the trust-building. <strong>Module 4 is the only place your expertise is visible</strong> — spend the manual time there and template everything else without guilt.</p>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <div class="sec-head"><span class="num">05</span><h2>The ladder is broken at step two</h2></div>
+
+  <div class="prose">
+    <p>Free Snapshot → $499 Sprint → $149/mo Desk looks clean and contains one structural flaw that will cost you most of your recurring revenue if you do not fix it before the first sale.</p>
+  </div>
+
+  <div class="callout hard">
+    <span class="lbl">The audit paradox</span>
+    <p>The Sprint's job is to leave the site <em>clean</em>. You then ask the customer to pay $149/month to be told, repeatedly, that it is still clean. You have engineered your own churn: the better the Sprint, the weaker the case for the Desk.</p>
+    <p>Monitoring sold as <em>watching</em> is insurance, and solo operators cannot sell insurance. Monitoring sold as <em>work performed each cycle</em> is a service. Same activity, entirely different renewal conversation.</p>
+  </div>
+
+  <h3>Three packaging changes</h3>
+
+  <h4>1 — The Sprint fee credits against the Desk</h4>
+  <div class="prose">
+    <p>"$499 for the Sprint. If you start the Desk within 30 days, the $499 credits against your first three months." The customer decides once, at peak enthusiasm, rather than twice — and the second decision is the one that historically never happens. Zero additional operational work; it is a sentence in the proposal.</p>
+    <p>Cash effect: $499 + ($149 × 3 − $499 credit) is worse in month one and materially better by month four, and it converts your hardest sale into a discount rather than a new purchase.</p>
+  </div>
+
+  <h4>2 — Invert the ladder for agencies</h4>
+  <div class="prose">
+    <p>For Persona B, stop selling the Sprint first. Sell the <strong>$499/mo Agency Desk covering five client sites, with the first client Sprint as the paid trial.</strong> An agency does not want a one-time audit — it wants a repeatable line item it can mark up. Leading with the one-time offer trains them to treat you as a project vendor, which is the low-LTV outcome.</p>
+    <p>Same two products. Reversed order. This is the single highest-leverage change in the document: it moves your best buyer from a $499 transaction to a $5,988/year relationship without any new delivery capability.</p>
+  </div>
+
+  <h4>3 — Reprice the Desk on output, and add annual prepay</h4>
+  <div class="prose">
+    <p>Redefine the monthly unit as a <strong>recovery cycle</strong>, not a subscription: each month delivers a re-scan, a verified issue list, replacement targets for anything newly dead, and a one-page delta. There is always an artifact, even in a quiet month — because merchants change things constantly and a quiet month is itself a finding worth stating.</p>
+    <p>Then offer annual at ten months for twelve. For a solo operator this is not a discount, it is <strong>working capital plus twelve months of eliminated churn admin</strong>, and it removes the monthly "is this still worth it" moment that kills small retainers.</p>
+  </div>
+
+  <h3>The conversion mechanism, concretely</h3>
+  <div class="prose">
+    <p>Do not "follow up about monitoring." Build the conversion into the delivery so it happens on its own:</p>
+    <ol>
+      <li><strong>Module 8 sets the appointment.</strong> Every Sprint report includes a free Day-30 re-verification. This is stated as quality assurance — you are checking your own repair queue worked — and it is true.</li>
+      <li><strong>Day 30, you re-scan.</strong> Twenty minutes, automated. On any real publisher archive it will surface new findings, because merchant-side change is continuous and exogenous. Your own study is the evidence: 9.1% attribution failure was a steady-state rate, not a backlog.</li>
+      <li><strong>You send the delta, not a pitch.</strong> "Your queue got executed — 22 of 27 resolved. Four new ones appeared since: <span class="mono">[merchant]</span> changed their deep-link format on the 14th."</li>
+      <li><strong>The customer reaches the conclusion themselves.</strong> The recurrence is now demonstrated on their own property with their own merchants. The ask is one line: "This is what the Desk does every month. Want me to keep going?"</li>
+    </ol>
+    <p>You are not arguing that link rot recurs. You are <strong>showing it recurring, on their site, thirty days after they paid you to fix it.</strong> That is the entire retainer motion and it costs twenty minutes.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Path</th><th>Motion</th><th class="n">Yr 1 per customer</th><th>Solo overhead</th></tr></thead>
+      <tbody>
+        <tr><td>Publisher, Sprint only</td><td>Snapshot → Sprint → gone</td><td class="n">$499</td><td><span class="chip good">2.5 hrs</span></td></tr>
+        <tr><td>Publisher, credited to Desk</td><td>Sprint → Day-30 delta → Desk</td><td class="n">~$1,690</td><td><span class="chip warn">2.5 hrs + ~1 hr/mo</span></td></tr>
+        <tr><td>Agency, ladder inverted</td><td>Client-site Sprint as trial → 5-site Desk</td><td class="n">~$6,487</td><td><span class="chip warn">2.5 hrs + ~3 hrs/mo</span></td></tr>
+        <tr><td>Agency, annual prepay</td><td>Desk at 10-for-12, paid up front</td><td class="n">~$5,489 cash day one</td><td><span class="chip good">Same, no churn admin</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="prose" style="font-size:14.5px;color:var(--ink-faint)">Arithmetic on your stated prices, not a forecast. Nothing here predicts how many customers arrive — that number is unknown until the first post goes out, and it should stay unknown rather than be modelled.</p>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <div class="sec-head"><span class="num">06</span><h2>What to do, in order</h2></div>
+
+  <div class="prose">
+    <p>Everything above is inert until one action happens. The sequence is deliberately short and front-loads the only step that has ever actually blocked you.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Window</th><th>Action</th><th>Done when</th></tr></thead>
+      <tbody>
+        <tr><td>Day 1</td><td><strong>Post the LinkedIn post.</strong> Copy is written, campaign URL is verified live, nothing is blocked. Rewrite the hook around the tag-drop finding rather than broken links.</td><td>It is published. Nothing else on this list counts until then.</td></tr>
+        <tr><td>Day 1–3</td><td>Rewrite the free-scan page headline around attribution loss. Currently it competes in the commodity broken-link category where you have no advantage.</td><td>The page's first line names the silent tag drop.</td></tr>
+        <tr><td>Day 2–5</td><td>Publish the June study as a public methodology post. It is your only credible proof and it is currently sitting in a JSON file.</td><td>A URL exists you can link in every conversation.</td></tr>
+        <tr><td>Day 3–7</td><td>Build the qualification pre-check as a standing script. The margin rule in §04 is worthless as a good intention.</td><td>One command returns pass/fail on a domain.</td></tr>
+        <tr><td>Day 5–10</td><td>Pick 15 of the 50 scanned sites where findings were strongest. Send Template 1 with real post titles and real counts. Fifteen, not five hundred.</td><td>15 sent, one follow-up each, then stop.</td></tr>
+        <tr><td>Day 7–14</td><td>Ten agency contacts with Template 2. This is the higher-value persona; give it its own dedicated week rather than folding it into publisher outreach.</td><td>10 sent.</td></tr>
+        <tr><td>First sale</td><td>Run the Sprint against the §04 budget with a timer. Record actual minutes per module.</td><td>You know your real hourly rate rather than the assumed one.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What to cut</h3>
+  <div class="prose">
+    <ul>
+      <li><strong>The self-serve SaaS tiers.</strong> The repo still carries a $29/$79 three-tier config with a <code>revenue_estimates</code> feature flag and "estimated revenue protected" emails. That contradicts the claim-safety work and splits your positioning across two incompatible businesses. Pick the service.</li>
+      <li><strong>Programmatic SEO pages</strong> (<code>/check/[network]</code>, <code>/vs/[competitor]</code>). Long payback, and the studio already concluded programmatic SEO is structurally declining.</li>
+      <li><strong>The $149/mo single-site Desk as the default upsell.</strong> Keep it available; stop leading with it. The agency desk is where the money is and it needs the attention.</li>
+      <li><strong>Any further competitive research.</strong> The gap is identified and the finding is in your own data. Nine consecutive lanes closed on desk research. The next input has to be a human reply.</li>
+    </ul>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">The honest bottom line</span>
+    <p>The thesis is sound: you have a real detection advantage on a failure mode no incumbent covers, a buyer who already spends money in this category, and original proof. The delivery model fits inside 2.5 hours and the agency motion clears $6k a year per yes.</p>
+    <p>None of that has ever been the constraint. The constraint is a single post that has been written, verified and unfired since the eighteenth. <strong>The strategy is finished. The publish button is the whole remaining risk.</strong></p>
+  </div>
+</section>
+
+<p class="footnote">
+  Sources for competitor pricing: <a href="https://geniuslink.com/pricing">Geniuslink</a> · <a href="https://affilimate.com/pricing/">Affilimate</a> · <a href="https://ddiy.co/lasso-review/">Lasso review, DDIY</a> · <a href="https://www.hamstergarage.com/article/affiliate-agency-pricing-costs-models-and-roi">Hamster Garage, affiliate agency pricing</a> · <a href="https://www.capterra.com/p/148763/Geniuslink/pricing/">Capterra</a>.
+  Scan figures throughout are from <code>linkrescue/data-study/aggregate-summary.json</code>, 2026-06-11. Third-party prices were current at time of writing and change without notice.
+</p>
+
+</div>

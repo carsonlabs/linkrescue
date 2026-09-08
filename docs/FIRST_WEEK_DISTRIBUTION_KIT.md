@@ -33,15 +33,48 @@ Use a different link per channel. The owner lead inbox reads the `utm_campaign` 
 
 ## Day 2: LinkedIn post
 
-Post from your own profile. Replace the bracketed observation with something true you can see on a public site or recurring industry discussion.
+Post from Carson's own profile only after he gives exact approval for this one action. This
+version uses the verified tag-drop finding as the hook and has no observation placeholder to
+fill from memory.
 
-> Affiliate links do not fail loudly. A merchant can change a destination, a redirect can drop tracking, or an old comparison post can start sending readers to a dead page.
+> A link can return HTTP 200 and still lose the affiliate tag.
 >
-> I am running a small pilot for publishers who want a limited technical snapshot of a public content site. It checks for observable broken links, redirects, and visible tracking-parameter problems. It does not estimate lost revenue or promise recovery.
+> In a June 2026 research scan, LinkRescue checked 6,550 outbound links across 50 established
+> affiliate sites. Attribution failures affected 597 checked links (9.1%), compared with 5.8%
+> that were visibly broken. Bot-blocked responses were reported separately, and the rates apply
+> only to links checked within the crawl budget.
 >
-> I am looking for a few sites to learn which findings are actually useful. [Optional factual observation about the niche.] If that is useful, the free snapshot is here: [campaign link]
+> I am running a small service-led pilot for publishers who want a limited technical snapshot
+> of a public content site. It checks observable broken links, redirects, and visible
+> tracking-parameter problems. It does not estimate lost revenue or promise recovery.
+>
+> I am looking for a few sites to learn which findings are actually useful. Free snapshot:
+> https://www.linkrescue.io/free-scan?utm_source=linkedin&utm_medium=organic&utm_campaign=pilot_linkedin
 
 Reply thoughtfully to every comment. Do not pitch in comments that ask unrelated questions.
+
+### Preflight verified 2026-09-08
+
+- `https://www.linkrescue.io/api/health` returned HTTP 200 with `web: ok` and `database: ok`
+  on production version `900c4a4`.
+- The exact LinkedIn campaign URL returned HTTP 200 and preserved `utm_source=linkedin`,
+  `utm_medium=organic`, and `utm_campaign=pilot_linkedin`.
+- The live landing page says the snapshot reports observable evidence and does not estimate
+  lost revenue.
+- Public search results show the service-led positioning and the same scoped June study
+  numbers, with no revenue promise.
+- No post, comment, message, scan, lead submission, payment, deployment, or customer-data
+  action was made during this verification.
+
+### Exact approval scope
+
+Approval for this pilot means only: publish the quoted post above once from Carson's personal
+LinkedIn profile with the exact campaign URL. It does not approve direct messages, comment
+pitches, ads, email, automated follow-up, billing, scans of prospect sites, or another channel.
+
+After publishing, record observed outcomes only: post URL and time, enquiries labelled
+`pilot_linkedin`, qualified conversations, scope requests, and paid work. Zero observed leads
+means zero observed leads; do not infer traffic or lost tracking from missing data.
 
 ## Day 3: community research post
 

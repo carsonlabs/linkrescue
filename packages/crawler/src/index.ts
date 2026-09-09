@@ -31,6 +31,19 @@ export { DomainLimiter } from './domain-limiter';
 export { detectSoft404 } from './soft-404';
 export { extractTextContent, hashContent, detectContentChange } from './content-hash';
 export { checkWaybackArchive } from './wayback';
+export {
+  QUALIFICATION_DEFAULTS,
+  evaluateQualification,
+  isArchivePageCandidate,
+  qualifySite,
+} from './qualification';
+export type {
+  QualificationDecision,
+  QualificationEvidence,
+  QualificationOptions,
+  QualificationResult,
+  QualificationRoute,
+} from './qualification';
 export { fetchWithCrawlerFallback, BROWSER_HEADERS, resetCrawlerFallbackMemory } from './browser-fetch';
 export type { CrawlerFetchOptions, CrawlerFetchResult } from './browser-fetch';
 export type { LinkCheckResult, ExtractedLink, PageLinks, ScanOptions, ScanSummary } from './types';

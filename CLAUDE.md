@@ -1,6 +1,6 @@
 # LinkRescue — Development Guide
 
-**Last reconciled:** 2026-08-19. This file previously described a three-tier self-serve SaaS
+**Last reconciled:** 2026-09-08. This file previously described a three-tier self-serve SaaS
 build-out. That plan is superseded — see [Superseded plan](#superseded-plan--do-not-build-from-this)
 before acting on any older instruction you find in this repo.
 
@@ -83,10 +83,30 @@ pnpm build
 pnpm lint
 pnpm type-check
 pnpm test
+pnpm --filter linkrescue build
+node packages/cli/dist/cli.js qualify https://publisher.example --json
 ```
 
 Verification bar before proposing any release: lint clean, all workspace type checks pass, full
 test suite passes, `git diff --check` passes, and a production web build completes.
+
+### Recovery Sprint qualification gate
+
+`linkrescue qualify <url> [--budget <seconds>] [--json]` is the standing, fixed-scope pre-check to
+run before offering a paid Recovery Sprint. It reads public pages only, respects `robots.txt`, and
+does not create database records, check destination links, estimate revenue, modify a site, or send
+anything.
+
+The default probe is capped at ten HTML pages and ten minutes. A site passes only when sitemap
+evidence contains at least 30 robots-allowed likely content-page URLs, the sample contains at least
+50 affiliate-link occurrences, at least 60% of fetched pages are substantive, and at least 80% of
+the available sample returns usable HTML. A below-threshold sitemap result is a decline. Missing archive proof,
+an exhausted budget, insufficient coverage, any bot-block response, or any browser/headless fallback
+is a manual-review failure — never a clean-site claim.
+
+The root URL may be sampled for reachability but is not counted as an archive content page. Keep
+probe candidates separate from archive candidates; otherwise a small no-sitemap site can accidentally
+sample only an error or deep path and produce misleading coverage evidence.
 
 ## Superseded plan — do not build from this
 
@@ -161,10 +181,9 @@ dashboard, the scoreboard, or the email package.
 ### Open items
 
 1. One unfired action: a single organic LinkedIn post from Carson's profile. Needs his explicit go.
-   Rewrite the hook around the tag-drop finding first.
+   The hook is rewritten around the tag-drop finding and its destination passed preflight on
+   2026-09-08.
 2. Publish the June study as a public methodology page — currently it only lives in a JSON file.
-3. Build the 10-minute qualification pre-check before selling any Sprint. The June crawl gate was
-   68%; an unqualified site breaks the 2.5h Sprint budget.
 
 ## Agent Learning
 

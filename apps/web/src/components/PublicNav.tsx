@@ -7,6 +7,7 @@ import { ExternalLink, ArrowRight, Menu, X } from 'lucide-react';
 const NAV_LINKS = [
   { href: '/#features', label: 'Features' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/research/link-rot-index-june-2026', label: 'Research' },
   { href: '/link-checker', label: 'Link Checker' },
   { href: '/free-scan', label: 'Free Leak Snapshot' },
 ];

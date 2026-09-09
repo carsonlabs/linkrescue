@@ -31,6 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${BASE}/research/link-rot-index-june-2026`,
+      lastModified: new Date('2026-06-11'),
+      changeFrequency: 'yearly',
+      priority: 0.7,
+    },
+    {
       url: `${BASE}/privacy`,
       lastModified: now,
       changeFrequency: 'yearly',

@@ -1,4 +1,5 @@
 import { createAdminClient } from '@linkrescue/database';
+import { waitUntil } from '@vercel/functions';
 
 export type TriggerSource = 'cron' | 'manual' | 'webhook' | 'onboarding' | 'schedule';
 
@@ -10,6 +11,38 @@ export interface DispatchParams {
   crawlExclusions?: string[];
   userId?: string;
   triggerSource: TriggerSource;
+}
+
+async function invokeScanWorker(scanId: string, params: DispatchParams): Promise<void> {
+  const workerUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/internal/scan-worker`;
+  const secret = process.env.CRON_SECRET;
+
+  try {
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        scanId,
+        siteId: params.siteId,
+        domain: params.domain,
+        sitemapUrl: params.sitemapUrl,
+        maxPages: params.maxPages,
+        crawlExclusions: params.crawlExclusions,
+        userId: params.userId,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[scan-dispatch] Worker rejected scan ${scanId}: ${response.status} ${response.statusText}`,
+      );
+    }
+  } catch (err) {
+    console.error(`[scan-dispatch] Failed to dispatch scan ${scanId} to worker:`, err);
+  }
 }
 
 /**
@@ -31,13 +64,20 @@ export async function dispatchScanWorker(params: DispatchParams): Promise<string
   // Check for already-active scan to avoid creating pointless pending rows
   const { data: activeScan } = await adminDb
     .from('scans')
-    .select('id')
+    .select('id, status')
     .eq('site_id', siteId)
     .in('status', ['pending', 'running'])
     .limit(1)
     .maybeSingle();
 
   if (activeScan) {
+    if (activeScan.status === 'pending') {
+      // Safe retry: the worker atomically claims pending scans, so re-dispatching
+      // an interrupted request cannot create a duplicate scan.
+      waitUntil(invokeScanWorker(activeScan.id, params));
+      return activeScan.id;
+    }
+
     console.log(`[scan-dispatch] Skipping dispatch for site ${siteId}: scan ${activeScan.id} already active`);
     return null;
   }
@@ -62,28 +102,9 @@ export async function dispatchScanWorker(params: DispatchParams): Promise<string
 
   const scanId = scan.id;
 
-  // Fire-and-forget to worker
-  const workerUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/internal/scan-worker`;
-  const secret = process.env.CRON_SECRET;
-
-  fetch(workerUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${secret}`,
-    },
-    body: JSON.stringify({
-      scanId,
-      siteId,
-      domain,
-      sitemapUrl,
-      maxPages,
-      crawlExclusions,
-      userId,
-    }),
-  }).catch((err) => {
-    console.error(`[scan-dispatch] Failed to dispatch scan ${scanId} to worker:`, err);
-  });
+  // Keep the request alive after the API response is returned. A plain unawaited
+  // fetch can be discarded when a Vercel function finishes its invocation.
+  waitUntil(invokeScanWorker(scanId, params));
 
   return scanId;
 }

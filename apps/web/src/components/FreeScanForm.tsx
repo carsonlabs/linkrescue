@@ -13,7 +13,6 @@ import {
   Lock,
   Loader2,
   ExternalLink,
-  DollarSign,
   Globe,
   Link2,
   Shield,
@@ -42,7 +41,6 @@ interface ScanResult {
   totalAffiliateLinks: number;
   brokenLinksCount: number;
   brokenAffiliateCount: number;
-  estimatedMonthlyLoss: number;
   brokenLinks: BrokenLinkDetail[];
   shareId: string | null;
 }
@@ -104,7 +102,7 @@ function truncateUrl(url: string, maxLen: number = 60): string {
 const PROGRESS_MESSAGES = [
   'Discovering pages on your site...',
   'Found pages, extracting outbound links...',
-  'Checking affiliate links across 38+ networks...',
+  'Checking visible outbound links and redirect paths...',
   'Following redirect chains...',
   'Detecting broken and stripped parameters...',
   'Almost done, compiling your report...',
@@ -141,9 +139,7 @@ export function FreeScanForm() {
 
       // Cycle progress messages while scanning
       const interval = setInterval(() => {
-        setProgressIdx((prev) =>
-          prev < PROGRESS_MESSAGES.length - 1 ? prev + 1 : prev
-        );
+        setProgressIdx((prev) => (prev < PROGRESS_MESSAGES.length - 1 ? prev + 1 : prev));
       }, 8000);
 
       try {
@@ -171,7 +167,6 @@ export function FreeScanForm() {
           links_checked: scan.totalLinksChecked,
           broken_links: scan.brokenLinksCount,
           broken_affiliate: scan.brokenAffiliateCount,
-          est_monthly_loss: scan.estimatedMonthlyLoss,
         });
       } catch {
         setError('Network error. Please check your connection and try again.');
@@ -265,11 +260,11 @@ export function FreeScanForm() {
           </span>
           <span className="flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-green-400/70" />
-            Results in under 2 minutes
+            Results depend on the site and its public pages
           </span>
           <span className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-green-400/70" />
-            Checks 38+ affiliate networks
+            Limited public-page review
           </span>
         </div>
       </div>
@@ -289,7 +284,9 @@ export function FreeScanForm() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-2">Scanning {url.replace(/^https?:\/\//, '')}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Scanning {url.replace(/^https?:\/\//, '')}
+            </h3>
             <p className="text-sm text-slate-400 transition-all duration-500">
               {PROGRESS_MESSAGES[progressIdx]}
             </p>
@@ -299,7 +296,9 @@ export function FreeScanForm() {
           <div className="w-full h-1.5 bg-[hsl(260_20%_18%)] rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full transition-all duration-[8000ms] ease-linear"
-              style={{ width: `${Math.min(((progressIdx + 1) / PROGRESS_MESSAGES.length) * 100, 95)}%` }}
+              style={{
+                width: `${Math.min(((progressIdx + 1) / PROGRESS_MESSAGES.length) * 100, 95)}%`,
+              }}
             />
           </div>
 
@@ -339,12 +338,6 @@ export function FreeScanForm() {
             value={result.brokenAffiliateCount.toString()}
             color={result.brokenAffiliateCount > 0 ? 'text-orange-400' : 'text-green-400'}
           />
-          <SummaryCard
-            icon={<DollarSign className="w-5 h-5" />}
-            label="Est. Monthly Loss"
-            value={result.estimatedMonthlyLoss > 0 ? `$${result.estimatedMonthlyLoss.toFixed(0)}` : '$0'}
-            color={result.estimatedMonthlyLoss > 0 ? 'text-red-400' : 'text-green-400'}
-          />
         </div>
 
         {/* Scan stats bar */}
@@ -380,16 +373,16 @@ export function FreeScanForm() {
             <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Your links look healthy!</h3>
             <p className="text-slate-400 text-sm mb-6">
-              We scanned {result.pagesScanned} pages and checked {result.totalLinksChecked} outbound links.
-              No broken links found right now &mdash; but Amazon changed their tag format last March and 12% of
-              affiliate links broke overnight. Programs sunset, URLs change, parameters get stripped silently.
+              We scanned {result.pagesScanned} pages and checked {result.totalLinksChecked} outbound
+              links. No broken links found at the time of this scan. This is a limited technical
+              snapshot, so it is not evidence that every link or conversion path is healthy.
             </p>
             <Link
-              href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+              href="/pricing"
               className="btn-primary justify-center"
               onClick={() => posthog?.capture('free_scan_signup_clicked', { location: 'healthy' })}
             >
-              Set up free monitoring before your next commission disappears
+              Explore recovery options
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -422,7 +415,10 @@ export function FreeScanForm() {
             {hasHidden && !unlocked && (
               <div className="relative">
                 {/* Show 2 blurred cards as teasers */}
-                <div className="space-y-4 filter blur-[6px] pointer-events-none select-none" aria-hidden>
+                <div
+                  className="space-y-4 filter blur-[6px] pointer-events-none select-none"
+                  aria-hidden
+                >
                   {hiddenBroken.slice(0, 2).map((link, i) => (
                     <BrokenLinkCard key={`hidden-${i}`} link={link} />
                   ))}
@@ -432,11 +428,12 @@ export function FreeScanForm() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(260_25%_8%/0.85)] backdrop-blur-sm rounded-xl p-6">
                   <Lock className="w-7 h-7 text-slate-400 mb-2" />
                   <p className="text-lg font-semibold mb-1 text-center">
-                    +{hiddenBroken.length} more broken link{hiddenBroken.length !== 1 ? 's' : ''} found
+                    +{hiddenBroken.length} more broken link{hiddenBroken.length !== 1 ? 's' : ''}{' '}
+                    found
                   </p>
                   <p className="text-sm text-slate-400 mb-5 text-center max-w-md">
-                    Drop your email to unlock the full list. We&apos;ll also send you the report so you can
-                    forward it to your team.
+                    Enter your email to unlock the full list in this browser. We save the request
+                    for a potential human follow-up. No automatic customer email is sent.
                   </p>
                   <form
                     onSubmit={handleUnlock}
@@ -469,11 +466,9 @@ export function FreeScanForm() {
                       )}
                     </button>
                   </form>
-                  {unlockError && (
-                    <p className="text-xs text-red-400 mt-3">{unlockError}</p>
-                  )}
+                  {unlockError && <p className="text-xs text-red-400 mt-3">{unlockError}</p>}
                   <p className="text-xs text-slate-500 mt-3">
-                    No spam. One email with your report. Unsubscribe anytime.
+                    By unlocking, you agree that LinkRescue may contact you personally about this enquiry.
                   </p>
                 </div>
               </div>
@@ -483,19 +478,21 @@ export function FreeScanForm() {
             <div className="gradient-border p-6 text-center mt-6">
               <p className="font-semibold mb-2">
                 {unlocked || !hasHidden
-                  ? 'Don\'t let this pile up again.'
-                  : 'Want continuous monitoring?'}
+                  ? "Ready to turn this evidence into repairs?"
+                  : 'Need a deeper recovery review?'}
               </p>
               <p className="text-sm text-slate-400 mb-5">
-                LinkRescue checks every affiliate link on your site daily and alerts you the moment
-                anything breaks. Start free with up to 200 pages.
+                A Recovery Sprint turns a scoped snapshot into a prioritized repair list. Managed
+                monitoring is considered only after a site has passed a readiness review.
               </p>
               <Link
-                href={email ? `/signup?email=${encodeURIComponent(email)}` : '/signup'}
+                href="/pricing"
                 className="btn-primary justify-center"
-                onClick={() => posthog?.capture('free_scan_signup_clicked', { location: 'results_bottom' })}
+                onClick={() =>
+                  posthog?.capture('free_scan_signup_clicked', { location: 'results_bottom' })
+                }
               >
-                Start Free Monitoring
+                View recovery options
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -543,9 +540,7 @@ function BrokenLinkCard({ link }: { link: BrokenLinkDetail }) {
           <span className="font-mono text-sm text-white truncate" title={link.href}>
             {truncateUrl(link.href)}
           </span>
-          {link.isAffiliate && (
-            <span className="badge-amber shrink-0">Affiliate</span>
-          )}
+          {link.isAffiliate && <span className="badge-amber shrink-0">Affiliate</span>}
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500">
           <span className={issueColor(link.issueType)}>

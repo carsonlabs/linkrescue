@@ -4,6 +4,12 @@ import type { UserScoreboard, NetworkStatsPublic } from '@linkrescue/types';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any>;
 
+function isMissingRelationError(error: { code?: string }) {
+  // Postgres returns 42P01 when the relation is missing. PostgREST returns
+  // PGRST205 when the same relation is absent from its schema cache.
+  return error.code === '42P01' || error.code === 'PGRST205';
+}
+
 // Re-export pure types/helpers so callers in the web app only need one import.
 export {
   estimateValueCents,
@@ -32,7 +38,7 @@ export async function getUserScoreboard(
 
   if (error) {
     // View may not exist yet (migration unapplied) — fail soft so the dashboard still renders.
-    if (error.code === '42P01') return null;
+    if (isMissingRelationError(error)) return null;
     throw error;
   }
 
@@ -49,7 +55,7 @@ export async function getNetworkStatsPublic(
     .maybeSingle();
 
   if (error) {
-    if (error.code === '42P01') return null;
+    if (isMissingRelationError(error)) return null;
     throw error;
   }
 

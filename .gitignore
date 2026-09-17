@@ -54,3 +54,12 @@ data-study/dogfood-results/
 
 # Outreach PDFs + drafts (per-prospect output)
 outreach-output/
+
+# Dated scan-output directories (same rule as data-study/results/ above —
+# keep the inputs and the aggregate summaries, not the raw run output)
+data-study/results-*/
+
+# Internal GTM playbook. THIS REPO IS PUBLIC: .agents/product-marketing.md is
+# competitive positioning, objection handling and pricing strategy, which is
+# not something to publish. Stays on disk, out of history.
+.agents/

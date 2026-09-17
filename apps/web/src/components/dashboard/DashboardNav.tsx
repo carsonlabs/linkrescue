@@ -14,6 +14,7 @@ import {
   Activity,
   TrendingUp,
   BookOpen,
+  Inbox,
 } from 'lucide-react';
 
 const primaryNav = [
@@ -63,7 +64,7 @@ function NavItem({
   );
 }
 
-export function DashboardNav() {
+export function DashboardNav({ isOwner = false }: { isOwner?: boolean }) {
   return (
     <nav className="space-y-1">
       {primaryNav.map((item) => (
@@ -79,6 +80,17 @@ export function DashboardNav() {
       {powerNav.map((item) => (
         <NavItem key={item.href} {...item} />
       ))}
+
+      {isOwner && (
+        <>
+          <div className="pt-4 pb-1">
+            <p className="px-3 text-[10px] font-semibold text-slate-600 uppercase tracking-wider">
+              Pilot operations
+            </p>
+          </div>
+          <NavItem href="/dashboard/leads" label="Lead inbox" icon={Inbox} />
+        </>
+      )}
 
       <div className="pt-4 pb-1">
         <p className="px-3 text-[10px] font-semibold text-slate-600 uppercase tracking-wider">

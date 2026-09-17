@@ -26,6 +26,17 @@ CREATE TABLE organizations (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- This table must exist before the organizations SELECT policy can reference it.
+CREATE TABLE org_members (
+  org_id      UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  role        org_role NOT NULL DEFAULT 'member',
+  invited_by  UUID REFERENCES auth.users(id),
+  accepted_at TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (org_id, user_id)
+);
+
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "org_select" ON organizations
@@ -48,16 +59,6 @@ CREATE POLICY "org_delete" ON organizations
   FOR DELETE USING (owner_id = auth.uid());
 
 -- ── Org Members ───────────────────────────────────────────────
-
-CREATE TABLE org_members (
-  org_id      UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  role        org_role NOT NULL DEFAULT 'member',
-  invited_by  UUID REFERENCES auth.users(id),
-  accepted_at TIMESTAMPTZ,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  PRIMARY KEY (org_id, user_id)
-);
 
 ALTER TABLE org_members ENABLE ROW LEVEL SECURITY;
 

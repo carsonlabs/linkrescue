@@ -248,7 +248,7 @@ export function RevenueCalculator({ brokenLinkCount = 0 }: RevenueCalculatorProp
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
                   Based on {totalRiskPercent.toFixed(0)}% of affected page revenue being lost. 
-                  This assumes visitors who click broken links don't convert.
+                  This assumes visitors who click broken links don&apos;t convert.
                 </p>
               </div>
             </div>

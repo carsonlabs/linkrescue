@@ -1,1 +1,1 @@
-PRODUCTION-READY — linkrescue.io — Broken affiliate link monitor, 3 tiers
+LIVE PILOT - linkrescue.io - service-led affiliate link recovery. Production health, database capture, owner-only enquiry notifications, and the owner-secured dashboard lead inbox with personal-reply templates, campaign attribution, and a migration-ready lead pipeline are deployed. Resend sender-domain DNS verification is complete; automated scans, billing, and visitor email remain intentionally disabled.

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@linkrescue/database';
+import { sendLeadNotification } from '@linkrescue/email';
 
 export const maxDuration = 30;
 
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   const db = createAdminClient();
   const { data: scan, error: scanErr } = await (db.from as Function)('free_scan_results')
-    .select('domain, broken_links_count, broken_affiliate_count, estimated_monthly_loss')
+    .select('domain, broken_links_count, broken_affiliate_count')
     .eq('id', scanId)
     .single();
 
@@ -37,19 +38,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Scan not found' }, { status: 404 });
   }
 
+  let leadId: string;
   try {
-    await (db.from as Function)('free_scan_leads').insert({
-      email: email.toLowerCase().trim(),
-      site_url: scan.domain,
-      source: 'free-scan-postgate',
-      broken_links_count: scan.broken_links_count,
-      affiliate_issues_count: scan.broken_affiliate_count,
-      estimated_loss: scan.estimated_monthly_loss,
-      scanned_at: new Date().toISOString(),
-    });
+    const { data: lead, error: insertError } = await (db.from as Function)('free_scan_leads')
+      .insert({
+        email: email.toLowerCase().trim(),
+        site_url: scan.domain,
+        source: 'free-scan-postgate',
+        referrer: req.headers.get('referer') ?? null,
+        broken_links_count: scan.broken_links_count,
+        affiliate_issues_count: scan.broken_affiliate_count,
+        scanned_at: new Date().toISOString(),
+      })
+      .select('id')
+      .single();
+    if (insertError || !lead?.id) throw insertError ?? new Error('Lead insert returned no id');
+    leadId = lead.id;
   } catch (err) {
     console.error('[free-scan-lead] DB insert failed:', err);
     return NextResponse.json({ error: 'Could not save email. Please try again.' }, { status: 500 });
+  }
+
+  try {
+    await sendLeadNotification({
+      leadId,
+      email: email.toLowerCase().trim(),
+      siteUrl: scan.domain ?? null,
+      source: 'free-scan-postgate',
+      details: `${scan.broken_links_count ?? 0} broken links; ${scan.broken_affiliate_count ?? 0} affiliate issues in the limited snapshot`,
+    });
+  } catch (err) {
+    console.error('[free-scan-lead] Owner notification failed:', err);
   }
 
   return NextResponse.json({ ok: true });

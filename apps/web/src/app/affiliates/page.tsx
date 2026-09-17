@@ -1,303 +1,136 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {
-  DollarSign,
-  Repeat,
-  Clock,
-  Gift,
-  ArrowRight,
-  CheckCircle2,
-  Users,
-  TrendingUp,
-  Megaphone,
-} from 'lucide-react';
-import { PublicNav } from '@/components/PublicNav';
+import { ArrowRight, CheckCircle2, Handshake, ShieldCheck } from 'lucide-react';
 import { PublicFooter } from '@/components/PublicFooter';
+import { PublicNav } from '@/components/PublicNav';
 
 export const metadata: Metadata = {
-  title: 'Affiliate Program — Earn 30% Recurring Commission',
+  title: 'Partner Referrals',
   description:
-    'Join the LinkRescue affiliate program and earn 30% recurring commission for 12 months on every referral. 90-day cookie, monthly payouts, and dedicated support.',
+    'LinkRescue is running a small service-led pilot for affiliate publishers. Affiliate commissions and self-serve subscriptions are not available.',
   alternates: { canonical: 'https://www.linkrescue.io/affiliates' },
+  robots: { index: false, follow: true },
   openGraph: {
-    title: 'Earn 30% Recurring Commission — LinkRescue Affiliate Program',
+    title: 'Partner referrals are paused | LinkRescue',
     description:
-      'Join the LinkRescue affiliate program. 30% recurring commission for 12 months, 90-day cookie, monthly payouts.',
+      'LinkRescue is running a small service-led pilot for affiliate publishers. Affiliate commissions and self-serve subscriptions are not available.',
     url: 'https://www.linkrescue.io/affiliates',
     siteName: 'LinkRescue',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Earn 30% Recurring Commission — LinkRescue Affiliate Program',
+    title: 'Partner referrals are paused | LinkRescue',
     description:
-      'Join the LinkRescue affiliate program. 30% recurring commission for 12 months, 90-day cookie, monthly payouts.',
+      'LinkRescue is running a small service-led pilot for affiliate publishers. Affiliate commissions and self-serve subscriptions are not available.',
   },
 };
 
-const highlights = [
-  {
-    icon: DollarSign,
-    title: '30% Recurring',
-    description: 'Earn 30% of every payment your referrals make — not just the first one.',
-  },
-  {
-    icon: Repeat,
-    title: '12-Month Duration',
-    description: 'Commissions continue for a full 12 months after each referral signs up.',
-  },
-  {
-    icon: Clock,
-    title: '90-Day Cookie',
-    description: 'Your referrals have 90 days to convert after clicking your link.',
-  },
-  {
-    icon: Gift,
-    title: 'Monthly Payouts',
-    description: 'Get paid every month via PayPal or Wise. $50 minimum threshold.',
-  },
+const pilotPoints = [
+  'A free, limited technical snapshot for a public content site.',
+  'A human-scoped Recovery Sprint only after the site is a fit.',
+  'A Monitoring Desk conversation only after a readiness review.',
 ];
 
-const earningsExamples = [
-  { referrals: 5, plan: 'Pro ($29/mo)', monthly: '$43.50', annual: '$522' },
-  { referrals: 10, plan: 'Pro ($29/mo)', monthly: '$87', annual: '$1,044' },
-  { referrals: 5, plan: 'Agency ($79/mo)', monthly: '$118.50', annual: '$1,422' },
-  { referrals: 20, plan: 'Mixed', monthly: '$290', annual: '$3,480' },
-];
-
-const faq = [
+const questions = [
   {
-    q: 'Who can join the affiliate program?',
-    a: 'Anyone! Bloggers, content creators, SEO professionals, and affiliate marketers are especially great fits. You don\'t need to be a LinkRescue customer.',
+    question: 'Can I join an affiliate program today?',
+    answer:
+      'No. LinkRescue is not accepting affiliate-program sign-ups or offering referral commissions while the service-led pilot is being validated.',
   },
   {
-    q: 'How do I get paid?',
-    a: 'Commissions are paid monthly via PayPal or Wise, with a $50 minimum payout threshold. You can track all earnings in real-time through your Rewardful dashboard.',
+    question: 'Can I refer someone I know?',
+    answer:
+      'Yes. If the person manages an established affiliate-content site, share the free snapshot. We will review the site personally before suggesting any paid work.',
   },
   {
-    q: 'How long does the cookie last?',
-    a: '90 days. If someone clicks your link and signs up within 90 days, you get credit for the referral.',
-  },
-  {
-    q: 'Do I earn on annual plans too?',
-    a: 'Yes! You earn 30% of whatever the customer pays, including annual plans. Annual plan commissions are paid when the customer pays.',
-  },
-  {
-    q: 'Is there a limit on how much I can earn?',
-    a: 'No cap. Earn as much as you can. Our top affiliates earn over $1,000/month.',
-  },
-  {
-    q: 'What marketing materials do you provide?',
-    a: 'We provide banner ads, email templates, social media copy, and a detailed product overview. All available in your affiliate dashboard.',
+    question: 'What is available now?',
+    answer:
+      'The free snapshot is available for public sites. A $499 fixed-scope Recovery Sprint and $149/month Monitoring Desk are discussed only after a human review.',
   },
 ];
-
-// TODO: Replace with actual Rewardful signup URL once account is set up
-const REWARDFUL_SIGNUP_URL = process.env.NEXT_PUBLIC_REWARDFUL_SIGNUP_URL || '#';
 
 export default function AffiliatesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <PublicNav />
 
-      {/* Hero */}
-      <section className="pt-28 pb-20 md:pt-36 md:pb-28">
-        <div className="container mx-auto px-6 text-center max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 text-sm font-medium px-4 py-1.5 rounded-full mb-8 border border-green-500/20">
-            <Gift className="w-4 h-4" />
-            Affiliate Program
+      <main>
+        <section className="pt-28 pb-20 md:pt-36 md:pb-28">
+          <div className="container mx-auto max-w-3xl px-6 text-center">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-1.5 text-sm font-medium text-amber-200">
+              <Handshake className="h-4 w-4" />
+              Service-led pilot
+            </div>
+            <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+              Partner referrals are <span className="text-gradient">paused for now</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400 md:text-xl">
+              We are validating LinkRescue with a small group of affiliate publishers before opening an affiliate program, automated subscriptions, or recurring commissions.
+            </p>
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link href="/free-scan" className="btn-primary px-8 py-4 text-base">
+                Get a free snapshot <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link href="/pricing" className="btn-secondary px-8 py-4 text-base">
+                See the pilot offer
+              </Link>
+            </div>
           </div>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            Earn <span className="text-gradient">30% Recurring</span> Commission
-          </h1>
-          <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
-            Recommend LinkRescue to your audience and earn 30% of every payment for 12 months.
-            Join hundreds of affiliates earning passive income.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href={REWARDFUL_SIGNUP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary text-base px-8 py-4"
-            >
-              Join the Program
-              <ArrowRight className="w-5 h-5" />
-            </a>
-            <Link
-              href="#how-it-works"
-              className="btn-secondary text-base px-8 py-4"
-            >
-              Learn More
+        </section>
+
+        <section className="border-t border-white/5 py-16">
+          <div className="container mx-auto max-w-3xl px-6">
+            <div className="glass-card p-7 md:p-9">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-500/10">
+                  <ShieldCheck className="h-5 w-5 text-green-400" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-semibold">What is live today</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    LinkRescue starts with observable technical evidence. We do not promise recovered revenue, send automatic customer email, or offer self-serve checkout during this pilot.
+                  </p>
+                </div>
+              </div>
+              <ul className="mt-7 space-y-4">
+                {pilotPoints.map((point) => (
+                  <li key={point} className="flex gap-3 text-sm text-slate-300">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-400" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-white/5 py-16">
+          <div className="container mx-auto max-w-3xl px-6">
+            <h2 className="font-display text-center text-3xl font-bold">Questions about referrals</h2>
+            <div className="mt-10 space-y-4">
+              {questions.map((item) => (
+                <article key={item.question} className="glass-card p-5">
+                  <h3 className="font-semibold">{item.question}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{item.answer}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-white/5 py-20">
+          <div className="container mx-auto max-w-2xl px-6 text-center">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Have a relevant affiliate site?</h2>
+            <p className="mt-4 text-lg text-slate-400">
+              Start with the limited, no-account technical snapshot. If the evidence is useful, we can decide together whether a human review makes sense.
+            </p>
+            <Link href="/free-scan" className="btn-primary mt-8 px-8 py-4 text-base">
+              Check a public site <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Highlights */}
-      <section className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {highlights.map((item) => (
-              <div key={item.title} className="glass-card p-6 text-center">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-6 h-6 text-green-400" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-400">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="space-y-8">
-            {[
-              { step: '1', title: 'Sign up', description: 'Create your free affiliate account through Rewardful. Takes 2 minutes.' },
-              { step: '2', title: 'Share your link', description: 'Get your unique referral link and share it with your audience via blog posts, emails, social media, or YouTube.' },
-              { step: '3', title: 'Earn commissions', description: 'When someone signs up for a paid plan through your link, you earn 30% of every payment they make for 12 months.' },
-              { step: '4', title: 'Get paid', description: 'Track earnings in real-time and receive monthly payouts via PayPal or Wise.' },
-            ].map((item) => (
-              <div key={item.step} className="flex gap-5">
-                <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0 font-display font-bold text-green-400">
-                  {item.step}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                  <p className="text-slate-400 text-sm">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Earnings Calculator */}
-      <section className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-4">Earnings Potential</h2>
-          <p className="text-center text-slate-400 mb-10">See how much you could earn with just a few referrals.</p>
-          <div className="glass-card overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-4 px-5 text-slate-400 font-medium">Referrals</th>
-                  <th className="text-left py-4 px-5 text-slate-400 font-medium">Plan</th>
-                  <th className="text-right py-4 px-5 text-slate-400 font-medium">Monthly</th>
-                  <th className="text-right py-4 px-5 text-slate-400 font-medium">Annual</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {earningsExamples.map((row, i) => (
-                  <tr key={i}>
-                    <td className="py-4 px-5 font-medium">{row.referrals}</td>
-                    <td className="py-4 px-5 text-slate-400">{row.plan}</td>
-                    <td className="py-4 px-5 text-right text-green-400 font-semibold">{row.monthly}</td>
-                    <td className="py-4 px-5 text-right text-green-400 font-semibold">{row.annual}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Marketing Assets */}
-      <section className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-4">Marketing Resources</h2>
-          <p className="text-center text-slate-400 mb-10">
-            Everything you need to promote LinkRescue effectively.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {[
-              { icon: Megaphone, title: 'Banner Ads', description: 'Multiple sizes for your site sidebar, header, and content.' },
-              { icon: Users, title: 'Email Templates', description: 'Pre-written emails to send to your newsletter subscribers.' },
-              { icon: TrendingUp, title: 'Social Copy', description: 'Ready-to-post tweets, LinkedIn posts, and Facebook updates.' },
-              { icon: CheckCircle2, title: 'Product Overview', description: 'Detailed feature breakdown and comparison charts.' },
-            ].map((item) => (
-              <div key={item.title} className="glass-card p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-5 h-5 text-slate-400" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
-                  <p className="text-xs text-slate-500">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-xs text-slate-600 mt-6">
-            All resources available in your affiliate dashboard after signup.
-          </p>
-        </div>
-      </section>
-
-      {/* Sample Copy */}
-      <section className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-4">Sample Copy</h2>
-          <p className="text-center text-slate-400 mb-10">Use or adapt these for your promotions.</p>
-          <div className="space-y-4">
-            <div className="glass-card p-5">
-              <p className="text-xs text-slate-500 mb-2 font-semibold uppercase tracking-wider">Blog / Newsletter</p>
-              <p className="text-sm text-slate-300 italic">
-                &ldquo;I&apos;ve been using LinkRescue to monitor my affiliate links and it&apos;s already caught several broken Amazon links
-                that were costing me commissions. If you rely on affiliate income, this tool pays for itself in the first week.
-                Try it free at [your-link].&rdquo;
-              </p>
-            </div>
-            <div className="glass-card p-5">
-              <p className="text-xs text-slate-500 mb-2 font-semibold uppercase tracking-wider">Tweet / Social</p>
-              <p className="text-sm text-slate-300 italic">
-                &ldquo;Just found 3 broken affiliate links on my site that were losing me money. @LinkRescue_io scans daily
-                and alerts you instantly. Game changer for anyone doing affiliate marketing. [your-link]&rdquo;
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-16 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {faq.map((item) => (
-              <div key={item.q} className="glass-card p-5">
-                <h3 className="font-semibold mb-2">{item.q}</h3>
-                <p className="text-sm text-slate-400">{item.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 border-t border-white/5">
-        <div className="container mx-auto px-6 text-center max-w-2xl">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-            Ready to Start Earning?
-          </h2>
-          <p className="text-lg text-slate-400 mb-10">
-            Join our affiliate program today and start earning 30% recurring commissions.
-            No minimum traffic requirements.
-          </p>
-          <a
-            href={REWARDFUL_SIGNUP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary text-base px-8 py-4"
-          >
-            Join the Affiliate Program
-            <ArrowRight className="w-5 h-5" />
-          </a>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <PublicFooter />
     </div>

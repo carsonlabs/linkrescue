@@ -14,6 +14,7 @@ npx linkrescue scan https://yoursite.com
 - Flags broken links (4xx/5xx/timeout), redirect chains, and **affiliate-specific issues** like lost tracking params or redirect-to-homepage
 
 Polite by default:
+
 - Respects `robots.txt`
 - 10-second per-fetch timeout
 - Per-domain pacing via internal rate limiter
@@ -37,12 +38,26 @@ linkrescue scan https://yoursite.com
 ## Commands
 
 ```bash
+# Recovery Sprint pre-check (10 public pages, pass/fail)
+linkrescue qualify https://yoursite.com
+
 # Single-page quick check
 linkrescue check https://yoursite.com/some-post
 
 # Multi-page scan (sitemap + crawl, up to 20 pages on free CLI)
 linkrescue scan https://yoursite.com
 ```
+
+### Qualify a Recovery Sprint
+
+`qualify` returns `PASS` only when public evidence clears the operating gate: at least 30
+robots-allowed content-page candidates, at least 50 affiliate-link occurrences in the sampled
+pages, and a substantive, fetchable sample. Bot walls and incomplete discovery return `FAIL` with a
+`manual_review` route so a thin crawl is never presented as a clean site. `--json` emits the
+full evidence record. A qualification failure exits with status 2.
+
+The command reads public pages and respects `robots.txt`. It does not create a lead or scan
+record, check destination links, estimate revenue, send anything, or edit the target site.
 
 ## Options
 

@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import { runCheck } from './commands/check.js';
+import { runQualify } from './commands/qualify.js';
 import { runScan } from './commands/scan.js';
 
 const program = new Command();
@@ -8,6 +9,21 @@ program
   .name('linkrescue')
   .description('Find broken links and affiliate parameter issues on any website')
   .version('1.0.0');
+
+program
+  .command('qualify <url>')
+  .description('Ten-page pre-check: pass/fail before starting a fixed-scope Recovery Sprint')
+  .option('--budget <seconds>', 'Wall-clock budget in seconds (default and max: 600)', '600')
+  .option('--json', 'Output structured evidence as JSON')
+  .action(async (url: string, options) => {
+    try {
+      await runQualify(url, options);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`\nError: ${msg}`);
+      process.exit(1);
+    }
+  });
 
 program
   .command('check <url>')

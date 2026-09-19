@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Dispatch to scan worker (fire-and-forget)
-  const workerUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://app.linkrescue.io'}/api/internal/scan-worker`;
+  const workerUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkrescue.io'}/api/internal/scan-worker`;
 
   fetch(workerUrl, {
     method: 'POST',
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
     console.error('[v1/scans] Worker dispatch failed:', err);
   });
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://app.linkrescue.io';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkrescue.io';
 
   return NextResponse.json(
     {

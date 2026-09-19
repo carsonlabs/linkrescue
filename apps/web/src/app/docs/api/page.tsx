@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
 };
 
-const BASE_URL = 'https://app.linkrescue.io';
+const BASE_URL = 'https://www.linkrescue.io';
 
 function CodeBlock({ children, label }: { children: string; label?: string }) {
   return (

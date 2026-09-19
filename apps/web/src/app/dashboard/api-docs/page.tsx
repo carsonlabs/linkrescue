@@ -22,7 +22,7 @@ export default async function ApiDocsPage() {
   const plan = getUserPlan(profile?.stripe_price_id ?? null) as TierName;
   const hasApi = hasFeature(plan, 'api_access');
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://app.linkrescue.io';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkrescue.io';
 
   return (
     <div className="space-y-8 max-w-4xl">

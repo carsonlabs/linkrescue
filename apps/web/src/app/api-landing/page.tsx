@@ -67,7 +67,7 @@ const FEATURES = [
 ];
 
 export default function ApiLandingPage() {
-  const baseUrl = 'https://app.linkrescue.io';
+  const baseUrl = 'https://www.linkrescue.io';
 
   return (
     <>

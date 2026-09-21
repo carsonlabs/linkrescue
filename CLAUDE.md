@@ -21,6 +21,14 @@ The delivery ladder, as reflected on the live `/pricing` page:
 Nothing is self-serve. Checkout is intentionally off. Every engagement starts with a snapshot and
 a human readiness review.
 
+**One self-serve exception (2026-09-21): the API.** Every account now gets a small free API key
+(`packages/types/src/tiers.ts` free tier: `api_access`, 20 read req/hr, 1 API scan/day, 1 site,
+200 pages) so connector users can try the scan layer without emailing Carson. The same keys
+authenticate the **remote MCP endpoint at `https://www.linkrescue.io/api/mcp`**
+(`apps/web/src/app/api/mcp/route.ts`) — stateless streamable HTTP, four tools that proxy
+`/api/v1` with the caller's key. It exists for distribution: the Muse connector program (submitted
+2026-09-21) and MCP registries. Paid services stay human-led and off-checkout.
+
 ### The wedge: dropped attribution, not broken links
 
 From our own June 2026 study, **569 of 597 affiliate issues were `LOST_PARAMS`** — a redirect

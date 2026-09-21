@@ -33,27 +33,42 @@ Use a different link per channel. The owner lead inbox reads the `utm_campaign` 
 
 ## Day 2: LinkedIn post
 
-Post from Carson's own profile only after he gives exact approval for this one action. This
-version uses the verified tag-drop finding as the hook and has no observation placeholder to
-fill from memory.
+Post from Carson's own profile only after he gives exact approval for this one action.
 
-> A link can return HTTP 200 and still lose the affiliate tag.
+**Rewritten 2026-09-21.** The previous version's hook ("a link can return HTTP 200 and still lose
+the affiliate tag"; 597 attribution failures, 9.1%) rested on a classifier error — see the
+correction on `/research/link-rot-index-june-2026`. Do not post the old text. This version uses
+only findings re-verified on 2026-09-21, and does not name the publisher (not yet contacted).
+
+> A link can load perfectly and still lead nowhere.
 >
-> In a June 2026 research scan, LinkRescue checked 6,550 outbound links across 50 established
-> affiliate sites. Attribution failures affected 597 checked links (9.1%), compared with 5.8%
-> that were visibly broken. Bot-blocked responses were reported separately, and the rates apply
-> only to links checked within the crawl budget.
+> Six affiliate links on a well-known travel blog still open fine, and land on the partner's
+> "expired partner link" page. The program ended; the links never changed. No 404, no plugin
+> warning, and a quick click-through looks normal.
 >
-> I am running a small service-led pilot for publishers who want a limited technical snapshot
-> of a public content site. It checks observable broken links, redirects, and visible
-> tracking-parameter problems. It does not estimate lost revenue or promise recovery.
+> I found that while re-checking my own June research, and found a bigger mistake of my own
+> along the way. I had published 9.1% "attribution failures" across 6,550 links. Most of those
+> were my classifier misreading share buttons and normal affiliate-network redirects. The
+> corrected numbers: 4.5% of links visibly broken, and 5.7% that no automated checker could
+> verify at all because the destination blocked bots. The correction is on the methodology page.
 >
-> I am looking for a few sites to learn which findings are actually useful. Free snapshot:
+> That last number is why LinkRescue is a human-led service rather than just software. I am
+> running a small pilot: a limited technical snapshot of a public content site, looking for
+> expired programs, dead product links and redirects that go nowhere. It does not estimate lost
+> revenue or promise recovery.
+>
+> Free snapshot:
 > https://www.linkrescue.io/free-scan?utm_source=linkedin&utm_medium=organic&utm_campaign=pilot_linkedin
 
 Reply thoughtfully to every comment. Do not pitch in comments that ask unrelated questions.
 
-### Preflight verified 2026-09-08
+### Preflight — re-run needed for the 2026-09-21 rewrite
+
+The checks below were for the previous post text. Before posting the rewrite, confirm the
+methodology page shows the "Correction, September 21, 2026" box and the campaign URL still
+returns HTTP 200 with its three UTM parameters.
+
+### Preflight verified 2026-09-08 (previous text)
 
 - `https://www.linkrescue.io/api/health` returned HTTP 200 with `web: ok` and `database: ok`
   on production version `900c4a4`.

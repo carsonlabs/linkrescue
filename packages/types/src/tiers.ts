@@ -17,10 +17,12 @@ export const TIER_LIMITS = {
     logSources: 0,
     webhooks: 0,
     aiMatchesPerScan: 0,
-    apiReadRequestsPerHour: 0,
-    apiScanRequestsPerDay: 0,
+    // Free API access so connector users (Muse, MCP) can self-serve a key without
+    // talking to us. Deliberately tiny: one site, one scan a day, 200 pages.
+    apiReadRequestsPerHour: 20,
+    apiScanRequestsPerDay: 1,
     monthlyCrawlPages: 0,
-    features: ['basic_alerts', 'monthly_digest'] as readonly string[],
+    features: ['basic_alerts', 'monthly_digest', 'api_access'] as readonly string[],
   },
   pro: {
     name: 'Pro',

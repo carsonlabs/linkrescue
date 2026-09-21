@@ -131,8 +131,8 @@ export default function PublicApiDocsPage() {
           <SectionCard icon={Key} title="Authentication" badgeColor="green">
             <p className="text-sm text-slate-400">
               All API requests require a Bearer token. Generate API keys from your dashboard after signing up.
-              API access is available on <strong className="text-slate-300">Pro ($29/mo)</strong> and{' '}
-              <strong className="text-slate-300">Agency ($79/mo)</strong> plans.
+              Every account includes <strong className="text-slate-300">free API access</strong> — no card
+              required. Higher limits are provisioned on request.
             </p>
             <CodeBlock>{`Authorization: Bearer lr_your_api_key_here`}</CodeBlock>
           </SectionCard>
@@ -455,15 +455,22 @@ curl ${BASE_URL}/api/v1/scans/SCAN_ID \\
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   <tr>
+                    <td className="py-3 px-3 font-medium">Free</td>
+                    <td className="py-3 px-3 text-slate-400">$0 — no card</td>
+                    <td className="py-3 px-3 text-right text-slate-400">20/hour</td>
+                    <td className="py-3 px-3 text-right text-slate-400">1/day</td>
+                    <td className="py-3 px-3 text-right text-slate-400">200 per scan</td>
+                  </tr>
+                  <tr>
                     <td className="py-3 px-3 font-medium">Pro</td>
-                    <td className="py-3 px-3 text-slate-400">$29/mo</td>
+                    <td className="py-3 px-3 text-slate-400">On request</td>
                     <td className="py-3 px-3 text-right text-slate-400">100/hour</td>
                     <td className="py-3 px-3 text-right text-slate-400">2/day</td>
                     <td className="py-3 px-3 text-right text-slate-400">10,000</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-3 font-medium">Agency</td>
-                    <td className="py-3 px-3 text-slate-400">$79/mo</td>
+                    <td className="py-3 px-3 text-slate-400">On request</td>
                     <td className="py-3 px-3 text-right text-slate-400">1,000/hour</td>
                     <td className="py-3 px-3 text-right text-slate-400">10/day</td>
                     <td className="py-3 px-3 text-right text-slate-400">100,000</td>

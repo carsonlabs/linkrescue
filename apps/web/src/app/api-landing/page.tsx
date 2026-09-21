@@ -293,13 +293,22 @@ export default function ApiLandingPage() {
             Simple pricing
           </h2>
           <p className="text-slate-400 mb-10">
-            API access starts at Pro. Pay monthly, cancel anytime.
+            Start free — no credit card. Higher limits are provisioned on request while we run our pilot.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-4 max-w-xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <div className="glass-card p-6 text-left">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Free</p>
+              <p className="font-display text-3xl font-bold">$0</p>
+              <ul className="mt-4 space-y-2 text-sm text-slate-400">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 20 check-links requests/hour</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 1 site scan/day</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 1 site, 200 pages per scan</li>
+              </ul>
+            </div>
             <div className="glass-card p-6 text-left">
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pro</p>
-              <p className="font-display text-3xl font-bold">$29<span className="text-base font-normal text-slate-500">/mo</span></p>
+              <p className="font-display text-3xl font-bold">On request</p>
               <ul className="mt-4 space-y-2 text-sm text-slate-400">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 100 check-links requests/hour</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 2 site scans/day</li>
@@ -308,7 +317,7 @@ export default function ApiLandingPage() {
             </div>
             <div className="glass-card p-6 text-left border-green-500/20">
               <p className="text-xs font-semibold uppercase tracking-wider text-green-400 mb-1">Agency</p>
-              <p className="font-display text-3xl font-bold">$79<span className="text-base font-normal text-slate-500">/mo</span></p>
+              <p className="font-display text-3xl font-bold">On request</p>
               <ul className="mt-4 space-y-2 text-sm text-slate-400">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 1,000 check-links requests/hour</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> 10 site scans/day</li>

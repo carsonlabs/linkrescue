@@ -17,6 +17,7 @@ interface Environment {
   affiliateTagPreserved: boolean | null;
   paramsLost: boolean;
   paramDetails: ParamDetail[];
+  expiredProgram?: boolean;
   issue: string | null;
 }
 interface CheckResponse {
@@ -72,7 +73,7 @@ export function LinkChecker() {
 
 function Results({ result }: { result: CheckResponse }) {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const hasIssues = result.environments.some((env) => env.paramsLost || env.status === 'broken');
+  const hasIssues = result.environments.some((env) => env.paramsLost || env.expiredProgram || env.status === 'broken');
   return (
     <>
       <section className="glass-card p-6">
@@ -96,13 +97,13 @@ function Results({ result }: { result: CheckResponse }) {
             <button onClick={() => setExpanded(open ? null : env.environmentId)} className="w-full text-left grid grid-cols-1 md:grid-cols-[1fr_110px_120px_95px_1fr] gap-2 md:gap-3 px-5 py-4 hover:bg-white/[0.03]">
               <span className="font-medium text-sm">{env.label}</span>
               <Status status={env.status} code={env.finalStatus} />
-              <span className={env.affiliateTagPreserved === false ? 'text-red-400 text-xs' : 'text-slate-400 text-xs'}>{env.affiliateTagPreserved === null ? 'None detected' : env.affiliateTagPreserved ? 'Visible' : 'Not preserved'}</span>
+              <span className={env.affiliateTagPreserved === false ? 'text-red-400 text-xs' : 'text-slate-400 text-xs'}>{env.affiliateTagPreserved === null ? 'None detected' : env.affiliateTagPreserved ? 'Delivered' : 'Lost before reaching tracker'}</span>
               <span className="text-xs text-slate-400">{env.redirectCount ? `${env.redirectCount} hop${env.redirectCount === 1 ? '' : 's'}` : 'Direct'} {open ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />}</span>
               <span className="text-xs text-slate-400">{env.issue ?? 'None'}</span>
             </button>
             {open && <div className="px-5 pb-4 text-xs space-y-3">
               <div><p className="text-slate-500 mb-2">Redirect path</p>{env.chain.map((hop, index) => <p key={`${hop.url}-${index}`} className="font-mono text-slate-400 break-all mb-1">{index + 1}. {hop.status || '?'} {hop.url}</p>)}</div>
-              {env.paramDetails.length > 0 && <div><p className="text-slate-500 mb-2">Visible parameter checks</p>{env.paramDetails.map((param) => <p key={param.param} className={param.survived ? 'text-green-400' : 'text-red-400'}>{param.param}: {param.survived ? 'visible after redirect' : 'not visible after redirect'}</p>)}</div>}
+              {env.paramDetails.length > 0 && <div><p className="text-slate-500 mb-2">Tracking that never arrived</p>{env.paramDetails.map((param) => <p key={param.param} className={param.survived ? 'text-green-400' : 'text-red-400'}>{param.param}: {param.survived ? 'delivered' : 'did not reach the merchant or network'}</p>)}</div>}
             </div>}
           </div>;
         })}

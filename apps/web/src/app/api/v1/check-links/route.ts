@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateApiRequest, checkRateLimit } from '@/lib/api-auth';
 import {
-  ALL_AFFILIATE_PARAMS,
-  AFFILIATE_DOMAINS,
-  detectAffiliateParams,
-  compareParamSurvival,
-} from '@/config/affiliate-params';
+  assessAttribution,
+  isAffiliateLink,
+  isBotWallLanding,
+  isExpiredProgramLanding,
+  isUtilityLink,
+} from '@linkrescue/crawler';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -67,36 +68,6 @@ function isPrivateHost(hostname: string): boolean {
     hostname.endsWith('.local') ||
     hostname.endsWith('.internal')
   );
-}
-
-function isAffiliateByDomain(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return AFFILIATE_DOMAINS.some(
-      (d) => parsed.hostname === d || parsed.hostname.endsWith(`.${d}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
-function detectAffiliateSimple(url: string): { isAffiliate: boolean; params: string[] } {
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return { isAffiliate: false, params: [] };
-  }
-  const foundParams: string[] = [];
-  for (const [key] of parsed.searchParams) {
-    if (ALL_AFFILIATE_PARAMS.has(key.toLowerCase())) {
-      foundParams.push(key);
-    }
-  }
-  return {
-    isAffiliate: isAffiliateByDomain(url) || foundParams.length > 0,
-    params: foundParams,
-  };
 }
 
 function classifyStatus(
@@ -228,27 +199,35 @@ async function checkOneLink(rawUrl: string): Promise<LinkResult> {
     };
   }
 
-  const affiliateInfo = detectAffiliateSimple(urlStr);
+  const isAffiliate = isAffiliateLink(urlStr);
   const { chain, finalStatus, errorMessage } = await followChain(urlStr);
 
   const finalUrl = chain.at(-1)?.url ?? urlStr;
   const redirectCount = Math.max(0, chain.length - 1);
   const status = classifyStatus(finalStatus, chain.length, errorMessage);
 
-  let affiliateParamsPreserved: boolean | null = null;
-  let paramsLost: string[] = [];
-
-  if (affiliateInfo.isAffiliate && affiliateInfo.params.length > 0) {
-    const paramDetails = compareParamSurvival(urlStr, finalUrl);
-    paramsLost = paramDetails.filter((p) => !p.survived).map((p) => p.param);
-    affiliateParamsPreserved = paramsLost.length === 0;
-  }
+  // Tracking counts as lost only if it never reached the network, Amazon or the
+  // merchant. A network consuming its own params is delivery, not loss.
+  const attribution = assessAttribution(
+    urlStr,
+    finalUrl,
+    chain.map((hop) => hop.url),
+  );
+  const paramsLost = attribution.lostParams;
+  const affiliateParamsPreserved: boolean | null =
+    attribution.outcome === 'delivered' ? true : attribution.outcome === 'lost' ? false : null;
 
   let issue: string | null = null;
   if (errorMessage) {
     issue = errorMessage;
+  } else if (isUtilityLink(urlStr)) {
+    issue = null; // share buttons and photo credits are not affiliate links
+  } else if (isBotWallLanding(finalUrl)) {
+    issue = 'Destination showed a bot/captcha page — could not verify this link';
+  } else if (isAffiliate && isExpiredProgramLanding(finalUrl)) {
+    issue = 'Lands on an expired or closed affiliate-program page';
   } else if (paramsLost.length > 0) {
-    issue = `Affiliate params lost: ${paramsLost.join(', ')}`;
+    issue = `Affiliate tracking never reached the merchant or network: ${paramsLost.join(', ')}`;
   } else if (status === 'broken') {
     issue = `HTTP ${finalStatus}`;
   }
@@ -259,7 +238,7 @@ async function checkOneLink(rawUrl: string): Promise<LinkResult> {
     status_code: finalStatus,
     final_url: finalUrl,
     redirect_count: redirectCount,
-    is_affiliate: affiliateInfo.isAffiliate,
+    is_affiliate: isAffiliate,
     affiliate_params_preserved: affiliateParamsPreserved,
     params_lost: paramsLost,
     issue,

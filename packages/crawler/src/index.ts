@@ -24,6 +24,16 @@ export { fetchSitemap, parseSitemapXml, discoverPages } from './sitemap';
 export { extractOutboundLinks } from './link-extractor';
 export { checkLink } from './link-checker';
 export { isAffiliateLink, classifyIssue } from './classifier';
+export {
+  assessAttribution,
+  affiliateParamsIn,
+  isUtilityLink,
+  isExpiredProgramLanding,
+  isBotWallLanding,
+  registrableDomain,
+  type AttributionAssessment,
+  type AttributionOutcome,
+} from './attribution';
 export { validateFetchUrl, isPrivateHost, validateFetchUrlWithDns, isPrivateIp, safeFetch, SsrfError } from './url-safety';
 export type { SafeFetchOptions } from './url-safety';
 export { getRobotsRules, isPathAllowed, clearRobotsCache } from './robots';

@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio/slim';
-import { isAffiliateLink } from './classifier';
+import { isAffiliateLink, isUtilityLink } from './attribution';
 import type { ExtractedLink } from './types';
 
 export function extractOutboundLinks(html: string, pageDomain: string): ExtractedLink[] {
@@ -22,6 +22,9 @@ export function extractOutboundLinks(html: string, pageDomain: string): Extracte
       if (linkDomain === pageDomain || linkDomain.endsWith(`.${pageDomain}`)) return;
 
       const normalized = parsed.href;
+      // Share buttons and photo credits are not outbound content; checking them
+      // only produced noise (339 of the June study's 569 LOST_PARAMS).
+      if (isUtilityLink(normalized)) return;
       if (seen.has(normalized)) return;
       seen.add(normalized);
 

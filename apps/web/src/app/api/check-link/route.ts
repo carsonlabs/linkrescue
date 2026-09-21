@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { detectAffiliateParams, type ParamSurvival } from '@/config/affiliate-params';
 import {
-  ALL_AFFILIATE_PARAMS,
-  AFFILIATE_DOMAINS,
-  detectAffiliateParams,
-  compareParamSurvival,
-  type ParamSurvival,
-} from '@/config/affiliate-params';
+  affiliateParamsIn,
+  assessAttribution,
+  isAffiliateLink,
+  isBotWallLanding,
+  isExpiredProgramLanding,
+} from '@linkrescue/crawler';
 import {
   BROWSER_ENVIRONMENTS,
   type BrowserEnvironment,
@@ -32,6 +33,8 @@ export interface EnvResult {
   affiliateTagPreserved: boolean | null;
   paramsLost: boolean;
   paramDetails: ParamSurvival[];
+  /** Lands on an expired / closed affiliate-program page. */
+  expiredProgram: boolean;
   errorMessage: string | null;
   differsFromBaseline: boolean;
   issue: string | null;
@@ -95,38 +98,6 @@ function isPrivateHost(hostname: string): boolean {
     hostname.endsWith('.local') ||
     hostname.endsWith('.internal')
   );
-}
-
-function isAffiliateByDomain(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return AFFILIATE_DOMAINS.some(
-      (d) => parsed.hostname === d || parsed.hostname.endsWith(`.${d}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
-function detectAffiliateSimple(url: string): { isAffiliate: boolean; params: string[] } {
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return { isAffiliate: false, params: [] };
-  }
-
-  const foundParams: string[] = [];
-  for (const [key] of parsed.searchParams) {
-    if (ALL_AFFILIATE_PARAMS.has(key.toLowerCase())) {
-      foundParams.push(key);
-    }
-  }
-
-  return {
-    isAffiliate: isAffiliateByDomain(url) || foundParams.length > 0,
-    params: foundParams,
-  };
 }
 
 function classifyStatus(
@@ -367,9 +338,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Private/internal URLs are not allowed' }, { status: 400 });
   }
 
-  const affiliateInfo = detectAffiliateSimple(urlStr);
-  const hasAffParams = affiliateInfo.isAffiliate && affiliateInfo.params.length > 0;
-  const detectedParams = detectAffiliateParams(urlStr);
+  const isAffiliate = isAffiliateLink(urlStr);
+  const affiliateParams = affiliateParamsIn(urlStr);
+  const detectedParams = isAffiliate ? detectAffiliateParams(urlStr) : [];
   const detectedNetwork = detectedParams.length > 0 ? detectedParams[0].network : null;
 
   // Run all environments in parallel
@@ -377,28 +348,43 @@ export async function POST(req: NextRequest) {
     BROWSER_ENVIRONMENTS.map(async (env): Promise<EnvResult> => {
       const { chain, finalStatus, errorMessage, jsRedirectDetected } = await followChain(urlStr, env);
 
-      const finalUrl = chain.filter((h) => !h.jsRedirect).at(-1)?.url ?? urlStr;
-      const paramDetails = hasAffParams ? compareParamSurvival(urlStr, finalUrl) : [];
-      const paramsLost = paramDetails.some((p) => !p.survived);
+      const hops = chain.filter((h) => !h.jsRedirect);
+      const finalUrl = hops.at(-1)?.url ?? urlStr;
 
-      const status = classifyStatus(finalStatus, chain.filter((h) => !h.jsRedirect).length, errorMessage);
+      // Tracking is lost only if it never reached the network, Amazon or the
+      // merchant. A network consuming its own params (Awin, CJ, Impact...) is
+      // delivery — reporting that as "lost" was the June study's main error.
+      const attribution = assessAttribution(urlStr, finalUrl, hops.map((h) => h.url));
+      const paramsLost = attribution.outcome === 'lost';
+      const original = new URL(urlStr);
+      const paramDetails: ParamSurvival[] = attribution.lostParams.map((param) => ({
+        param,
+        network: detectedNetwork ?? 'Affiliate',
+        originalValue: original.searchParams.get(param) ?? '',
+        survived: false,
+        finalValue: null,
+      }));
+      const expiredProgram = isAffiliate && isExpiredProgramLanding(finalUrl);
 
-      let affiliateTagPreserved: boolean | null = null;
-      if (hasAffParams) {
-        affiliateTagPreserved = !paramsLost;
-      }
+      const status = classifyStatus(finalStatus, hops.length, errorMessage);
+
+      const affiliateTagPreserved: boolean | null =
+        attribution.outcome === 'delivered' ? true : paramsLost ? false : null;
 
       // Issue description
       let issue: string | null = null;
       if (errorMessage) {
         issue = errorMessage;
+      } else if (isBotWallLanding(finalUrl)) {
+        issue = 'Destination showed a bot/captcha page — could not verify this link';
+      } else if (expiredProgram) {
+        issue = 'Lands on an expired or closed affiliate-program page';
       } else if (paramsLost) {
-        const lostParams = paramDetails.filter((p) => !p.survived).map((p) => p.param);
-        if (env.cookiePolicy !== 'standard') {
-          issue = `Privacy restrictions stripped ${lostParams.join(', ')}`;
-        } else {
-          issue = `Parameter ${lostParams.join(', ')} lost in redirect`;
-        }
+        const lost = attribution.lostParams.join(', ');
+        issue =
+          env.cookiePolicy !== 'standard'
+            ? `Privacy restrictions stopped ${lost} reaching the merchant or network`
+            : `Affiliate tracking (${lost}) never reached the merchant or network`;
       } else if (jsRedirectDetected) {
         issue = 'JavaScript redirect detected — browser test will verify';
       } else if (status === 'broken') {
@@ -416,6 +402,7 @@ export async function POST(req: NextRequest) {
         affiliateTagPreserved,
         paramsLost,
         paramDetails,
+        expiredProgram,
         errorMessage,
         differsFromBaseline: false,
         issue,
@@ -440,8 +427,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     originalUrl: urlStr,
-    isAffiliate: affiliateInfo.isAffiliate,
-    affiliateParams: affiliateInfo.params,
+    isAffiliate,
+    affiliateParams,
     detectedNetwork,
     environments: envResults,
   });

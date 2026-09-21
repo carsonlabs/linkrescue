@@ -29,14 +29,24 @@ authenticate the **remote MCP endpoint at `https://www.linkrescue.io/api/mcp`**
 `/api/v1` with the caller's key. It exists for distribution: the Muse connector program (submitted
 2026-09-21) and MCP registries. Paid services stay human-led and off-checkout.
 
-### The wedge: dropped attribution, not broken links
+### The wedge — corrected 2026-09-21
 
-From our own June 2026 study, **569 of 597 affiliate issues were `LOST_PARAMS`** — a redirect
-strips the tracking parameter and the link still returns HTTP 200. The page loads, the reader buys,
-and the click is attributed to nobody. Broken-link checkers pass it. So does clicking it yourself.
+The positioning used to be "569 of 597 affiliate issues were `LOST_PARAMS`: the tag silently drops
+and the link still returns 200." **That number was classifier error.** Of the 569: 339 were social
+share buttons, 7 photo credits, 59 network links whose tracking demonstrably survived, most of the
+rest bot-block pages, and the remainder network or Amazon hand-offs where the tracker received the
+tag. Re-classified with `packages/crawler/src/attribution.ts`, the June sample shows **zero**
+confirmed lost tags. Do not position on the tag drop until real data shows it.
 
-Broken links are a commodity category owned by free tools. The silent attribution drop is not.
-Position new work on the tag drop.
+What held up, and is the honest wedge now: **links that still load but lead nowhere.** Six
+affiliate links on one publisher sent readers to `worldnomads.com/.../expired-partner-link` — the
+partnership ended, the links never changed, and nothing but a human (or `SOFT_404` detection)
+notices. Plus: 5.7% of checked links could not be verified by any automated checker (bot walls,
+Amazon throttling) — which is the argument for a human-led audit.
+
+Blind spot worth knowing: the scanner only follows *external* links, so it never sees a site's
+own `/go/`, `/recommends/` or pretty-link redirects — which is where real tag loss happens. A
+deeper archive scan that follows those is the right next study, on Wi-Fi or the VPS.
 
 ## Hard rules
 
@@ -49,8 +59,12 @@ These are not style preferences. They are the operating constraints of the produ
    exists yet.
 2. **The only approved evidence is the June study**, with its stated limitations intact:
    > On June 11, 2026, LinkRescue scanned 50 well-known affiliate sites: 683 pages and 6,550
-   > outbound links checked within the crawl budget. 5.8% of checked links were visibly broken.
-   > Attribution failures affected 597 links, or 9.1% of checked links.
+   > outbound links checked within the crawl budget. 4.5% of checked links were visibly broken,
+   > and 5.7% could not be verified by an automated checker. Six affiliate links sent readers to
+   > an expired partner program while still loading normally.
+
+   (Corrected 2026-09-21 from "5.8% visibly broken; attribution failures affected 597 links, or
+   9.1%" — see the wedge section. The source of truth is `apps/web/src/lib/research/link-rot-index.ts`.)
 
    Never expand this into a dollar figure or a universal incidence claim. It is a research sample,
    not a customer-outcome study.
@@ -191,7 +205,9 @@ dashboard, the scoreboard, or the email package.
 1. One unfired action: a single organic LinkedIn post from Carson's profile. Needs his explicit go.
    The hook is rewritten around the tag-drop finding and its destination passed preflight on
    2026-09-08.
-2. Publish the June study as a public methodology page — currently it only lives in a JSON file.
+2. ~~Publish the June study as a public methodology page~~ — live at `/research/link-rot-index-june-2026`, corrected 2026-09-21.
+3. Re-run the 50-site study with the corrected classifier (`data-study/run-scans-2026-09.sh`) — **on Wi-Fi or the VPS, never the hotspot.**
+4. Decide the `/affiliate-link-revenue-calculator` page (uncited 20% strip rate; breaks rule 1).
 
 ## Agent Learning
 

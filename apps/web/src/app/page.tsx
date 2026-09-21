@@ -64,9 +64,9 @@ export default function HomePage() {
               <p className="text-slate-400 mt-5 text-lg">In a June 2026 research scan of 50 established affiliate sites, LinkRescue reviewed 683 pages and 6,550 outbound links.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto text-center">
-              <Stat value="5.8%" label="visibly broken links in the research scan" />
-              <Stat value="9.1%" label="attribution failures in the research scan" />
-              <Stat value="27" label="median issues per site in the research scan" />
+              <Stat value="4.5%" label="visibly broken links in the research scan" />
+              <Stat value="5.7%" label="links an automated checker could not verify" />
+              <Stat value="6,550" label="outbound links checked in the research scan" />
             </div>
             <p className="text-center text-xs text-slate-600 mt-8">These are research observations from the stated crawl budget, not a forecast of results or revenue for any site.</p>
           </div>

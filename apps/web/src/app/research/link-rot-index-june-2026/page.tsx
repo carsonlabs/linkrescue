@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'June 2026 Affiliate Link Study Methodology',
     description:
-      'How LinkRescue counted visible breaks, dropped attribution, bot blocks, and incomplete coverage in one bounded research scan.',
+      'How LinkRescue counted visible breaks, expired affiliate programs, bot blocks, and incomplete coverage in one bounded research scan — corrected September 2026.',
     url: PAGE_URL,
     type: 'article',
     publishedTime: study.observedOn,
@@ -63,9 +63,9 @@ const headlineMetrics = [
     note: `${number.format(study.visibleBreaks)} non-blocked 4xx, 5xx, or timeout observations`,
   },
   {
-    value: percentage(study.attributionFailures, study.linksChecked),
-    label: 'attribution failures',
-    note: `${number.format(study.attributionFailures)} stripped-parameter or homepage-redirect observations`,
+    value: percentage(study.blockedResponses, study.linksChecked),
+    label: 'could not be verified automatically',
+    note: `${number.format(study.blockedResponses)} links where the destination blocked or throttled the checker`,
   },
   {
     value: `${study.substantiveSites}/${study.panelSites}`,
@@ -98,7 +98,7 @@ const methodSteps = [
   {
     icon: Bot,
     title: '5. Keep blocks separate from breaks',
-    text: `${number.format(study.blockedResponses)} responses still returned 403, 405, or 429 after the fallback. They were labelled unverifiable by the automated check and excluded from the visibly-broken count.`,
+    text: `${number.format(study.blockedResponses)} links returned 403, 405 or 429 after the fallback, landed on a bot or captcha page, or were throttled by Amazon with a 5xx. They were labelled unverifiable and excluded from the visibly-broken count. Share buttons and photo credits are not outbound content and are excluded from findings.`,
   },
 ] as const;
 
@@ -122,16 +122,22 @@ const breakdown = [
     group: 'Visible break',
   },
   {
-    label: 'Tracking parameter stripped',
+    label: 'Affiliate link to an expired partner program',
+    count: study.issueBreakdown.expiredProgram,
+    rate: percentage(study.issueBreakdown.expiredProgram, study.linksChecked),
+    group: 'Affiliate dead end',
+  },
+  {
+    label: 'Tracking tag never reached network or merchant',
     count: study.issueBreakdown.lostParams,
     rate: percentage(study.issueBreakdown.lostParams, study.linksChecked),
-    group: 'Attribution failure',
+    group: 'Affiliate dead end',
   },
   {
     label: 'Deep link redirected to homepage',
     count: study.issueBreakdown.redirectToHome,
     rate: percentage(study.issueBreakdown.redirectToHome, study.linksChecked),
-    group: 'Attribution failure',
+    group: 'Lost context',
   },
   {
     label: 'Bot-blocked or rate-limited',
@@ -269,13 +275,25 @@ export default function June2026LinkRotMethodologyPage() {
               </div>
               <div className="mx-auto mt-8 max-w-5xl rounded-2xl border border-green-500/20 bg-green-500/[0.06] p-6 md:p-8">
                 <p className="font-display text-xl font-semibold text-white">
-                  The central observed pattern
+                  Correction, September 21, 2026
                 </p>
                 <p className="mt-3 leading-relaxed text-slate-300">
-                  {number.format(study.issueBreakdown.lostParams)} of the{' '}
-                  {number.format(study.attributionFailures)} attribution failures were tracking
-                  parameters that disappeared by the final URL. Those links can still return a
-                  successful page response, which is why status-only checking misses the category.
+                  This page originally reported{' '}
+                  {number.format(study.originallyPublished.attributionFailures)} attribution
+                  failures, {number.format(study.originallyPublished.lostParams)} of them tracking
+                  parameters that disappeared by the final URL. That was wrong. Our classifier
+                  counted any missing parameter as lost — including social share buttons, photo
+                  credits, and affiliate networks that consume their own parameters and record the
+                  click, which is how they are meant to work. Re-checking the same stored
+                  observations with corrected rules found no case of a tracking tag failing to
+                  reach the network or merchant. What did hold up:{' '}
+                  {number.format(study.issueBreakdown.expiredProgram)} affiliate links sent
+                  readers to an expired partner program while still loading normally, and{' '}
+                  {number.format(study.visibleBreaks)} links were visibly broken (originally
+                  reported as {number.format(study.originallyPublished.visibleBreaks)}; Amazon
+                  throttling responses are now counted as unverifiable). The{' '}
+                  {number.format(study.linksChecked)}-link denominator still includes the excluded
+                  share buttons, so the corrected rates are slightly understated.
                 </p>
               </div>
             </div>

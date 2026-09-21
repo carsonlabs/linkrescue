@@ -81,9 +81,9 @@ export default function FreeScanPage() {
               June 2026 research scan: 50 established affiliate sites, 683 pages, and 6,550 outbound links reviewed.
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-slate-600 text-xs">
-              <div><div className="text-2xl font-bold text-white">9.1%</div><div>Attribution failures in the research scan</div></div>
-              <div><div className="text-2xl font-bold text-white">5.8%</div><div>Visibly broken in the research scan</div></div>
-              <div><div className="text-2xl font-bold text-white">27</div><div>Median issues per site in the research scan</div></div>
+              <div><div className="text-2xl font-bold text-white">4.5%</div><div>Visibly broken in the research scan</div></div>
+              <div><div className="text-2xl font-bold text-white">5.7%</div><div>Could not be verified automatically</div></div>
+              <div><div className="text-2xl font-bold text-white">6,550</div><div>Outbound links checked</div></div>
             </div>
           </section>
 
